@@ -22,7 +22,7 @@ a.navi-nav-item {
 	text-decoration : none;
 }
 .navi-nav-item-link {
-	padding       : 6px 0;
+	padding       : 6px 0 10px 0;
 	display       : flex;
 	flex-direction: column;
 }
