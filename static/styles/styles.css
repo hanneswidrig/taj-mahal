@@ -8,7 +8,7 @@ body {
 }
 .navi-nav {
 	font-family     : 'Roboto', serif;
-	font-size       : .7rem;
+	font-size       : .75rem;
 	display         : flex;
 	align-content   : center;
 	justify-content : center;
@@ -16,10 +16,10 @@ body {
 	border-top      : 1px solid #e4e4e4;
 }
 a.navi-nav-item {
-	color           : #757575;
-	flex-grow       : 1;
-	text-align      : center;
-	text-decoration : none;
+	color          : #757575;
+	flex-grow      : 1;
+	text-align     : center;
+	text-decoration: none;
 }
 .navi-nav-item-link {
 	padding       : 6px 0 10px 0;
@@ -29,4 +29,42 @@ a.navi-nav-item {
 .nav-item-active {
 	color          : #3D9970;
 	text-decoration: none;
+}
+.ul-listing {
+	list-style-type: none;
+	margin         : 0;
+	padding        : 0;
+}
+.listing {
+ display         : flex;
+ flex-direction  : row;
+ justify-content : space-between;
+ background-color: #FFF;
+ padding         : 16px;
+ margin          : 5px;
+ border-radius   : 2px;
+ box-shadow      : 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+}
+.listing-body {
+	display: flex;
+	justify-content: flex-start;
+	flex-direction: column;
+}
+.listing-a {
+	color: #3D9970;
+}
+.listing-a:hover, .listing-a:focus {
+	text-decoration: none;
+}
+.listing-title {
+	font-family: 'Roboto', serif;
+	font-size  : 1.25rem;
+}
+.listing-price {
+	font-family: 'Roboto', serif;
+	font-size  : 1rem;
+}
+.listing-image {
+	width : 96px;
+	height: 96px;
 }

@@ -1,4 +1,21 @@
 {% extends "base.html" %} 
 {% block title %}Product Feed{% endblock %} 
 {% block content %}
+<ul class="ul-listing">
+	{% for listing in listings %}
+	<li>
+		<a href="{{ url_for('listing_detail', id=listing.listing_id) }}" class="listing-a">
+			<div class="listing">
+				<div class="listing-body">
+					<span class="listing-title">{{ listing.title }}</span>
+					<span class="listing-price">{{ listing.price_per_unit }}</span>
+				</div>
+				<img class="listing-image" src="{{ listing.photo }}" alt="{{ listing.listing_id }}">
+			</div>
+		</a>
+	</li>
+	{% else %}
+	<span>No listings found...</span>
+	{% endfor %}
+</ul>
 {% endblock %}

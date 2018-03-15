@@ -4,25 +4,33 @@ import sys
 
 # Imported Project Files
 import db
-import secrets
+from secrets import secret_flask_key
 
 app = Flask('Gardener\'s Exchange')
-app.config['SECRET_KEY'] = secrets.secret_flask_key()
+app.config['SECRET_KEY'] = secret_flask_key()
 
 @app.before_request
 def before_request():
-  pass # db.open_db()
+	db.open_db()
 
 def after_request():
-  pass # db.close_db()
+	db.close_db()
 
 @app.route('/')
 def index():
-  return render_template('index.html')
+	listings = db.all_listings()
+	for listing in listings:
+		listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
+	return render_template('index.html', listings=listings)
 
 @app.route('/listing')
-def add_listing():
-	return render_template('all-listings.html')
+def listing_add():
+	listings = db.all_listings()
+	return render_template('all-listings.html', listings=listings)
+
+@app.route('/listing/<int:id>')
+def listing_detail(id):
+	return render_template('detail-listing.html', id=id)
 
 @app.route('/listing/add')
 def all_listings():
@@ -35,6 +43,5 @@ def all_users():
 @app.route('/user/<int:user_id>')
 def user_profile(user_id):
 	return 'User ID: {0}'.format(user_id)
-	# return render_template('user-profile.html')
 
 app.run(host='0.0.0.0', port=8080, debug=True)
