@@ -30,7 +30,8 @@ def listing_add():
 
 @app.route('/listing/<int:id>')
 def listing_detail(id):
-	return render_template('detail-listing.html', id=id)
+	listing = db.get_one_listing(id)
+	return render_template('detail-listing.html', listing=listing)
 
 @app.route('/listing/add')
 def all_listings():
