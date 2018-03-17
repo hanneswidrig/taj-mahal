@@ -2,6 +2,23 @@
 {% block title %}Product Detail{% endblock %} 
 {% block content %}
 <h1>
-	{{ id }}
+	{{ listing.title }}
 </h1>
+    <img src={{ listing.photo }}>
+<p>
+    <strong>Description: </strong>{{ listing.description }}
+</p>
+<p>
+    <strong>Quantity: </strong>{{ listing.available_quantity }}
+</p>
+<p>
+    <strong>Category: </strong>{{ listing.listing_category }}
+</p>
+<p>
+	<strong>Expires: </strong>{{ listing.expiration_date }}
+</p>
+<p>
+	<strong>Quality: </strong>{{ listing.listing_quality }}
+</p>
+
 {% endblock %}

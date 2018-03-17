@@ -30,7 +30,8 @@ def listing_add():
 
 @app.route('/listing/<int:id>')
 def listing_detail(id):
-	return render_template('detail-listing.html', id=id)
+	listing = db.get_one_listing(id)
+	return render_template('detail-listing.html', listing=listing)
 
 @app.route('/listing/add')
 def all_listings():
@@ -44,4 +45,4 @@ def all_users():
 def user_profile(user_id):
 	return 'User ID: {0}'.format(user_id)
 
-app.run(host='0.0.0.0', port=8080, debug=True)
+app.run(host='localhost', port=5000, debug=True)

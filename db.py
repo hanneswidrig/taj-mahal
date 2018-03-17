@@ -16,3 +16,7 @@ def close_db():
 def all_listings():
 	g.cursor.execute('''SELECT * FROM listing ORDER BY date_created DESC;''')
 	return g.cursor.fetchall()
+
+def get_one_listing(listing_id):
+	g.cursor.execute('SELECT * FROM listing WHERE listing_id = %(id)s', {'id': listing_id})
+	return g.cursor.fetchone()
