@@ -28,7 +28,7 @@ def listing_detail(id):
 	listing = db.get_one_listing(id)
 	return render_template('detail-listing.html', listing=listing)
 
-@app.route('/listing/add', method=["GET", "POST"])
+@app.route('/listing/add', methods=["GET", "POST"])
 def all_listings():
 	return render_template('add-listing.html')
 
