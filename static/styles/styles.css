@@ -1,6 +1,9 @@
 body {
 	background-color: #e4e4e4;
 }
+main {
+	padding-bottom: 100px;
+}
 .navi {
 	width   : 100%;
 	position: fixed;

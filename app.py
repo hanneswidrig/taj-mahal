@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 import sys
 from flask_wtf import FlaskForm
 from wtforms import StringField, FileField, IntegerField, DecimalField, SelectField, BooleanField, DateField, SubmitField
-from wtforms.validators import Length
+from wtforms.validators import Length, NumberRange
 
 # Imported Project Files
 import db
@@ -26,36 +26,31 @@ def index():
 		listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
 	return render_template('index.html', listings=listings)
 
-@app.route('/listing')
-def listing_add():
-	listings = db.all_listings()
-	return render_template('all-listings.html', listings=listings)
-
 @app.route('/listing/<int:id>')
 def listing_detail(id):
 	return render_template('detail-listing.html', id=id)
 
 class add_listing_form(FlaskForm):
-	title = StringField('First Name', validators=[Length(min=1, message="A title is required.")])
-	photo = FileField('Picture')
-	description = StringField('Description', validators=[Length(min=1, message="A description is required.")])
-	original_quantity = IntegerField('Quantity', validators=[Length(min=1, message="A quantity is required.")])
-	unit_type = IntegerField('Measurement', validators=[Length(min=1, message="A measurement is required.")])
-	price_per_unit = DecimalField('Price Per Unit', places=2, validators=[Length(min=1, message="A price is required.")])
-	listing_category = SelectField('Category', choices=['Vegetable', 'Fruit', 'Something Else'])
-	listing_quality = SelectField('Quality', choices=['Always Fresh Boi', 'Not Fresh'])
-	is_tradeable = BooleanField('Tradeable')
-	expiration_date = DateField('Expiration Date')
-	submit = SubmitField('Add')
+	title             = StringField('Title', validators=[Length(min=1, message="A title is required.")])
+	photo             = FileField('Picture')
+	description       = StringField('Description', validators=[Length(min=1, message="A description is required.")])
+	original_quantity = IntegerField('Quantity', validators=[NumberRange(min=1, message="A quantity is required.")])
+	unit_type         = IntegerField('Measurement', validators=[NumberRange(min=1, message="A measurement is required.")])
+	price_per_unit    = DecimalField('Price Per Unit', places=2, validators=[NumberRange(min=1, message="A price is required.")])
+	listing_category  = SelectField('Category', choices=['Vegetable', 'Fruit', 'Something Else'])
+	listing_quality   = SelectField('Quality', choices=['Always Fresh', 'Not Fresh'])
+	is_tradeable      = BooleanField('Tradeable')
+	expiration_date   = DateField('Expiration Date', format="%Y-%m-%d")
+	submit            = SubmitField('Add')
 
-@app.route('/listing/add')
+@app.route('/listing/add', methods=['GET', 'POST'])
 def all_listings():
 	listing_form = add_listing_form()
-
+	# This lets you print out all the data sent with the POST request
+	# for k, v in listing_form.data.items():
+		# print(k, v, type(v))
 	if listing_form.validate_on_submit():
-		return redirect(url_for(''))
-
-	print(listing_form, file=sys.stderr)
+		return redirect(url_for('index'))
 	return render_template('add-listing.html', form=listing_form)
 
 @app.route('/user')
