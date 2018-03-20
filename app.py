@@ -23,17 +23,12 @@ def index():
 		listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
 	return render_template('index.html', listings=listings)
 
-@app.route('/listing')
-def listing_add():
-	listings = db.all_listings()
-	return render_template('all-listings.html', listings=listings)
-
 @app.route('/listing/<int:id>')
 def listing_detail(id):
 	listing = db.get_one_listing(id)
 	return render_template('detail-listing.html', listing=listing)
 
-@app.route('/listing/add')
+@app.route('/listing/add', method=["GET", "POST"])
 def all_listings():
 	return render_template('add-listing.html')
 
@@ -45,4 +40,4 @@ def all_users():
 def user_profile(user_id):
 	return 'User ID: {0}'.format(user_id)
 
-app.run(host='localhost', port=5000, debug=True)
+app.run(host='0.0.0.0', port=8080, debug=True)
