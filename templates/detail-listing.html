@@ -1,10 +1,9 @@
-{% extends "base.html" %} 
-{% block title %}Product Detail{% endblock %} 
+{% extends "base.html" %}
+{% block bar_title %}{{ listing.title }}{% endblock %}
+{% block title %}{{ listing.title }}{% endblock %}
+{% block app_bar_rel_link %}{{rel_link}}{% endblock %}
 {% block content %}
-<h1>
-	{{ listing.title }}
-</h1>
-    <img src={{ listing.photo }}>
+<img src={{ listing.photo }}>
 <p>
     <strong>Description: </strong>{{ listing.description }}
 </p>

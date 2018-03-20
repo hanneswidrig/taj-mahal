@@ -25,8 +25,13 @@ def index():
 
 @app.route('/listing/<int:id>')
 def listing_detail(id):
-	listing = db.get_one_listing(id)
-	return render_template('detail-listing.html', listing=listing)
+	# Will need to be modified when we are implementing back button for purchasing
+	# and other secured navigation.
+	rel_link = request.referrer
+	if rel_link is None:
+		rel_link = '/'
+	listing  = db.get_one_listing(id)
+	return render_template('detail-listing.html', listing=listing, rel_link=rel_link)
 
 @app.route('/listing/add', methods=["GET", "POST"])
 def all_listings():

@@ -24,7 +24,23 @@
 </head>
 
 <body>
-	<header></header>
+	<header>
+		<div class="app-bar">
+			{% if request.path == url_for('index') %}
+			<div class="app-bar-item"><div class="app-bar-filler"></div></div>
+			{% else %}
+			<a href="{% block app_bar_rel_link %}{% endblock %}" class="app-bar-item">
+				<div class="go-back">
+					<i class="material-icons">arrow_back</i>
+				</div>
+			</a>
+			{% endif %}
+			<div class="app-bar-item">
+				<span class="app-bar-title">{% block bar_title %}{% endblock %}</span>
+			</div>
+			<div class="app-bar-item"><div class="app-bar-filler"></div></div>
+		</div>
+	</header>
 	<div class="navi">
 		<nav class="navi-nav">
 			<a href="/" class="navi-nav-item">
