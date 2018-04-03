@@ -70,7 +70,7 @@ a.navi-nav-item {
  justify-content : space-between;
  background-color: #FFF;
  padding         : 16px;
- margin          : 5px;
+ margin          : 16px 0;
  border-radius   : 2px;
  box-shadow      : 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
 }
@@ -83,6 +83,7 @@ a.navi-nav-item {
 	color: #3D9970;
 }
 .listing-a:hover, .listing-a:focus {
+	color          : #0A663D;
 	text-decoration: none;
 }
 .listing-title {
@@ -98,4 +99,35 @@ a.navi-nav-item {
 .listing-image {
 	width : 96px;
 	height: 96px;
+}
+
+.detail {
+	font-family: 'Titillium Web', sans-serif;
+}
+.detail-img {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 256px;
+}
+.detail-title {
+	text-align: center;
+}
+.detail-description {
+	text-align: center;
+}
+.detail-quality {
+	text-align: center;
+}
+.detail-quantity {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+.detail-quantity-label {
+	font-size: 1.5rem;
+}
+.detail-quantity-total {
+	font-size: 3rem;
 }

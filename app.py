@@ -12,7 +12,7 @@ import helper_functions
 from secrets import secret_flask_key
 
 app = Flask('Gardener\'s Exchange')
-app.config['SECRET_KEY'] = secret_flask_key()
+app.config['SECRET_KEY']  = secret_flask_key()
 
 
 @app.before_request
@@ -34,8 +34,8 @@ def index():
 
 @app.route('/listing/<int:id>')
 def listing_detail(id):
-	listing  = db.get_one_listing(id)
-	rel_link = helper_functions.relative_link(request.referrer)
+	listing         = db.get_one_listing(id)
+	rel_link        = helper_functions.relative_link(request.referrer)
 	return render_template('detail-listing.html', listing=listing, rel_link=rel_link)
 
 

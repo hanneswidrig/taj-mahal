@@ -3,26 +3,27 @@
 {% block bar_title %}{{ listing.title }}{% endblock %}
 {% block app_bar_rel_link %}{{rel_link}}{% endblock %}
 {% block content %}
-<img src={{ listing.photo }}>
-<p>
-    <strong>Description: </strong>{{ listing.description }}
-</p>
-<p>
-    <strong>Available quantity: </strong>{{ listing.available_quantity }}
-</p>
-<p>
-    <strong>Category: </strong>{{ listing.listing_category }}
-</p>
-<p>
-	<strong>Expires: </strong>{{ listing.expiration_date }}
-</p>
-<p>
-	<strong>Quality: </strong>{{ listing.listing_quality }}
-</p>
-<form>
-    <input type="button" value="Buy" id=listing.listing_id
-           class_="btn btn-primary" onclick="window.location.href='buy/{{ listing.listing_id }}'" />
-</form>
-
-
+<div class="detail">
+	<div class="detail-img">
+		<img src={{listing.photo}}>
+	</div>
+	 <div class="detail-title">
+			<h1>{{ listing.title }}</h1>
+	 </div>
+	 <div class="detail-description">
+			{{ listing.description }}
+	 </div>
+	 <div class="detail-quality">
+			{{ listing.listing_quality }}
+	 </div>
+	 <div class="detail-quantity">
+		<div class="detail-quantity-label">Quantity</div>
+		<div class="detail-quantity-total">{{ listing.available_quantity }}</div>
+	 </div>
+	 <a 
+		 class="btn btn-primary btn-success btn-lg btn-block" 
+		 href="{{ url_for('buy_listing', id=listing.listing_id, _external=True) }}">
+		 Buy Now
+	 </a>
+</div>
 {% endblock %}
