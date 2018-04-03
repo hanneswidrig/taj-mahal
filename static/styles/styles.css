@@ -1,6 +1,35 @@
 body {
 	background-color: #e4e4e4;
 }
+main {
+	padding-bottom: 100px;
+}
+.app-bar {
+	display         : flex;
+	align-items     : center;
+	justify-content : space-between;
+	flex-direction  : row;
+	height          : 48px;
+	background-color: #FFF;
+	border-bottom   : 1px solid #e4e4e4;
+}
+.app-bar-title {
+	color      : #757575;
+	font-size  : 1.5rem;
+	font-family: 'Titillium Web', sans-serif;
+	font-weight: 600;
+}
+.go-back {
+	padding    : 0 0 0 8px;
+	margin     : 0;
+	line-height: 0px;
+	color      : #757575;
+}
+.app-bar-filler {
+	padding     : 12px;
+	margin-right: 8px;
+	line-height : 0px;
+}
 .navi {
 	width   : 100%;
 	position: fixed;
@@ -46,9 +75,9 @@ a.navi-nav-item {
  box-shadow      : 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
 }
 .listing-body {
-	display: flex;
+	display        : flex;
 	justify-content: flex-start;
-	flex-direction: column;
+	flex-direction : column;
 }
 .listing-a {
 	color: #3D9970;
@@ -57,12 +86,14 @@ a.navi-nav-item {
 	text-decoration: none;
 }
 .listing-title {
-	font-family: 'Roboto', serif;
-	font-size  : 1.25rem;
+	font-size: 1.25rem;
+}
+.listing-body {
+	font-family: 'Titillium Web', sans-serif;
+	font-weight: 700;
 }
 .listing-price {
-	font-family: 'Roboto', serif;
-	font-size  : 1rem;
+	font-size: 1rem;
 }
 .listing-image {
 	width : 96px;
