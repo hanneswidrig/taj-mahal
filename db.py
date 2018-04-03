@@ -2,6 +2,7 @@ from flask import g
 import psycopg2
 import psycopg2.extras
 from secrets import database_login_info
+import sys
 
 database_config = database_login_info()
 
@@ -21,10 +22,10 @@ def add_listing(id, title, photo, description, original_quantity, unit_type, pri
 	query = '''
 		insert into listing(seller_id, title, photo, description, original_quantity, available_quantity, unit_type,
 							total_price, price_per_unit, listing_category, listing_quality, is_tradeable, is_active,
-							expiration_date)
+							date_created, expiration_date, date_modified)
 		values (%(seller_id)s, %(title)s, %(photo)s, %(description)s, %(original_quantity)s,
 				%(available_quantity)s, %(unit_type)s, %(total_price)s, %(price_per_unit)s,
-				%(listing_category)s, %(listing_quality)s, %(is_tradeable)s, true, %(expiration_date)s)
+				%(listing_category)s, %(listing_quality)s, %(is_tradeable)s, true, now(), %(expiration_date)s, now())
 	'''
 
 	g.cursor.execute(query, {'seller_id': id, 'title': title, 'photo': photo, 'description': description,
