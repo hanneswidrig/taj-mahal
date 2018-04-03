@@ -9,7 +9,7 @@
     <strong>Description: </strong>{{ listing.description }}
 </p>
 <p>
-    <strong>Quantity: </strong>{{ listing.available_quantity }}
+    <strong>Available quantity: </strong>{{ listing.available_quantity }}
 </p>
 <p>
     <strong>Category: </strong>{{ listing.listing_category }}
@@ -20,8 +20,10 @@
 <p>
 	<strong>Quality: </strong>{{ listing.listing_quality }}
 </p>
+<form>
+    <input type="button" value="Buy" id=listing.listing_id
+           class_="btn btn-primary" onclick="window.location.href='buy/{{ listing.listing_id }}'" />
+</form>
 
-
-<!--TODO: Create a button to redirect to a purchase page where a buyer can select the quantity of a listing to buy. Write a GET button/href to redirect to /purchase/listing.id-->
 
 {% endblock %}

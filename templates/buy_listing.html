@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Buy Product{% endblock %}
+{% block content %}
+
+    {# Include the form error handling markup #}
+<h1>
+	{{ listing.title }}
+</h1>
+    <img src={{ listing.photo }}>
+<p>
+    <strong>Description: </strong>{{ listing.description }}
+</p>
+<p>
+    <strong>Available quantity: </strong> {{ listing.available_quantity }}
+</p>
+{% include '_form_errors.html' %}
+
+<form method="POST">
+    {{ form.csrf_token }}
+    <div>{{ form.quantity.label }}:
+    {{ form.quantity }}</div>
+    <div>{{ form.submit(class_="btn btn-primary") }}</div>
+</form>
+{% endblock %}

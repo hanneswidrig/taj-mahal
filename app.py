@@ -1,5 +1,9 @@
 # Pip Dependencies
 from flask import Flask, render_template, request, flash, redirect, url_for
+from flask_wtf import Form, FlaskForm
+from wtforms import StringField, SubmitField, IntegerField, SelectField, DecimalField
+from wtforms.validators import Email, Length, DataRequired, Regexp
+
 import sys
 
 # Imported Project Files
@@ -32,6 +36,22 @@ def listing_add():
 def listing_detail(id):
 	listing = db.get_one_listing(id)
 	return render_template('detail-listing.html', listing=listing)
+
+class BuyForm(FlaskForm):
+    quantity = DecimalField('Quantity to buy')
+    submit = SubmitField('Make Purchase')
+
+@app.route('/listing/buy/<int:id>', methods=['GET', 'POST'])
+def buy_listing(id):
+	listing = db.get_one_listing(id)
+	buy_item = BuyForm()
+
+	if buy_item.validate_on_submit():
+		pass
+		#TODO: update database with new quantity remaining
+	else:
+		flash("Unable to purchase item")
+	return render_template('buy_listing.html', listing=listing, form=buy_item)
 
 @app.route('/listing/add')
 def all_listings():
