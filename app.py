@@ -40,8 +40,7 @@ class BuyForm(FlaskForm):
 def buy_listing(id):
 	listing = db.get_one_listing(id)
 	buy_item = BuyForm()
-
-	if buy_item.validate_on_submit():
+	if (buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']):
 		pass
 		#TODO: update database with new quantity remaining
 	else:
@@ -70,4 +69,4 @@ def all_users():
 def user_profile(user_id):
 	return 'User ID: {0}'.format(user_id)
 
-app.run(host='0.0.0.0', port=8080, debug=True)
+app.run(host='localhost', port=5000, debug=True)
