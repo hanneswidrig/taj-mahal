@@ -10,7 +10,7 @@
   <!-- Links -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
-	
+	{% block css %}{% endblock %}
 	<link href="https://fonts.googleapis.com/css?family=Titillium+Web:600,700" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:500" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -28,6 +28,9 @@
 		<div class="app-bar">
 			{% if request.path == url_for('index') %}
 			<div class="app-bar-item"><div class="app-bar-filler"></div></div>
+			<div class="app-bar-item">
+				<span class="app-bar-title">{% block bar_title %}{% endblock %}</span>
+			</div>
 			{% else %}
 			<a href="{% block app_bar_rel_link %}{% endblock %}" class="app-bar-item">
 				<div class="go-back">
@@ -35,9 +38,6 @@
 				</div>
 			</a>
 			{% endif %}
-			<div class="app-bar-item">
-				<span class="app-bar-title">{% block bar_title %}{% endblock %}</span>
-			</div>
 			<div class="app-bar-item"><div class="app-bar-filler"></div></div>
 		</div>
 	</header>

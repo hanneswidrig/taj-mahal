@@ -2,28 +2,32 @@
 {% block title %}{{ listing.title }}{% endblock %}
 {% block bar_title %}{{ listing.title }}{% endblock %}
 {% block app_bar_rel_link %}{{rel_link}}{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/listing-details.css') }}">
+{% endblock %}
 {% block content %}
 <div class="detail">
-	<div class="detail-img">
-		<img src={{listing.photo}}>
+	<div class="detail-img" style="background-image: url('{{listing.photo}}');">
 	</div>
-	 <div class="detail-title">
-			<h1>{{ listing.title }}</h1>
-	 </div>
-	 <div class="detail-description">
-			{{ listing.description }}
-	 </div>
-	 <div class="detail-quality">
-			{{ listing.listing_quality }}
-	 </div>
-	 <div class="detail-quantity">
-		<div class="detail-quantity-label">Quantity</div>
-		<div class="detail-quantity-total">{{ listing.available_quantity }}</div>
-	 </div>
-	 <a 
-		 class="btn btn-primary btn-success btn-lg btn-block" 
-		 href="{{ url_for('buy_listing', id=listing.listing_id, _external=True) }}">
-		 Buy Now
-	 </a>
+	<div class="detail-body">
+		<div class="detail-title">
+			 <h1>{{ listing.title }}</h1>
+		</div>
+		<div class="detail-description">
+			 {{ listing.description }}
+		</div>
+		<div class="detail-quality">
+			 <strong>{{ listing.listing_quality }}</strong>
+		</div>
+		<div class="detail-quantity">
+		 <div class="detail-quantity-label">Quantity</div>
+		 <div class="detail-quantity-total">{{ listing.available_quantity }}</div>
+		</div>
+		<a 
+			class="btn btn-primary btn-success btn-lg btn-block" 
+			href="{{ url_for('buy_listing', id=listing.listing_id, _external=True) }}">
+			Buy Now
+		</a>
+	</div>
 </div>
 {% endblock %}
