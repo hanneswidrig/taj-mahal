@@ -40,10 +40,9 @@ class BuyForm(FlaskForm):
 def buy_listing(id):
 	listing = db.get_one_listing(id)
 	buy_item = BuyForm()
-	if (buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']
-		and buy_item.quantity.data > 0):
-		pass
-		#TODO: update database with new quantity remaining
+	if (buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']):
+		db.update_available_quantity(buy_item.quantity.data, id)
+		return redirect(url_for('listing_detail', id=id))
 	elif (buy_item.validate_on_submit() and buy_item.quantity.data > listing['available_quantity']):
 		flash("Please select no more than the quantity that is available.")
 	else:
