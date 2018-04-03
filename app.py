@@ -40,9 +40,12 @@ class BuyForm(FlaskForm):
 def buy_listing(id):
 	listing = db.get_one_listing(id)
 	buy_item = BuyForm()
-	if (buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']):
+	if (buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']
+		and buy_item.quantity.data > 0):
 		pass
 		#TODO: update database with new quantity remaining
+	elif (buy_item.validate_on_submit() and buy_item.quantity.data > listing['available_quantity']):
+		flash("Please select no more than the quantity that is available.")
 	else:
 		flash("Unable to purchase item")
 	return render_template('buy_listing.html', listing=listing, form=buy_item)

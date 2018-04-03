@@ -19,6 +19,10 @@
     {{ form.csrf_token }}
     <div>{{ form.quantity.label }}:
     {{ form.quantity }}</div>
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-primary"><strong>Flash Message</strong>: {{ message }}</div>
+    {% endfor %}
     <div>{{ form.submit(class_="btn btn-primary") }}</div>
 </form>
+
 {% endblock %}
