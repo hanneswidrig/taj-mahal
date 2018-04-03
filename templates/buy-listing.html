@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Buy Product{% endblock %}
+{% block bar_title %}{{ listing.title }}{% endblock %}
+{% block app_bar_rel_link %}{{rel_link}}{% endblock %}
 {% block content %}
-
-    {# Include the form error handling markup #}
 <h1>
 	{{ listing.title }}
 </h1>
