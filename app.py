@@ -35,10 +35,10 @@ class add_listing_form(FlaskForm):
 	photo             = FileField('Picture')
 	description       = StringField('Description', validators=[Length(min=1, message="A description is required.")])
 	original_quantity = IntegerField('Quantity', validators=[NumberRange(min=1, message="A quantity is required.")])
-	unit_type         = IntegerField('Measurement', validators=[NumberRange(min=1, message="A measurement is required.")])
+	unit_type         = StringField('Measurement', validators=[Length(min=1, message="A measurement is required.")])
 	price_per_unit    = DecimalField('Price Per Unit', places=2, validators=[NumberRange(min=1, message="A price is required.")])
-	listing_category  = SelectField('Category', choices=['Vegetable', 'Fruit', 'Something Else'])
-	listing_quality   = SelectField('Quality', choices=['Always Fresh', 'Not Fresh'])
+	listing_category  = SelectField('Category', choices=[('vegetable', 'Vegetable'), ('fruit', 'Fruit'), ('other', 'Other')])
+	listing_quality   = SelectField('Quality', choices=[('fresh', 'Fresh'), ('not fresh', 'Not Fresh')])
 	is_tradeable      = BooleanField('Tradeable')
 	expiration_date   = DateField('Expiration Date', format="%Y-%m-%d")
 	submit            = SubmitField('Add')
@@ -46,10 +46,9 @@ class add_listing_form(FlaskForm):
 @app.route('/listing/add', methods=['GET', 'POST'])
 def all_listings():
 	listing_form = add_listing_form()
-	# This lets you print out all the data sent with the POST request
-	# for k, v in listing_form.data.items():
-		# print(k, v, type(v))
-	if listing_form.validate_on_submit():
+	if listing_form.submit.data and listing_form.validate_on_submit():
+		rowcount = db.add_listing(0, listing_form.title.data, '', listing_form.description.data, listing_form.original_quantity.data, listing_form.unit_type.data, listing_form.price_per_unit.data, listing_form.listing_category.data, listing_form.listing_quality.data, listing_form.is_tradeable.data, listing_form.expiration_date.data)
+
 		return redirect(url_for('index'))
 	return render_template('add-listing.html', form=listing_form)
 

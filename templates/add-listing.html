@@ -2,6 +2,9 @@
 {% block title %}Add Listing{% endblock %}
 {% block content %}
     <h1>Add Listing</h1>
+
+    {% include '_form_errors.html' %}
+
     <form method="POST">
         {{ form.csrf_token }}
         <div class="form-group">
@@ -27,24 +30,16 @@
         <div class="form-group">
             {{ form.price_per_unit.label }}
             {{ form.price_per_unit(class_='form-control') }}
-				</div>
-				<div class="form-group">
-					<select required class="custom-select">
-						<option value="">Choose a category</option>
-						{% for o in form.listing_category.choices %}
-						<option value="{{o}}">{{o}}</option>
-						{% endfor %}
-					</select>
-				</div>
-				<div class="form-group">
-					<select required class="custom-select">
-						<option value="">Choose your product's quality</option>
-						{% for o in form.listing_quality.choices %}
-						<option value="{{o}}">{{o}}</option>
-						{% endfor %}
-					</select>
-				</div>
-				<div class="form-group">
+        </div>
+        <div class="form-group">
+            {{ form.listing_category.label }}
+            {{ form.listing_category(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.listing_quality.label }}
+            {{ form.listing_quality(class_='form-control') }}
+        </div>
+        <div class="form-group">
             {{ form.is_tradeable.label }}
             {{ form.is_tradeable(class_='form-control') }}
         </div>
