@@ -2,7 +2,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_wtf import Form, FlaskForm
 from wtforms import StringField, SubmitField, IntegerField, SelectField, DecimalField
-from wtforms.validators import Email, Length, DataRequired, Regexp
+from wtforms.validators import Email, Length, DataRequired, Regexp, NumberRange
 
 import sys
 
@@ -33,7 +33,7 @@ def listing_detail(id):
 	return render_template('detail-listing.html', listing=listing)
 
 class BuyForm(FlaskForm):
-    quantity = DecimalField('Quantity to buy')
+    quantity = DecimalField('Quantity to buy', validators=[NumberRange(min=0.001, message="Must buy more than 0.")])
     submit = SubmitField('Make Purchase')
 
 @app.route('/listing/buy/<int:id>', methods=['GET', 'POST'])
