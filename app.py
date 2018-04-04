@@ -2,7 +2,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_wtf import Form, FlaskForm
 from wtforms import StringField, SubmitField, IntegerField, SelectField, DecimalField
-from wtforms.validators import Email, Length, DataRequired, Regexp
+from wtforms.validators import Email, Length, DataRequired, Regexp, NumberRange
 
 import sys
 
@@ -40,7 +40,8 @@ def listing_detail(id):
 
 
 class BuyForm(FlaskForm):
-    quantity = DecimalField('Quantity to buy')
+    quantity = IntegerField('Quantity to buy', validators=[
+			NumberRange(min=0.001, message="Must buy more than 0.")])
     submit = SubmitField('Make Purchase')
 
 
@@ -51,8 +52,10 @@ def buy_listing(id):
 	rel_link = helper_functions.relative_link(request.referrer)
 
 	if (buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']):
-		pass
-		#TODO: update database with new quantity remaining
+		db.update_available_quantity(buy_item.quantity.data, id)
+		return redirect(url_for('listing_detail', id=id))
+	elif (buy_item.validate_on_submit() and buy_item.quantity.data > listing['available_quantity']):
+		flash("Please select no more than the quantity that is available.")
 	else:
 		flash("Unable to purchase item")
 

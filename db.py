@@ -20,3 +20,13 @@ def all_listings():
 def get_one_listing(listing_id):
 	g.cursor.execute('SELECT * FROM listing WHERE listing_id = %(id)s', {'id': listing_id})
 	return g.cursor.fetchone()
+
+def update_available_quantity(bought_amount, id):
+	query = '''
+	UPDATE listing
+	SET available_quantity = available_quantity - %(bought_amount)s
+	WHERE listing_id = %(id)s
+	'''
+	g.cursor.execute(query, {'id': id, 'bought_amount': bought_amount})
+	g.connection.commit()
+	return g.cursor.rowcount 
