@@ -102,7 +102,7 @@ a.navi-nav-item {
 }
 .listing-title {
 	position : absolute;
-	bottom   : 24px;
+	bottom   : 28px;
 	left     : 8px;
 	font-size: 1.5rem;
 }
@@ -114,6 +114,6 @@ a.navi-nav-item {
 .listing-price {
 	font-size: 1.25rem;
 	position : absolute;
-	bottom   : 0;
+	bottom   : 4px;
 	left     : 8px;
 }

@@ -40,9 +40,8 @@ def listing_detail(id):
 
 
 class BuyForm(FlaskForm):
-    quantity = IntegerField('Quantity to buy', validators=[
-			NumberRange(min=0.001, message="Must buy more than 0.")])
-    submit = SubmitField('Make Purchase')
+	quantity = IntegerField('Quantity to buy', validators=[NumberRange(min=0.01, message="Must buy more than 0.")])
+	submit = SubmitField('Make Purchase')
 
 
 @app.route('/listing/buy/<int:id>', methods=['GET', 'POST'])
