@@ -1,0 +1,55 @@
+.container-fluid {
+	padding: 0;
+}
+.app-bar {
+	position: absolute;
+	top     : 0;
+	left    : 0;
+}
+.purchase-img {
+	display          : flex;
+	justify-content  : center;
+	align-items      : center;
+	height           : 256px;
+	background-size  : cover;
+	background-repeat: no-repeat;
+}
+.purchase-body {
+	font-family: 'Titillium Web', sans-serif;
+	margin     : 0 15px;
+}
+.purchase-title {
+	text-align: center;
+}
+.purchase-description {
+	text-align: center;
+}
+.purchase-quantity {
+	display        : flex;
+	flex-direction : row;
+	justify-content: space-between;
+	align-items    : center;
+}
+.purchase-quantity-resize {
+	display        : flex;
+	flex-direction : row;
+	justify-content: center;
+	align-items    : center;
+	margin         : 16px 0;
+}
+.quantity-resize[type=text] {
+	font-size    : 3rem;
+	padding      : 6px 12px;
+	border       : 2px #CCC solid;
+	border-radius: 4px;
+}
+.quantity-resize[type=text]:hover,
+.quantity-resize[type=text]:focus {
+	border: 2px #3D9970 solid;
+}
+.purchase-quantity-label {
+	font-size: 1.5rem;
+}
+.purchase-quantity-total {
+	font-size: 3rem;
+}

@@ -1,5 +1,6 @@
-{% extends "base.html" %} 
-{% block title %}Product Feed{% endblock %} 
+{% extends "base.html" %}
+{% block bar_title %}Product Feed{% endblock %}
+{% block title %}Product Feed{% endblock %}
 {% block content %}
 <ul class="ul-listing">
     {% for message in get_flashed_messages() %}
@@ -9,12 +10,11 @@
 	{% for listing in listings %}
 	<li>
 		<a href="{{ url_for('listing_detail', id=listing.listing_id) }}" class="listing-a">
-			<div class="listing">
+			<div class="listing" style="background-image: url('{{ listing.photo }}');">
 				<div class="listing-body">
 					<span class="listing-title">{{ listing.title }}</span>
 					<span class="listing-price">{{ listing.price_per_unit }}</span>
 				</div>
-				<img class="listing-image" src="{{ listing.photo }}" alt="{{ listing.listing_id }}">
 			</div>
 		</a>
 	</li>

@@ -1,0 +1,43 @@
+.container-fluid {
+	padding: 0;
+}
+.app-bar {
+	position: absolute;
+	top     : 0;
+	left    : 0;
+}
+.detail {
+	font-family: 'Titillium Web', sans-serif;
+}
+.detail-img {
+	display          : flex;
+	justify-content  : center;
+	align-items      : center;
+	height           : 256px;
+	background-size  : cover;
+	background-repeat: no-repeat;
+}
+.detail-body {
+	margin: 0 15px;
+}
+.detail-title {
+	text-align: center;
+}
+.detail-description {
+	text-align: center;
+}
+.detail-quality {
+	text-align: center;
+}
+.detail-quantity {
+	display        : flex;
+	flex-direction : row;
+	justify-content: space-between;
+	align-items    : center;
+}
+.detail-quantity-label {
+	font-size: 1.5rem;
+}
+.detail-quantity-total {
+	font-size: 3rem;
+}
