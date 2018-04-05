@@ -6,6 +6,6 @@ $(document).ready(function() {
 		$('#add').addClass("nav-item-active");
 	}
 	else if (window.location.pathname == "/user") {
-		$('#user').addClass("nav-item-active");
+		$('#account').addClass("nav-item-active");
 	}
 });

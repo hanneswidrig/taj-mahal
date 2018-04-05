@@ -27,6 +27,36 @@
 
 <body>
 	<header>
+		<div class="dsktp">
+			<nav class="dsktp-navi">
+				<div class="dsktp-left">
+					<div class="dsktp-logo-text">
+						<span>Gardener's Exchange</span>
+					</div>
+					<!-- <a href="#" class="dsktp-logo"><img src="http://via.placeholder.com/48x48"></a> -->
+				</div>
+				<div class="dsktp-center">
+					<div class="dsktp-search"><i class="material-icons">search</i>&nbsp;Search</div>
+				</div>
+				<div class="dsktp-right">
+					<a href="/" class="dsktp-a">
+						<div class="dsktp-item" id="index">
+							<span>Feed</span>
+						</div>
+					</a>
+					<a href="/listing/add" class="dsktp-a">
+						<div class="dsktp-item" id="add">
+							<span>Add Product</span>
+						</div>
+					</a>
+					<a href="#" class="dsktp-a">
+						<div class="dsktp-item" id="account">
+							<span>Account</span>
+						</div>
+					</a>
+				</div>
+			</nav>
+		</div>
 		<div class="app-bar">
 			{% if request.path == url_for('index') or request.path == url_for('new_listing') %}
 			<div class="app-bar-item"><div class="app-bar-filler"></div></div>
@@ -58,9 +88,9 @@
 				</div>
 			</a>
 			<a href="#" class="navi-nav-item">
-				<div class="navi-nav-item-link" id="user">
+				<div class="navi-nav-item-link" id="account">
 					<i class="material-icons">perm_identity</i>
-					<span>Profile</span>
+					<span>Account</span>
 				</div>
 			</a>
 		</nav>
