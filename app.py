@@ -35,7 +35,7 @@ def index():
 @app.route('/listing/<int:id>')
 def listing_detail(id):
 	listing         = db.get_one_listing(id)
-	rel_link        = helper_functions.relative_link(request.referrer)
+	rel_link        = helper_functions.relative_link(request.path)
 	return render_template('detail-listing.html', listing=listing, rel_link=rel_link)
 
 
@@ -48,7 +48,7 @@ class BuyForm(FlaskForm):
 def buy_listing(id):
 	listing = db.get_one_listing(id)
 	buy_item = BuyForm()
-	rel_link = helper_functions.relative_link(request.referrer)
+	rel_link = helper_functions.relative_link(request.path)
 
 	if (buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']):
 		db.update_available_quantity(buy_item.quantity.data, id)
@@ -63,7 +63,7 @@ def buy_listing(id):
 
 @app.route('/listing/add', methods=["GET", "POST"])
 def add_listing():
-	rel_link = helper_functions.relative_link(request.referrer)
+	rel_link = helper_functions.relative_link(request.path)
 	return render_template('add-listing.html', rel_link=rel_link)
 
 
