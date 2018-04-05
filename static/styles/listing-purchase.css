@@ -45,8 +45,8 @@
 	border       : 2px #CCC solid;
 	border-radius: 4px;
 }
-.quantity-resize[type=text]: hover,
-.quantity-resize[type=text]: focus {
+.quantity-resize[type=text]:hover,
+.quantity-resize[type=text]:focus {
 	border: 2px #3D9970 solid;
 }
 .purchase-quantity-label {
