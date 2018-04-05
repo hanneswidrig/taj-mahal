@@ -2,9 +2,11 @@
 	padding: 0;
 }
 .app-bar {
-	position: absolute;
-	top     : 0;
-	left    : 0;
+	position  : absolute;
+	top       : 0;
+	left      : 0;
+	width     : 100%;
+	background: linear-gradient(180deg, rgba(0,0,0,0.51) 0%, rgba(0,0,0,0) 100%);
 }
 .detail {
 	font-family: 'Titillium Web', sans-serif;
@@ -21,32 +23,35 @@
 	margin: 0 15px;
 }
 .detail-title {
-	text-align: center;
+	font-size  : 2.5rem;
+	font-weight: 600;
+	text-align : center;
+	margin     : 6px 0;
 }
 .detail-description {
+	font-size : 1rem;
 	text-align: center;
+	margin    : 6px 0 20px 0;
 }
-.detail-quality {
+.detail-section {
 	display        : flex;
 	flex-direction : row;
-	justify-content: space-between;
+	justify-content: center;
 	align-items    : center;
+	font-size      : 1rem;
+	margin         : 6px 0;
 }
-.detail-quality-label {
-	font-size: 1.5rem;
+.detail-label {
+	flex: 1;
 }
-.detail-quality-total {
-	font-size: 3rem;
+.detail-total {
+	font-weight: 600;
+	flex       : 1;
 }
-.detail-quantity {
-	display        : flex;
-	flex-direction : row;
-	justify-content: space-between;
-	align-items    : center;
+.detail-price {
+	margin: 18px 0;
 }
-.detail-quantity-label {
-	font-size: 1.5rem;
-}
-.detail-quantity-total {
-	font-size: 3rem;
+.detail-price>.detail-total {
+	font-size  : 1.6rem;
+	font-weight: 700;
 }

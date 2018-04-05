@@ -11,18 +11,26 @@
 	</div>
 	<div class="detail-body">
 		<div class="detail-title">
-			 <h1>{{ listing.title }}</h1>
+			 {{ listing.title }}
 		</div>
 		<div class="detail-description">
 			 {{ listing.description }}
 		</div>
-		<div class="detail-quality">
-				<div class="detail-quality-label">Quality</div>
-				<div class="detail-quality-total">{{ listing.listing_quality }}</div>
+		<div class="detail-section">
+			<div class="detail-label">Product Quality</div>
+			<div class="detail-total">{{ listing.listing_quality }}</div>
 		</div>
-		<div class="detail-quantity">
-		 <div class="detail-quantity-label">Quantity</div>
-		 <div class="detail-quantity-total">{{ listing.available_quantity }}</div>
+		<div class="detail-section">
+		 <div class="detail-label">Quantity Available</div>
+		 <div class="detail-total">{{ listing.available_quantity }}</div>
+		</div>
+		<div class="detail-section">
+		 <div class="detail-label">Product Expiration</div>
+		 <div class="detail-total">{{ listing.expiration_date.strftime('%B%t%e,%t%Y') }}</div>
+		</div>
+		<div class="detail-section detail-price">
+			<div class="detail-label">Price Per Unit</div>
+			<div class="detail-total">${{ listing.price_per_unit }}/{{ listing.unit_type }}</div>
 		</div>
 		<a 
 			class="btn btn-primary btn-success btn-lg btn-block" 
