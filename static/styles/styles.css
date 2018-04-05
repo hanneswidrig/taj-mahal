@@ -4,6 +4,10 @@ body {
 main {
 	padding-bottom: 100px;
 }
+h1 {
+	font-size: 3rem;
+	margin-top: .5rem;
+}
 .app-bar {
 	display         : flex;
 	align-items     : center;
@@ -36,7 +40,7 @@ main {
 	width   : 100%;
 	position: fixed;
 	bottom  : 0;
-	z-index : 3;
+	z-index : 99;
 }
 .navi-nav {
 	font-family     : 'Roboto', serif;
@@ -78,7 +82,8 @@ a.navi-nav-item {
  height           : 200px;
  background-size  : cover;
  background-repeat: no-repeat;
- /* box-shadow      : 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12); */
+ position         : relative;
+ box-shadow       : 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
 }
 .listing::after {
 	z-index         : 1;
@@ -90,12 +95,6 @@ a.navi-nav-item {
 	content         : '';
 	border-radius   : 16px;
 }
-.listing-body {
-	display        : flex;
-	justify-content: flex-start;
-	flex-direction : column;
-	z-index        : 2;
-}
 .listing-a {
 	color: #3D9970;
 }
@@ -103,20 +102,41 @@ a.navi-nav-item {
 	color          : #0A663D;
 	text-decoration: none;
 }
-.listing-title {
-	position : absolute;
-	bottom   : 28px;
-	left     : 8px;
-	font-size: 1.5rem;
-}
 .listing-body {
+	width: 100%;
 	font-family: 'Titillium Web', sans-serif;
 	font-weight: 700;
-	position   : relative;
+	position: absolute;
+	bottom: 0;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: flex-end;
+	z-index: 3;
+}
+.bottom-left {
+	display: flex;
+	flex-direction: column;
+	margin-left: 8px;
+	margin-bottom: 2px;
+}
+.bottom-right {
+	display: flex;
+	margin-right: 8px;
+	margin-bottom: 8px;
+}
+.listing-title {
+	font-size: 1.5rem;
 }
 .listing-price {
 	font-size: 1.25rem;
-	position : absolute;
-	bottom   : 4px;
-	left     : 8px;
+}
+.listing-more {
+	font-size    : 1.25rem;
+	font-weight  : 400;
+	color        : #FFF;
+	padding      : 3px 16px;
+	background   : transparent;
+	border       : 2px #FFF solid;
+	border-radius: 10px;
 }

@@ -64,12 +64,6 @@ def buy_listing(id):
 	return render_template('buy-listing.html', listing=listing, form=buy_item, rel_link=rel_link)
 
 
-@app.route('/listing/add', methods=["GET", "POST"])
-def add_listing():
-	rel_link = helper_functions.relative_link(request.path)
-	return render_template('add-listing.html', rel_link=rel_link)
-
-
 class add_listing_form(FlaskForm):
 	title             = StringField('Title', validators=[Length(min=1, message="A title is required.")])
 	photo             = FileField('Picture')
@@ -84,8 +78,9 @@ class add_listing_form(FlaskForm):
 	submit            = SubmitField('Add')
 
 @app.route('/listing/add', methods=['GET', 'POST'])
-def all_listings():
+def new_listing():
 	listing_form = add_listing_form()
+	rel_link = helper_functions.relative_link(request.path)
 	if listing_form.submit.data and listing_form.validate_on_submit():
 		rowcount = db.add_listing(0, listing_form.title.data, '', listing_form.description.data, listing_form.original_quantity.data, listing_form.unit_type.data, listing_form.price_per_unit.data, listing_form.listing_category.data, listing_form.listing_quality.data, listing_form.is_tradeable.data, listing_form.expiration_date.data)
 
@@ -93,8 +88,9 @@ def all_listings():
 			flash("New listing for {} created.".format(listing_form.title.data))
 			return redirect(url_for('index'))
 		else:
-			flash("New listing not created.");
-	return render_template('add-listing.html', form=listing_form)
+			flash("New listing not created.")
+
+	return render_template('add-listing.html', form=listing_form, rel_link=rel_link)
 
 
 @app.route('/user')

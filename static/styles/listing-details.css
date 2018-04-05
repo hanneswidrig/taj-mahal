@@ -27,7 +27,16 @@
 	text-align: center;
 }
 .detail-quality {
-	text-align: center;
+	display        : flex;
+	flex-direction : row;
+	justify-content: space-between;
+	align-items    : center;
+}
+.detail-quality-label {
+	font-size: 1.5rem;
+}
+.detail-quality-total {
+	font-size: 3rem;
 }
 .detail-quantity {
 	display        : flex;

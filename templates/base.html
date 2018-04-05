@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
 	{% block css %}{% endblock %}
-	<link href="https://fonts.googleapis.com/css?family=Titillium+Web:600,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,600,700" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:500" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
@@ -21,14 +21,14 @@
 	 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 	 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-	 <script src="{{ url_for('static',filename='scripts/stretchy.min.js') }}" async></script>
-	 <script src="{{ url_for('static',filename='scripts/scripts.js') }}" data-filter='.quantity-resize .quantity-resize *' async></script>
+	 <script src="{{ url_for('static',filename='scripts/stretchy.min.js') }}" data-filter="#quantity" async></script>
+	 <script src="{{ url_for('static',filename='scripts/scripts.js') }}" async></script>
 </head>
 
 <body>
 	<header>
 		<div class="app-bar">
-			{% if request.path == url_for('index') %}
+			{% if request.path == url_for('index') or request.path == url_for('new_listing') %}
 			<div class="app-bar-item"><div class="app-bar-filler"></div></div>
 			<div class="app-bar-item">
 				<span class="app-bar-title">{% block bar_title %}{% endblock %}</span>
@@ -46,19 +46,19 @@
 	<div class="navi">
 		<nav class="navi-nav">
 			<a href="/" class="navi-nav-item">
-				<div class="navi-nav-item-link nav-item-active">
+				<div class="navi-nav-item-link" id="index">
 					<i class="material-icons">home</i>
 					<span>Feed</span>
 				</div>
 			</a>
 			<a href="/listing/add" class="navi-nav-item">
-				<div class="navi-nav-item-link">
+				<div class="navi-nav-item-link" id="add">
 					<i class="material-icons">add</i>
 					<span>Add Product</span>
 				</div>
 			</a>
-			<a href="/" class="navi-nav-item">
-				<div class="navi-nav-item-link">
+			<a href="#" class="navi-nav-item">
+				<div class="navi-nav-item-link" id="user">
 					<i class="material-icons">perm_identity</i>
 					<span>Profile</span>
 				</div>
