@@ -67,6 +67,10 @@ a.navi-nav-item {
 	margin         : 0;
 	padding        : 0;
 }
+.ul-listing>li {
+	margin   : 0 auto;
+	max-width: 448px;
+}
 .listing {
  display          : flex;
  flex-direction   : row;
