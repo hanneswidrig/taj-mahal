@@ -82,7 +82,16 @@ def new_listing():
 	listing_form = add_listing_form()
 	rel_link = helper_functions.relative_link(request.path)
 	if listing_form.submit.data and listing_form.validate_on_submit():
-		rowcount = db.add_listing(0, listing_form.title.data, '', listing_form.description.data, listing_form.original_quantity.data, listing_form.unit_type.data, listing_form.price_per_unit.data, listing_form.listing_category.data, listing_form.listing_quality.data, listing_form.is_tradeable.data, listing_form.expiration_date.data)
+		rowcount = db.add_listing(0, 
+			listing_form.title.data, '', 
+			listing_form.description.data, 
+			listing_form.original_quantity.data, 
+			listing_form.unit_type.data, 
+			listing_form.price_per_unit.data, 
+			listing_form.listing_category.data, 
+			listing_form.listing_quality.data, 
+			listing_form.is_tradeable.data, 
+			listing_form.expiration_date.data)
 
 		if rowcount == 1:
 			flash("New listing for {} created.".format(listing_form.title.data))

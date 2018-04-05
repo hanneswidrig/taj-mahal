@@ -20,6 +20,9 @@
 		<div class="purchase-quantity-total">{{ listing.available_quantity }}</div>
 	 </div>
 	 {% include '_form_errors.html' %}
+		{% for message in get_flashed_messages() %}
+			<div class="alert alert-primary">{{ message }}</div>
+		{% endfor %}
 	 <form method="POST">
 			 {{ form.csrf_token }}
 			 <div class="purchase-quantity-resize">
