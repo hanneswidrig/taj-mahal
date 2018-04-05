@@ -3,6 +3,10 @@
 {% block title %}Product Feed{% endblock %}
 {% block content %}
 <ul class="ul-listing">
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-primary">{{ message }}</div>
+    {% endfor %}
+
 	{% for listing in listings %}
 	<li>
 		<a href="{{ url_for('listing_detail', id=listing.listing_id) }}" class="listing-a">
