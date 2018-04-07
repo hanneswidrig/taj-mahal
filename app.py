@@ -26,7 +26,6 @@ def before_request():
 def after_request():
 	db.close_db()
 
-
 @app.route('/')
 def index():
 	listings = db.all_listings()
@@ -58,7 +57,7 @@ def buy_listing(id):
 		return redirect(url_for('listing_detail', id=id))
 	elif (buy_item.validate_on_submit() and buy_item.quantity.data > listing['available_quantity']):
 		flash("Please select no more than the quantity that is available.")
-	else:
+	elif(buy_item.validate_on_submit()):
 		flash("Unable to purchase item")
 
 	return render_template('buy-listing.html', listing=listing, form=buy_item, rel_link=rel_link)
