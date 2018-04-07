@@ -62,7 +62,6 @@
 	.dsktp-search:hover, .dsktp-search:focus {
 		color:#3D9970;
 		border-color: #3D9970;
-		transition: ease-in-out .2s;
 	}
 	.dsktp-right {
 		display       : flex;
@@ -77,6 +76,10 @@
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
+	}
+	.dsktp-item-active {
+		color:#3D9970;
+		text-decoration: none;
 	}
 	.dsktp-item:hover, .dsktp-item:focus {
 		color:#3D9970;
