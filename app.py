@@ -26,7 +26,6 @@ def before_request():
 def after_request():
 	db.close_db()
 
-
 @app.route('/')
 def index():
 	listings = db.all_listings()
