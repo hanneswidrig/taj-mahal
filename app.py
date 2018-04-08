@@ -37,9 +37,11 @@ def index():
 def search():
 	search_query = request.args.get('search')
 	listings     = []
-	if(search_query != ''):
+	if search_query is not None:
 		listings = db.title_like_listings(search_query)
-	return render_template('search.html', listings=listings)
+	else:
+		search_query = ''
+	return render_template('search.html', listings=listings, search_query=search_query)
 
 @app.route('/listing/<int:id>')
 def listing_detail(id):
@@ -117,4 +119,4 @@ def all_users():
 def user_profile(user_id):
 	return 'User ID: {0}'.format(user_id)
 
-app.run(host='localhost', port=5000, debug=True)
+app.run(host='0.0.0.0', port=5000, debug=True)

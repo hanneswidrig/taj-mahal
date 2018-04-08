@@ -69,7 +69,7 @@
 				<div class="search-container">
 					<i class="material-icons">search</i>
 					<form role="search" class="search-form">
-						<input type="text" name="search" class="search-box" placeholder="Search">
+						<input type="text" name="search" class="search-box" placeholder="Search" value="{% block search_query %}{% endblock %}">
 					</form>
 					<div class="filter-container">
 						<a href="#">
