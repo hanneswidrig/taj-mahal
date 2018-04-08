@@ -20,6 +20,12 @@ def all_listings():
 	g.cursor.execute('''SELECT * FROM listing ORDER BY date_created DESC;''')
 	return g.cursor.fetchall()
 
+def title_like_listings(search_query):
+	percent = '%'
+	query = '''SELECT * FROM listing WHERE lower(title) LIKE concat(%(percent)s, lower(%(search_query)s), %(percent)s);'''
+	g.cursor.execute(query, {'search_query': search_query, 'percent': percent})
+	return g.cursor.fetchall()
+
 
 def add_listing(id, title, photo, description, original_quantity, unit_type, price_per_unit, listing_category, listing_quality, is_tradeable, expiration_date):
 	query = '''

@@ -33,6 +33,13 @@ def index():
 		listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
 	return render_template('index.html', listings=listings)
 
+@app.route('/search')
+def search():
+	search_query = request.args.get('search')
+	listings     = []
+	if(search_query != ''):
+		listings = db.title_like_listings(search_query)
+	return render_template('search.html', listings=listings)
 
 @app.route('/listing/<int:id>')
 def listing_detail(id):

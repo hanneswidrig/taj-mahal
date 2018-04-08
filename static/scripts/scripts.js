@@ -8,6 +8,9 @@ $(document).ready(function() {
 		else if (window.location.pathname == "/listing/add") {
 			$('#add').addClass("nav-item-active");
 		}
+		else if (window.location.pathname == "/search") {
+			$('#search').addClass("nav-item-active");
+		}
 		else if (window.location.pathname == "/user") {
 			$('#account').addClass("nav-item-active");
 		}

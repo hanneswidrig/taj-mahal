@@ -63,14 +63,29 @@
 			<div class="app-bar-item">
 				<span class="app-bar-title">{% block bar_title %}{% endblock %}</span>
 			</div>
+			<div class="app-bar-item"><div class="app-bar-filler"></div></div>
+			{% elif request.path == url_for('search') %}
+			<div class="app-bar-item">
+				<div class="search-container">
+					<i class="material-icons">search</i>
+					<form role="search" class="search-form">
+						<input type="text" name="search" class="search-box" placeholder="Search">
+					</form>
+					<div class="filter-container">
+						<a href="#">
+							<i class="material-icons">filter_list</i>
+						</a>
+					</div>
+				</div>
+			</div>
 			{% else %}
 			<a href="{% block app_bar_rel_link %}{% endblock %}" class="app-bar-item">
 				<div class="go-back">
 					<i class="material-icons">arrow_back</i>
 				</div>
 			</a>
-			{% endif %}
 			<div class="app-bar-item"><div class="app-bar-filler"></div></div>
+			{% endif %}
 		</div>
 	</header>
 	<div class="navi">
@@ -79,6 +94,12 @@
 				<div class="navi-nav-item-link" id="index">
 					<i class="material-icons">home</i>
 					<span>Feed</span>
+				</div>
+			</a>
+			<a href="/search" class="navi-nav-item">
+				<div class="navi-nav-item-link" id="search">
+					<i class="material-icons">search</i>
+					<span>Search</span>
 				</div>
 			</a>
 			<a href="/listing/add" class="navi-nav-item">

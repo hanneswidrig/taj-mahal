@@ -24,3 +24,4 @@ create table listing
 create unique index listing_listing_id_uindex
   on listing (listing_id);
 
+create unique index lower_title_idx on listing ((lower(title)));
