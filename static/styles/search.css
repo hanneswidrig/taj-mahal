@@ -1,6 +1,9 @@
+.app-bar {
+	align-items: flex-start;
+	border-bottom: 1px #e4e4e4 solid;
+}
 .app-bar-item {
 	flex-basis   : 100%;
-	border-bottom: 1px #e4e4e4 solid;
 }
 .search-container {
 	display        : flex;
@@ -19,6 +22,7 @@
 }
 .filter-container {
 	margin: 0 8px;
+	height: 24px;
 }
 .filter-container>a {
 	color: #757575;
