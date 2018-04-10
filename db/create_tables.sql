@@ -25,3 +25,31 @@ create unique index listing_listing_id_uindex
   on listing (listing_id);
 
 create unique index lower_title_idx on listing ((lower(title)));
+
+
+CREATE TABLE category
+(
+  category_id SERIAL      NOT NULL
+    CONSTRAINT category_pkey
+    PRIMARY KEY,
+  name        VARCHAR(64) NOT NULL
+);
+
+CREATE UNIQUE INDEX category_category_id_uindex
+  ON category (category_id);
+
+CREATE UNIQUE INDEX category_name_uindex
+  ON category (name);
+
+
+CREATE TABLE listing_category
+(
+  listing_id  INTEGER NOT NULL
+    CONSTRAINT listing_category_listing_listing_id_fk
+    REFERENCES listing,
+  category_id INTEGER NOT NULL
+    CONSTRAINT listing_category_category_category_id_fk
+    REFERENCES category,
+  CONSTRAINT listing_category_category_id_listing_id_pk
+  PRIMARY KEY (category_id, listing_id)
+);
