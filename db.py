@@ -21,9 +21,11 @@ def all_listings():
 	return g.cursor.fetchall()
 
 def title_like_listings(search_query):
-	percent = '%'
-	query = '''SELECT * FROM listing WHERE lower(title) LIKE concat(%(percent)s, lower(%(search_query)s), %(percent)s);'''
-	g.cursor.execute(query, {'search_query': search_query, 'percent': percent})
+	search_query = '%' + search_query + '%'
+	query = '''
+	SELECT * FROM listing WHERE lower(title) LIKE %(search_query)s;
+	'''
+	g.cursor.execute(query, {'search_query': search_query.lower()})
 	return g.cursor.fetchall()
 
 
