@@ -1,5 +1,6 @@
 drop table if exists listing;
 drop table if exists category;
+drop table if exists listing_category;
 
 
 create table listing
