@@ -73,18 +73,28 @@
 				<div class="app-bar-filler"></div>
 			</div>
 			{% elif request.path == url_for('search') %}
-			<div class="app-bar-item">
+			<div class="app-bar-item search-element">
 				<div class="search-container">
 					<i class="material-icons">search</i>
 					<form role="search" class="search-form">
 						<input type="text" name="search" class="search-box" placeholder="Search" value="{% block search_query %}{% endblock %}">
 					</form>
-					<div class="filter-container">
-						<a href="#">
-							<span class="filter-span">Filter</span>
-							<!-- <i class="material-icons">filter_list</i> -->
-						</a>
+					<div class="search-filter">
+						<a class="search-filter-toggle" href="#">Filter</a>
 					</div>
+				</div>
+			</div>
+			<div class="app-bar-item filter-element">
+				<div class="filter-container">
+					<a class="filter-item" href="">
+						<div>Products</div>
+					</a>
+					<a class="filter-item" href="">
+						<div>Categories</div>
+					</a>
+					<a class="filter-item" href="">
+						<div>Users</div>
+					</a>
 				</div>
 			</div>
 			{% else %}
