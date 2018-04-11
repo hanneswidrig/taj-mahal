@@ -1,9 +1,9 @@
 .app-bar {
-	align-items: flex-start;
+	align-items  : flex-start;
 	border-bottom: 1px #e4e4e4 solid;
 }
 .app-bar-item {
-	flex-basis   : 100%;
+	flex-basis: 100%;
 }
 .search-container {
 	display        : flex;
@@ -16,7 +16,7 @@
 	width : 100%;
 	height: 100%;
 }
-.search-container>i {
+.search-container > i {
 	color : #757575;
 	margin: 0 4px;
 }
@@ -24,8 +24,12 @@
 	margin: 0 8px;
 	height: 24px;
 }
-.filter-container>a {
+.filter-container > a {
 	color: #757575;
+}
+.filter-span {
+	font-family: 'Titillium Web', sans-serif;
+	font-weight: 600;
 }
 .search-box {
 	font-family: 'Titillium Web', sans-serif;
