@@ -1,3 +1,7 @@
+drop table if exists listing;
+drop table if exists category;
+
+
 create table listing
 (
   listing_id         serial                   not null
@@ -21,7 +25,30 @@ create table listing
   date_modified      timestamp with time zone not null
 );
 
-create unique index listing_listing_id_uindex
-  on listing (listing_id);
-
+create unique index listing_listing_id_uindex on listing (listing_id);
 create unique index lower_title_idx on listing ((lower(title)));
+
+
+create table category
+(
+  category_id serial      not null
+    constraint category_pkey
+    primary key,
+  name        varchar(64) not null
+);
+
+create unique index category_category_id_uindex on category (category_id);
+create unique index category_name_uindex on category (name);
+
+
+create table listing_category
+(
+  listing_id  integer not null
+    constraint listing_category_listing_listing_id_fk
+    references listing,
+  category_id integer not null
+    constraint listing_category_category_category_id_fk
+    references category,
+  constraint listing_category_category_id_listing_id_pk
+  primary key (category_id, listing_id)
+);
