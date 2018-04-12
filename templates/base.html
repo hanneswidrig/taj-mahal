@@ -2,27 +2,31 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>{% block title %}{% endblock %}</title>
-  
-  <!-- Links -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>{% block title %}{% endblock %}</title>
+
+	<!-- Links -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	 crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/media-queries.css') }}">
 	{% block css %}{% endblock %}
 	<link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,600,700" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:500" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	
-	
-	 <!-- Scripts -->
-	 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-	 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-	 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-	 <script src="{{ url_for('static',filename='scripts/stretchy.min.js') }}" data-filter="#quantity" async></script>
-	 <script src="{{ url_for('static',filename='scripts/scripts.js') }}" async></script>
+
+
+	<!-- Scripts -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	 crossorigin="anonymous" async></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+	 crossorigin="anonymous" async></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+	 crossorigin="anonymous" async></script>
+	<script src="{{ url_for('static',filename='scripts/scripts.js') }}" async></script>
+	{% block javascript %}{% endblock %}
 </head>
 
 <body>
@@ -36,7 +40,8 @@
 					<!-- <a href="#" class="dsktp-logo"><img src="http://via.placeholder.com/48x48"></a> -->
 				</div>
 				<div class="dsktp-center">
-					<div class="dsktp-search"><i class="material-icons">search</i>&nbsp;Search</div>
+					<div class="dsktp-search">
+						<i class="material-icons">search</i>&nbsp;Search</div>
 				</div>
 				<div class="dsktp-right">
 					<a href="/" class="dsktp-a">
@@ -59,23 +64,38 @@
 		</div>
 		<div class="app-bar">
 			{% if request.path == url_for('index') or request.path == url_for('new_listing') %}
-			<div class="app-bar-item"><div class="app-bar-filler"></div></div>
+			<div class="app-bar-item">
+				<div class="app-bar-filler"></div>
+			</div>
 			<div class="app-bar-item">
 				<span class="app-bar-title">{% block bar_title %}{% endblock %}</span>
 			</div>
-			<div class="app-bar-item"><div class="app-bar-filler"></div></div>
-			{% elif request.path == url_for('search') %}
 			<div class="app-bar-item">
+				<div class="app-bar-filler"></div>
+			</div>
+			{% elif request.path == url_for('search') %}
+			<div class="app-bar-item search-element">
 				<div class="search-container">
 					<i class="material-icons">search</i>
 					<form role="search" class="search-form">
 						<input type="text" name="search" class="search-box" placeholder="Search" value="{% block search_query %}{% endblock %}">
 					</form>
-					<div class="filter-container">
-						<a href="#">
-							<i class="material-icons">filter_list</i>
-						</a>
+					<div class="search-filter">
+						<a class="search-filter-toggle" href="#">Filter</a>
 					</div>
+				</div>
+			</div>
+			<div class="app-bar-item filter-element">
+				<div class="filter-container">
+					<a class="filter-item" href="#">
+						<div>Products</div>
+					</a>
+					<a class="filter-item" href="#">
+						<div>Categories</div>
+					</a>
+					<a class="filter-item" href="#">
+						<div>Users</div>
+					</a>
 				</div>
 			</div>
 			{% else %}
@@ -84,7 +104,9 @@
 					<i class="material-icons">arrow_back</i>
 				</div>
 			</a>
-			<div class="app-bar-item"><div class="app-bar-filler"></div></div>
+			<div class="app-bar-item">
+				<div class="app-bar-filler"></div>
+			</div>
 			{% endif %}
 		</div>
 	</header>
