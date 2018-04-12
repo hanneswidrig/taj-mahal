@@ -7,16 +7,17 @@ $(document).ready(function() {
 		availableQuantity = document.querySelector('.purchase-quantity-total').innerHTML;
 		submitButton = document.querySelector('#submit');
 
-		if(parseInt(availableQuantity) === 0) {
-			plusMinusButtons = document.querySelectorAll('.quantity-button');
-			plusMinusButtons[0].disabled = true;
-			plusMinusButtons[0].style.backgroundColor = '#a6a6a6';
-			plusMinusButtons[1].disabled = true;
-			plusMinusButtons[1].style.backgroundColor = '#a6a6a6';
-			submitButton.disabled = true;
-			submitButton.style.backgroundColor = '#757575';
-			submitButton.style.borderColor = '#757575';
-		}
+		// THIS IS BUGGY RIGHT NOW
+		// if(parseInt(availableQuantity) === 0) {
+		// 	plusMinusButtons = document.querySelectorAll('.quantity-button');
+		// 	plusMinusButtons[0].disabled = true;
+		// 	plusMinusButtons[0].style.backgroundColor = '#a6a6a6';
+		// 	plusMinusButtons[1].disabled = true;
+		// 	plusMinusButtons[1].style.backgroundColor = '#a6a6a6';
+		// 	submitButton.disabled = true;
+		// 	submitButton.style.backgroundColor = '#757575';
+		// 	submitButton.style.borderColor = '#757575';
+		// }
 	}
 
 	function getQuantityBox() {

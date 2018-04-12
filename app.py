@@ -92,10 +92,8 @@ class add_listing_form(FlaskForm):
                                   validators=[NumberRange(min=1, message="A price is required.")])
     listing_category = SelectField('Category',
                                    choices=[('vegetable', 'Vegetable'), ('fruit', 'Fruit'), ('other', 'Other')])
-    listing_quality = SelectField('Quality', choices=[(
-        'fresh', 'Fresh'), ('not fresh', 'Not Fresh')])
     is_tradeable = BooleanField('Tradeable')
-    expiration_date = DateField('Expiration Date', format="%Y-%m-%d")
+    date_harvested = DateField('Date Harvested', format="%Y-%m-%d")
     submit = SubmitField('Add')
 
 
@@ -113,9 +111,8 @@ def new_listing():
             'unit_type': listing_form.unit_type.data,
             'price_per_unit': listing_form.price_per_unit.data,
             'listing_category': listing_form.listing_category.data,
-            'listing_quality': listing_form.listing_quality.data,
-            'is_tradeable': listing_form.is_tradeable.data,
-            'expiration_date': listing_form.expiration_date.data})
+            'date_harvested': listing_form.date_harvested.data,
+            'is_tradeable': listing_form.is_tradeable.data})
 
         if rowcount == 1:
             flash("New listing for {} created.".format(listing_form.title.data))

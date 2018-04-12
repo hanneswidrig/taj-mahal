@@ -17,16 +17,12 @@
 			 {{ listing.description }}
 		</div>
 		<div class="detail-section">
-			<div class="detail-label">Product Quality</div>
-			<div class="detail-total">{{ listing.listing_quality }}</div>
-		</div>
-		<div class="detail-section">
 		 <div class="detail-label">Quantity Available</div>
 		 <div class="detail-total">{{ listing.available_quantity }}</div>
 		</div>
 		<div class="detail-section">
 		 <div class="detail-label">Product Expiration</div>
-		 <div class="detail-total">{{ listing.expiration_date.strftime('%B%t%e,%t%Y') }}</div>
+		 <div class="detail-total">{{ listing.date_harvested.strftime('%B%t%e,%t%Y') }}</div>
 		</div>
 		<div class="detail-section detail-price">
 			<div class="detail-label">Price Per Unit</div>
