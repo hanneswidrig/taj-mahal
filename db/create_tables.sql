@@ -1,9 +1,9 @@
-drop table if exists user;
+drop table if exists "user";
 drop table if exists listing;
 drop table if exists category;
 drop table if exists listing_category;
 
-create table user
+create table "user"
 (
   user_id     serial      not null
     constraint user_pkey
