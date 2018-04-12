@@ -1,7 +1,7 @@
-drop table if exists "user";
-drop table if exists listing;
-drop table if exists category;
-drop table if exists listing_category;
+drop table if exists "user" cascade;
+drop table if exists listing_category cascade;
+drop table if exists category cascade;
+drop table if exists listing cascade;
 
 create table "user"
 (
@@ -18,7 +18,6 @@ create table "user"
 );
 
 create unique index user_user_id_uindex on "user" (user_id);
-
 create unique index user_username_uindex on "user" (username);
 
 create table listing
