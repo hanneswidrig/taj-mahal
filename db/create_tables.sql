@@ -21,7 +21,7 @@ create table listing
   is_tradeable       boolean default false    not null,
   is_active          boolean default true     not null,
   date_created       timestamp with time zone not null,
-  date_harvested    timestamp with time zone not null,
+  date_harvested     timestamp with time zone not null,
   date_modified      timestamp with time zone not null
 );
 

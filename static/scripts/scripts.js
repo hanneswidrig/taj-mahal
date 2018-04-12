@@ -30,4 +30,5 @@ $(document).ready(function() {
 			// $('.app-bar').toggleClass('expanded-filter');
 		});
 	}
+	
 });
