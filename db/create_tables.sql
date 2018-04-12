@@ -18,17 +18,15 @@ create table listing
   total_price        numeric(5,2)               not null,
   price_per_unit     numeric(5,2)               not null,
   listing_category   varchar(64)              not null,
-  listing_quality    varchar(64)              not null,
   is_tradeable       boolean default false    not null,
   is_active          boolean default true     not null,
   date_created       timestamp with time zone not null,
-  expiration_date    timestamp with time zone not null,
+  date_harvested    timestamp with time zone not null,
   date_modified      timestamp with time zone not null
 );
 
 create unique index listing_listing_id_uindex on listing (listing_id);
 create unique index lower_title_idx on listing ((lower(title)));
-
 
 create table category
 (
@@ -37,6 +35,7 @@ create table category
     primary key,
   name        varchar(64) not null
 );
+
 
 create unique index category_category_id_uindex on category (category_id);
 create unique index category_name_uindex on category (name);
