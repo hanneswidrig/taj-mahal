@@ -17,6 +17,10 @@
 			 {{ listing.description }}
 		</div>
 		<div class="detail-section">
+			<img class="seller-pic" src={{ user.profile_pic }}>
+			<div class="seller-name">{{ user.first_name }} {{ user.last_name }}</div>
+		</div>
+		<div class="detail-section">
 		 <div class="detail-label">Quantity Available</div>
 		 <div class="detail-total">{{ listing.available_quantity }}</div>
 		</div>
@@ -36,3 +40,5 @@
 	</div>
 </div>
 {% endblock %}
+
+<!-- USER SHOWN FOR PRODUCT -->

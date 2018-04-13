@@ -51,6 +51,16 @@
 .detail-price {
 	margin: 18px 0;
 }
+.seller-pic {
+	height: 64px;
+	width: 64px;
+	border-radius: 64px;
+}
+.seller-name {
+	margin: 0px 0px 0px 16px;
+	text-transform: capitalize;
+	font-weight: 600;
+}
 .detail-price>.detail-total {
 	font-size  : 1.6rem;
 	font-weight: 700;
