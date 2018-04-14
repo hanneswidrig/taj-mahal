@@ -31,18 +31,38 @@ def after_request():
 @app.route('/')
 def index():
 		listings = db.all_listings()
-		for listing in listings:
-				listing['price_per_unit'] = '${:,.2f}'.format(
-						listing['price_per_unit'])
-		return render_template('index.html', listings=listings)
+		search_query = request.args.get('search')
+		if search_query:
+			listings = []
+			if search_query is not None:
+					listings = db.title_like_listings(search_query)
+					for listing in listings:
+						listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
+			else:
+					search_query = ''
+		else:
+				for listing in listings:
+						listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
+		return render_template('index.html', listings=listings, search_query=search_query)
 
 
 @app.route('/search')
 def search():
 		search_query = request.args.get('search')
+		filter_query = request.args.get('filter')
+		if filter_query == 1:
+				pass
+		elif filter_query == 2:
+				pass
+		elif filter_query == 3:
+				pass
+		else:
+				pass
 		listings = []
 		if search_query is not None:
 				listings = db.title_like_listings(search_query)
+				for listing in listings:
+						listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
 		else:
 				search_query = ''
 		return render_template('search.html', listings=listings, search_query=search_query)
@@ -53,7 +73,7 @@ def listing_detail(id):
 		listing = db.get_one_listing(id)
 		print(listing)
 		user = db.get_one_user(listing['seller_id'])
-		rel_link = helper_functions.relative_link(request.path)
+		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		return render_template('detail-listing.html', listing=listing, user=user, rel_link=rel_link)
 
 
@@ -67,7 +87,7 @@ class BuyForm(FlaskForm):
 def buy_listing(id):
 		listing = db.get_one_listing(id)
 		buy_item = BuyForm()
-		rel_link = helper_functions.relative_link(request.path)
+		rel_link = helper_functions.relative_link(request.path, request.referrer)
 
 		if (buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']):
 				db.update_available_quantity(buy_item.quantity.data, id)
@@ -102,7 +122,7 @@ class add_listing_form(FlaskForm):
 @app.route('/listing/add', methods=['GET', 'POST'])
 def new_listing():
 		listing_form = add_listing_form()
-		rel_link = helper_functions.relative_link(request.path)
+		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		if listing_form.submit.data and listing_form.validate_on_submit():
 				rowcount = db.add_listing({
 						'seller_id': 0,  # CHANGE TO GRAB ACTUAL ID AT LATER TIME

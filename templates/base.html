@@ -41,25 +41,27 @@
 				</div>
 				<div class="dsktp-center">
 					<div class="dsktp-search">
-						<i class="material-icons">search</i>&nbsp;Search</div>
-				</div>
-				<div class="dsktp-right">
-					<a href="/" class="dsktp-a">
-						<div class="dsktp-item" id="index-d">
-							<span>Feed</span>
-						</div>
-					</a>
-					<a href="/listing/add" class="dsktp-a">
-						<div class="dsktp-item" id="add-d">
-							<span>Add Product</span>
-						</div>
-					</a>
-					<a href="#" class="dsktp-a">
-						<div class="dsktp-item" id="account-d">
-							<span>Account</span>
-						</div>
-					</a>
-				</div>
+						<form role="search" class="dsktp-search-form">
+							<input type="text" name="search" class="dsktp-search-box" placeholder="Search" value="{% block search_query %}{% endblock %}">
+						</form>
+					</div>
+					<div class="dsktp-right">
+						<a href="/" class="dsktp-a">
+							<div class="dsktp-item" id="index-d">
+								<span>Feed</span>
+							</div>
+						</a>
+						<a href="/listing/add" class="dsktp-a">
+							<div class="dsktp-item" id="add-d">
+								<span>Add Product</span>
+							</div>
+						</a>
+						<a href="#" class="dsktp-a">
+							<div class="dsktp-item" id="account-d">
+								<span>Account</span>
+							</div>
+						</a>
+					</div>
 			</nav>
 		</div>
 		<div class="app-bar">
@@ -78,7 +80,7 @@
 				<div class="search-container">
 					<i class="material-icons">search</i>
 					<form role="search" class="search-form">
-						<input type="text" name="search" class="search-box" placeholder="Search" value="{% block search_query %}{% endblock %}">
+						<input type="text" name="search" class="search-box" placeholder="Search" value="{{ self.search_query() }}">
 					</form>
 					<div class="search-filter">
 						<a class="search-filter-toggle" href="#">Filter</a>
@@ -87,15 +89,15 @@
 			</div>
 			<div class="app-bar-item filter-element">
 				<div class="filter-container">
-					<a class="filter-item" href="#">
+					<span class="filter-item" id="f1">
 						<div>Products</div>
-					</a>
-					<a class="filter-item" href="#">
+					</span>
+					<span class="filter-item" id="f2">
 						<div>Categories</div>
-					</a>
-					<a class="filter-item" href="#">
+					</span>
+					<span class="filter-item" id="f3">
 						<div>Users</div>
-					</a>
+					</span>
 				</div>
 			</div>
 			{% else %}
