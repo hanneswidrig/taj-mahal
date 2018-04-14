@@ -1,7 +1,9 @@
 drop table if exists "user" cascade;
-drop table if exists listing_category cascade;
-drop table if exists category cascade;
 drop table if exists listing cascade;
+drop table if exists category cascade;
+drop table if exists listing_category cascade;
+drop table if exists "state" cascade;
+drop table if exists "address" cascade;
 
 create table "user"
 (
@@ -67,3 +69,29 @@ create table listing_category
   constraint listing_category_category_id_listing_id_pk
   primary key (category_id, listing_id)
 );
+
+create table "state"
+(
+  state_id serial      not null
+    constraint state_pkey
+    primary key,
+  abbrev   varchar(2)  not null,
+  name     varchar(32) not null
+);
+
+create unique index state_state_id_uindex on "state" (state_id);
+
+create table "address"
+(
+  address_id serial       not null
+    constraint address_pkey
+    primary key,
+  street     varchar(128) not null,
+  city       varchar(128) not null,
+  state_id   integer      not null
+    constraint address_state_state_id_fk
+    references "state",
+  zipcode    varchar(10)  not null
+);
+
+create unique index address_address_id_uindex on "address" (address_id);
