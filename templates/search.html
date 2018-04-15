@@ -25,7 +25,10 @@
 			</a>
 		</li>
 		{% else %}
-		<span class="search-none">No listings, users, or matching categories were found...</span>
+		<div class="no-results">
+			<img src="{{ url_for('static', filename='images/no-results.png') }}" alt="no results">
+			<span class="search-none">No search results found</span>
+		</div>
 		{% endfor %}
 	</ul>
 </div>

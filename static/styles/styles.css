@@ -159,3 +159,15 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+.no-results {
+	display        : flex;
+	flex-direction : column;
+	justify-content: center;
+	align-items    : center;
+	font-family    : 'Titillium Web', sans-serif;
+	font-weight    : 600;
+}
+.no-results>img {
+	margin-top: 100px; 
+	width     : 50%;
+}
