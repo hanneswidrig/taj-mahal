@@ -31,6 +31,28 @@ def title_like_listings(search_query):
     return g.cursor.fetchall()
 
 
+def search_like_category(search_query):
+    search_query = '%' + search_query + '%'
+    query = '''
+	SELECT * FROM listing inner join category on listing_category = category_id
+	WHERE name LIKE %(search_query)s;
+	'''
+    g.cursor.execute(query, {'search_query': search_query.lower()})
+    return g.cursor.fetchall()
+
+
+def search_like_users(search_query):
+    search_query = '%' + search_query + '%'
+    query = '''
+	select * from "user" 
+	where lower(username) LIKE  %(search_query)s 
+	or lower(first_name) LIKE  %(search_query)s 
+	or lower(last_name) LIKE  %(search_query)s;
+	'''
+    g.cursor.execute(query, {'search_query': search_query.lower()})
+    return g.cursor.fetchall()
+
+
 def add_listing(new_product):
     query = '''
 		insert into listing(seller_id, title, photo, description, original_quantity, available_quantity, unit_type,

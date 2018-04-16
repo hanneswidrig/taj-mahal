@@ -50,22 +50,24 @@ def index():
 def search():
 		search_query = request.args.get('search')
 		filter_query = request.args.get('filter')
-		if filter_query == 1:
-				pass
-		elif filter_query == 2:
-				pass
-		elif filter_query == 3:
-				pass
-		else:
-				pass
 		listings = []
+		categories = []
+		users = []
 		if search_query is not None:
-				listings = db.title_like_listings(search_query)
+				if filter_query == '1':
+						listings = db.title_like_listings(search_query)
+				elif filter_query == '2':
+						categories = db.search_like_category(search_query)
+				elif filter_query == '3':
+						users = db.search_like_users(search_query)
+				else:
+						listings = db.title_like_listings(search_query)
 				for listing in listings:
 						listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
 		else:
 				search_query = ''
-		return render_template('search.html', listings=listings, search_query=search_query)
+		return render_template('search.html', listings=listings,
+		categories=categories, users=users, search_query=search_query)
 
 
 @app.route('/listing/<int:id>')
@@ -155,4 +157,4 @@ def user_profile(user_id):
 		return 'User ID: {0}'.format(user_id)
 
 
-app.run(host='localhost', port=5000, debug=True)
+app.run(host='0.0.0.0', port=5000, debug=True)

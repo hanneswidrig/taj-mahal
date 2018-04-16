@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	activePageMobile();
 	activePageDesktop();
-	expandFilters();
+	// expandFilters();
 	chooseFilter();
 
 	function activePageMobile() {

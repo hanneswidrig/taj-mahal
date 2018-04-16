@@ -6,6 +6,7 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/search.css') }}">
 {% endblock %}
 {% block content %}
+{% if listings %}
 <div class="listing-container">
 	<ul class="ul-listing">
 		{% for listing in listings %}
@@ -32,4 +33,39 @@
 		{% endfor %}
 	</ul>
 </div>
+{% elif categories %}
+<div class="listing-container">
+	<ul class="ul-listing">
+		{% for listing in categories %}
+		<li>
+			<a href="{{ url_for('listing_detail', id=listing.listing_id) }}" class="listing-a">
+				<div class="listing" style="background-image: url('{{ listing.photo }}');">
+					<div class="listing-body">
+						<div class="bottom-left">
+							<span class="listing-title">{{ listing.title }}</span>
+							<span class="listing-price">{{ listing.price_per_unit }}</span>
+						</div>
+						<div class="bottom-right">
+							<span class="listing-more">More</span>
+						</div>
+					</div>
+				</div>
+			</a>
+		</li>
+		{% else %}
+		<div class="no-results">
+			<img src="{{ url_for('static', filename='images/no-results.png') }}" alt="no results">
+			<span class="search-none">No search results found</span>
+		</div>
+		{% endfor %}
+	</ul>
+</div>
+{% elif users %}
+{{ users }}
+{% else %}
+<div class="no-results">
+	<img src="{{ url_for('static', filename='images/no-results.png') }}" alt="no results">
+	<span class="search-none">No search results found</span>
+</div>
+{% endif %}
 {% endblock %}

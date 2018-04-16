@@ -3,7 +3,7 @@
 	border-bottom : 1px #e4e4e4 solid;
 	flex-direction: column;
 	transition    : cubic-bezier(0.19, 1, 0.22, 1) 300ms;
-	height        : 64px;
+	height        : 108px;
 }
 .search-element {
 	height: 64px;
@@ -24,7 +24,7 @@
 	margin         : 12px 4px;
 }
 .filter-container {
-	display         : none;
+	display         : flex;
 	justify-content : center;
 	align-items     : center;
 	height          : 100%;
@@ -37,8 +37,8 @@
 	text-align: center;
 	color     : #757575;
 }
-.filter-item: hover,
-.filter-item: focus {
+.filter-item:hover,
+.filter-item:focus {
 	color          : #3D9970;
 	text-decoration: none;
 	cursor         : pointer;
@@ -65,7 +65,7 @@
 	border : none;
 }
 .expanded-filter {
-	height: 108px;
+	/* height: 108px; */
 }
 .no-results {
 	display        : flex;
