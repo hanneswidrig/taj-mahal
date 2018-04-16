@@ -21,7 +21,7 @@ app.config['SECRET_KEY'] = secret_flask_key()
 
 @app.before_request
 def before_request():
-		db.open_db()
+		db.open_db() # EXAMINE REQUEST.ARGS for 'search'
 
 
 def after_request():
@@ -31,19 +31,9 @@ def after_request():
 @app.route('/')
 def index():
 		listings = db.all_listings()
-		search_query = request.args.get('search')
-		if search_query:
-			listings = []
-			if search_query is not None:
-					listings = db.title_like_listings(search_query)
-					for listing in listings:
-						listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
-			else:
-					search_query = ''
-		else:
-				for listing in listings:
-						listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
-		return render_template('index.html', listings=listings, search_query=search_query)
+		for listing in listings:
+				listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
+		return render_template('index.html', listings=listings)
 
 
 @app.route('/search')
@@ -73,7 +63,6 @@ def search():
 @app.route('/listing/<int:id>')
 def listing_detail(id):
 		listing = db.get_one_listing(id)
-		print(listing)
 		user = db.get_one_user(listing['seller_id'])
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		return render_template('detail-listing.html', listing=listing, user=user, rel_link=rel_link)
