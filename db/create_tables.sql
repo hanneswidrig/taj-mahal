@@ -1,7 +1,6 @@
 drop table if exists "user" cascade;
 drop table if exists listing cascade;
 drop table if exists category cascade;
-drop table if exists listing_category cascade;
 drop table if exists "state" cascade;
 drop table if exists "address" cascade;
 
@@ -34,9 +33,11 @@ create table listing
   original_quantity  integer                  not null,
   available_quantity integer                  not null,
   unit_type          varchar(64)              not null,
-  total_price        numeric(5,2)             not null,
-  price_per_unit     numeric(5,2)             not null,
-  listing_category   varchar(64)              not null,
+  total_price        numeric(5, 2)            not null,
+  price_per_unit     numeric(5, 2)            not null,
+  category_id        integer                  not null
+		constraint listing_category_category_id_fk
+    references category,
   is_tradeable       boolean default false    not null,
   is_active          boolean default true     not null,
   date_created       timestamp with time zone not null,
@@ -45,7 +46,9 @@ create table listing
 );
 
 create unique index listing_listing_id_uindex on listing (listing_id);
-create unique index lower_title_idx on listing ((lower(title)));
+
+create unique index lower_title_idx on listing (lower(title :: text));
+
 
 create table category
 (
@@ -58,17 +61,6 @@ create table category
 create unique index category_category_id_uindex on category (category_id);
 create unique index category_name_uindex on category (name);
 
-create table listing_category
-(
-  listing_id  integer not null
-    constraint listing_category_listing_listing_id_fk
-    references listing,
-  category_id integer not null
-    constraint listing_category_category_category_id_fk
-    references category,
-  constraint listing_category_category_id_listing_id_pk
-  primary key (category_id, listing_id)
-);
 
 create table "state"
 (

@@ -41,7 +41,7 @@
 	.dsktp-left {
 		display       : flex;
 		flex-direction: row;
-		flex          : 1;
+		flex          : 2;
 		margin-left   : 16px;
 	}
 	.dsktp-center {
@@ -54,7 +54,7 @@
 		justify-content: space-between;
 	}
 	.dsktp-search {
-		width: 50%;
+		width: 75%;
 	}
 	.dsktp-search-box {
 		font-family  : 'Titillium Web', sans-serif;
