@@ -34,7 +34,7 @@ def title_like_listings(search_query):
 def search_like_category(search_query):
     search_query = '%' + search_query + '%'
     query = '''
-	SELECT * FROM listing inner join category on listing_category = category_id
+	SELECT * FROM listing inner join category on listing.category_id = category.category_id
 	WHERE name LIKE %(search_query)s;
 	'''
     g.cursor.execute(query, {'search_query': search_query.lower()})
@@ -72,9 +72,11 @@ def get_one_listing(listing_id):
         'SELECT * FROM listing WHERE listing_id = %(id)s', {'id': listing_id})
     return g.cursor.fetchone()
 
+
 def get_one_user(user_id):
 		g.cursor.execute('select * FROM "user" WHERE user_id = %(id)s', {'id': user_id})
 		return g.cursor.fetchone()
+
 
 def update_available_quantity(bought_amount, id):
     query = '''

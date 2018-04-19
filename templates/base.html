@@ -41,8 +41,9 @@
 				</div>
 				<div class="dsktp-center">
 					<div class="dsktp-search">
-						<form role="search" class="dsktp-search-form">
+						<form method="GET" class="dsktp-search-form" action="{{ url_for('search') }}">
 							<input type="text" name="search" class="dsktp-search-box" placeholder="Search" value="{% block search_query %}{% endblock %}">
+							<input type="submit" style="display: none;" />
 						</form>
 					</div>
 				</div>

@@ -1,18 +1,11 @@
 # Pip Dependencies
-from flask import Flask, render_template, request, flash, redirect, url_for
-from flask_wtf import Form, FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, SelectField, DecimalField
-from wtforms.validators import Email, Length, DataRequired, Regexp, NumberRange
-
-import sys
-from flask_wtf import FlaskForm
-from wtforms import StringField, FileField, IntegerField, DecimalField, SelectField, BooleanField, DateField, \
-		SubmitField
-from wtforms.validators import Length, NumberRange
+from flask import Flask, render_template, request, flash, redirect, url_for, session
 
 # Imported Project Files
 import db
 import helper_functions
+import route_functions
+from form_classes import buy_form, add_listing_form
 from secrets import secret_flask_key
 
 app = Flask('Gardener\'s Exchange')
@@ -21,7 +14,7 @@ app.config['SECRET_KEY'] = secret_flask_key()
 
 @app.before_request
 def before_request():
-		db.open_db() # EXAMINE REQUEST.ARGS for 'search'
+		db.open_db()
 
 
 def after_request():
@@ -38,26 +31,24 @@ def index():
 
 @app.route('/search')
 def search():
-		search_query = request.args.get('search')
-		filter_query = request.args.get('filter')
-		listings = []
-		categories = []
-		users = []
-		if search_query is not None:
-				if filter_query == '1':
-						listings = db.title_like_listings(search_query)
-				elif filter_query == '2':
-						categories = db.search_like_category(search_query)
-				elif filter_query == '3':
-						users = db.search_like_users(search_query)
-				else:
-						listings = db.title_like_listings(search_query)
-				for listing in listings:
-						listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
+		search_q = request.args.get('search')
+		filter_q = request.args.get('filter')
+		listings, categories, users = ([], [], [])
+		results = {'listings': listings,'categories': categories, 'users': users}
+		if search_q is not None:
+			results = route_functions.search(results, search_q)
+			listings = results['listings']
+			categories = results['categories']
+			users = results['users']
 		else:
-				search_query = ''
+			search_q = ''
+		if filter_q is not None:
+			listings = route_functions.filter_choice(listings, int(filter_q), search_q)
+		else:
+			pass
+
 		return render_template('search.html', listings=listings,
-		categories=categories, users=users, search_query=search_query)
+		categories=categories, users=users, search_query=search_q)
 
 
 @app.route('/listing/<int:id>')
@@ -68,16 +59,10 @@ def listing_detail(id):
 		return render_template('detail-listing.html', listing=listing, user=user, rel_link=rel_link)
 
 
-class BuyForm(FlaskForm):
-		quantity = IntegerField('Quantity to buy', validators=[
-														NumberRange(min=0.01, message="Must buy more than 0.")])
-		submit = SubmitField('Make Purchase')
-
-
 @app.route('/listing/buy/<int:id>', methods=['GET', 'POST'])
 def buy_listing(id):
 		listing = db.get_one_listing(id)
-		buy_item = BuyForm()
+		buy_item = buy_form()
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
 
 		if (buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']):
@@ -89,25 +74,6 @@ def buy_listing(id):
 				flash("Unable to purchase item")
 
 		return render_template('buy-listing.html', listing=listing, form=buy_item, rel_link=rel_link)
-
-
-class add_listing_form(FlaskForm):
-		title = StringField('Title', validators=[Length(
-				min=1, message="A title is required.")])
-		photo = FileField('Picture')
-		description = StringField('Description', validators=[
-															Length(min=1, message="A description is required.")])
-		original_quantity = IntegerField(
-				'Quantity', validators=[NumberRange(min=1, message="A quantity is required.")])
-		unit_type = StringField('Measurement', validators=[
-														Length(min=1, message="A measurement is required.")])
-		price_per_unit = DecimalField('Price Per Unit', places=2,
-																	validators=[NumberRange(min=1, message="A price is required.")])
-		listing_category = SelectField('Category',
-																	 choices=[('vegetable', 'Vegetable'), ('fruit', 'Fruit'), ('other', 'Other')])
-		is_tradeable = BooleanField('Tradeable')
-		date_harvested = DateField('Date Harvested', format="%Y-%m-%d")
-		submit = SubmitField('Add')
 
 
 @app.route('/listing/add', methods=['GET', 'POST'])

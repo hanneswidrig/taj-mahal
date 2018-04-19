@@ -1,7 +1,6 @@
 $(document).ready(function() {
 	activePageMobile();
 	activePageDesktop();
-	// expandFilters();
 	chooseFilter();
 
 	function activePageMobile() {
@@ -23,18 +22,6 @@ $(document).ready(function() {
 		} else if (window.location.pathname == '/user') {
 			$('#account-d').addClass('dsktp-item-active');
 		}
-	}
-	function expandFilters() {
-		$('.search-filter-toggle').on('click', function(e) {
-			e.preventDefault();
-			$('.app-bar').toggleClass('expanded-filter');
-			if ($('.filter-container').css('display') == 'none') {
-				$('.filter-container').css('display', 'flex');
-			}
-			else {
-				$('.filter-container').css('display', 'none');	
-			}
-		});
 	}
 	function createFilterURL(filterID) {
 		var url = new URL(window.location.href);

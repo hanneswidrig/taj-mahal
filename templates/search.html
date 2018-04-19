@@ -6,6 +6,31 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/search.css') }}">
 {% endblock %}
 {% block content %}
+{% if users %}
+<div class="user-container">
+{% for user in users %}
+<a href="{{ url_for('user_profile', user_id=user.user_id) }}" class="user-a">
+	<div class="user-card">
+		<div class="user-card-wrapper">
+			<div class="user-card-left">
+				<img class="user-card-profile-pic" src="{{ user.profile_pic }}">
+			</div>
+			<div class="user-card-right">
+				<div class="user-card-name">
+				{{ user.first_name.capitalize() }} {{ user.last_name.capitalize() }}
+				</div>
+			</div>
+		</div>
+	</div>
+</a>
+{% endfor %}
+</div>
+{% else %}
+<div class="no-results">
+	<img src="{{ url_for('static', filename='images/no-results.png') }}" alt="no results">
+	<span class="search-none">No matching users found</span>
+</div>
+{% endif %}
 {% if listings %}
 <div class="listing-container">
 	<ul class="ul-listing">
@@ -25,47 +50,27 @@
 				</div>
 			</a>
 		</li>
-		{% else %}
-		<div class="no-results">
-			<img src="{{ url_for('static', filename='images/no-results.png') }}" alt="no results">
-			<span class="search-none">No search results found</span>
-		</div>
 		{% endfor %}
 	</ul>
 </div>
-{% elif categories %}
-<div class="listing-container">
-	<ul class="ul-listing">
-		{% for listing in categories %}
-		<li>
-			<a href="{{ url_for('listing_detail', id=listing.listing_id) }}" class="listing-a">
-				<div class="listing" style="background-image: url('{{ listing.photo }}');">
-					<div class="listing-body">
-						<div class="bottom-left">
-							<span class="listing-title">{{ listing.title }}</span>
-							<span class="listing-price">{{ listing.price_per_unit }}</span>
-						</div>
-						<div class="bottom-right">
-							<span class="listing-more">More</span>
-						</div>
-					</div>
-				</div>
-			</a>
-		</li>
-		{% else %}
-		<div class="no-results">
-			<img src="{{ url_for('static', filename='images/no-results.png') }}" alt="no results">
-			<span class="search-none">No search results found</span>
-		</div>
-		{% endfor %}
-	</ul>
-</div>
-{% elif users %}
-{{ users }}
 {% else %}
 <div class="no-results">
 	<img src="{{ url_for('static', filename='images/no-results.png') }}" alt="no results">
-	<span class="search-none">No search results found</span>
+	<span class="search-none">No matching listings found</span>
+</div>
+{% endif %}
+{% if categories %}
+<div class="category-container">
+	<ul class="ul-category">
+		{% for category in categories %}
+		<li>{{ category.name }}</li>
+		{% endfor %}
+	</ul>
+</div>
+{% else %}
+<div class="no-results">
+	<img src="{{ url_for('static', filename='images/no-results.png') }}" alt="no results">
+	<span class="search-none">No matching categories found</span>
 </div>
 {% endif %}
 {% endblock %}
