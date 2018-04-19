@@ -12,8 +12,7 @@ from werkzeug.utils import secure_filename
 
 app = Flask('Gardener\'s Exchange')
 app.config['SECRET_KEY'] = secret_flask_key()
-UPLOAD_FOLDER = 'images/uploaded-images/'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = 'images/uploaded-images/'
 
 @app.before_request
 def before_request():
@@ -115,5 +114,5 @@ def all_users():
 def user_profile(user_id):
 		return 'User ID: {0}'.format(user_id)
 
-
-app.run(host='localhost', port=5000, debug=True)
+if __name__ == '__main__':
+	app.run(host='localhost', port=5000, debug=True)
