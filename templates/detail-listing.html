@@ -7,7 +7,7 @@
 {% endblock %}
 {% block content %}
 <div class="detail">
-	<div class="detail-img" style="background-image: url('{{listing.photo}}');">
+	<div class="detail-img" style="background-image: url({{url_for('static', filename=listing.photo)}})">
 	</div>
 	<div class="detail-body">
 		<div class="detail-title">

@@ -3,14 +3,17 @@ from flask import Flask, render_template, request, flash, redirect, url_for, ses
 
 # Imported Project Files
 import db
+import os
 import helper_functions
 import route_functions
 from form_classes import buy_form, add_listing_form
 from secrets import secret_flask_key
+from werkzeug.utils import secure_filename
 
 app = Flask('Gardener\'s Exchange')
 app.config['SECRET_KEY'] = secret_flask_key()
-
+UPLOAD_FOLDER = 'images/uploaded-images/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.before_request
 def before_request():
@@ -76,23 +79,29 @@ def new_listing():
 		listing_form = add_listing_form()
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		if listing_form.submit.data and listing_form.validate_on_submit():
-				rowcount = db.add_listing({
-						'seller_id': 0,  # CHANGE TO GRAB ACTUAL ID AT LATER TIME
-						'title': listing_form.title.data,
-						'photo': listing_form.photo.data,
-						'description': listing_form.description.data,
-						'original_quantity': listing_form.original_quantity.data,
-						'unit_type': listing_form.unit_type.data,
-						'price_per_unit': listing_form.price_per_unit.data,
-						'listing_category': listing_form.listing_category.data,
-						'date_harvested': listing_form.date_harvested.data,
-						'is_tradeable': listing_form.is_tradeable.data})
+			filename = secure_filename(listing_form.photo.data.filename)
+			file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+			listing_form.photo.data.save('static/' + file_path)
 
-				if rowcount == 1:
-						flash("New listing for {} created.".format(listing_form.title.data))
-						return redirect(url_for('index'))
-				else:
-						flash("New listing not created.")
+			rowcount = db.add_listing({
+					'seller_id': 0,  # CHANGE TO GRAB ACTUAL ID AT LATER TIME
+					'title': listing_form.title.data,
+					'photo': file_path,
+					'description': listing_form.description.data,
+					'original_quantity': listing_form.original_quantity.data,
+					'available_quantity': listing_form.original_quantity.data,
+					'unit_type': listing_form.unit_type.data,
+					'total_price': listing_form.price_per_unit.data*listing_form.original_quantity.data,
+					'price_per_unit': listing_form.price_per_unit.data,
+					'listing_category': listing_form.listing_category.data,
+					'date_harvested': listing_form.date_harvested.data,
+					'is_tradeable': listing_form.is_tradeable.data})
+
+			if rowcount == 1:
+				#flash("New listing for {} created.".format(listing_form.title.data))
+				return redirect(url_for('index'))
+			#else:
+				#flash("New listing not created.")
 
 		return render_template('add-listing.html', form=listing_form, rel_link=rel_link)
 
