@@ -31,17 +31,19 @@ def index():
 
 @app.route('/search')
 def search():
-		search_q = request.args.get('search')
-		filter_q = request.args.get('filter')
-		listings, categories, users = ([], [], [])
-		results = {'listings': listings,'categories': categories, 'users': users}
-		if search_q is not None:
-			results = route_functions.search(results, search_q)
+		q = request.args.get('search')
+		filter_value = request.args.get('filter')
+		results = {'listings': [],'categories': [], 'users': []}
 
-		if filter_q is not None:
-			results = route_functions.filter(results, int(filter_q), search_q)
+		if q is not None:
+			results = route_functions.search(results, q)
+		else:
+			q = ''
 
-		return render_template('search.html',results=results,search_query=search_q)
+		if filter_value is not None:
+			results = route_functions.filter(results, int(filter_value), q)
+
+		return render_template('search.html',results=results,search_query=q)
 
 
 @app.route('/listing/<int:id>')
@@ -105,4 +107,4 @@ def user_profile(user_id):
 		return 'User ID: {0}'.format(user_id)
 
 
-app.run(host='0.0.0.0', port=5000, debug=True)
+app.run(host='localhost', port=5000, debug=True)
