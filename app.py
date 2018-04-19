@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, flash, redirect, url_for, ses
 # Imported Project Files
 import db
 import os
+from pprint import pprint
 import helper_functions
 import route_functions
 from form_classes import buy_form, add_listing_form
@@ -78,30 +79,36 @@ def buy_listing(id):
 def new_listing():
 		listing_form = add_listing_form()
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
-		if listing_form.submit.data and listing_form.validate_on_submit():
-			filename = secure_filename(listing_form.photo.data.filename)
-			file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-			listing_form.photo.data.save('static/' + file_path)
+		if request.method == 'POST':
+			if listing_form.submit.data and listing_form.validate_on_submit():
+				filename = secure_filename(listing_form.photo.data.filename)
+				file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+				listing_form.photo.data.save('static/' + file_path)
 
-			rowcount = db.add_listing({
-					'seller_id': 0,  # CHANGE TO GRAB ACTUAL ID AT LATER TIME
-					'title': listing_form.title.data,
-					'photo': file_path,
-					'description': listing_form.description.data,
-					'original_quantity': listing_form.original_quantity.data,
-					'available_quantity': listing_form.original_quantity.data,
-					'unit_type': listing_form.unit_type.data,
-					'total_price': listing_form.price_per_unit.data*listing_form.original_quantity.data,
-					'price_per_unit': listing_form.price_per_unit.data,
-					'category_id': listing_form.category_id.data,
-					'date_harvested': listing_form.date_harvested.data,
-					'is_tradeable': listing_form.is_tradeable.data})
+				ppu = float(format(float(listing_form.price_per_unit.data), '.2f'))
+				ogq = float(format(float(listing_form.original_quantity.data), '.2f')) 
+				total_price = float(format(ppu * ogq, '.2f'))
+				category_id = int(listing_form.category_id.data)
 
-			if rowcount == 1:
-				#flash("New listing for {} created.".format(listing_form.title.data))
-				return redirect(url_for('index'))
-			#else:
-				#flash("New listing not created.")
+				rowcount = db.add_listing({
+						'seller_id': int(1),
+						'title': listing_form.title.data,
+						'photo': file_path,
+						'description': listing_form.description.data,
+						'original_quantity': int(listing_form.original_quantity.data),
+						'available_quantity': int(listing_form.original_quantity.data),
+						'unit_type': listing_form.unit_type.data,
+						'price_per_unit': ppu,
+						'total_price': total_price,
+						'category_id': category_id,
+						'date_harvested': listing_form.date_harvested.data,
+						'is_tradeable': listing_form.is_tradeable.data})
+
+				if rowcount == 1:
+					flash("New listing for {0} created.".format(listing_form.title.data))
+					return redirect(url_for('index'))
+				else:
+					flash("New listing not created.")
 
 		return render_template('add-listing.html', form=listing_form, rel_link=rel_link)
 
@@ -114,6 +121,7 @@ def all_users():
 @app.route('/user/<int:user_id>')
 def user_profile(user_id):
 		return 'User ID: {0}'.format(user_id)
+
 
 if __name__ == '__main__':
 	app.run(host='localhost', port=5000, debug=True)

@@ -8,7 +8,7 @@
 {% block javascript %}<script src="{{ url_for('static',filename='scripts/buy-products.js') }}" async></script>{% endblock %}
 {% block content %}
 <div class="purchase">
-	<div class="purchase-img" style="background-image: url('{{listing.photo}}');"></div>
+	<div class="purchase-img" style="background-image: url({{url_for('static', filename=listing.photo)}})"></div>
 	<div class="purchase-body">
 		<div class="purchase-title">
 			<h1>{{ listing.title }}</h1>
@@ -21,9 +21,6 @@
 		<div class="purchase-quantity-total">{{ listing.available_quantity }}</div>
 	 </div>
 	 {% include '_form_errors.html' %}
-		{% for message in get_flashed_messages() %}
-			<div class="alert alert-primary">{{ message }}</div>
-		{% endfor %}
 	 <form method="POST">
 			 {{ form.csrf_token }}
 			 <div class="purchase-quantity-resize">
@@ -32,8 +29,8 @@
 				</div>
 				{{ form.quantity(
 					class_='quantity-resize', 
-					placeholder='0',
-					value='0',
+					placeholder='1',
+					value='1',
 					type='number', readonly='') }}
 				<div class="add-quantity">
 					<button class="add-button quantity-button" type="button"><i class="material-icons">add</i></button>
@@ -43,6 +40,4 @@
 	 </form>
 	</div>
 </div>
-
-
 {% endblock %}

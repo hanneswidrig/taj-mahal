@@ -7,9 +7,6 @@
 {% block content %}
 <div class="add-body">
 	{% include '_form_errors.html' %}
-	{% for message in get_flashed_messages() %}
-    <div class="alert alert-primary">{{ message }}</div>
-  {% endfor %}
 	<form enctype="multipart/form-data" method="POST">
 			{{ form.csrf_token }}
 			<div class="form-group">
@@ -37,8 +34,8 @@
 					{{ form.price_per_unit(class_='form-control', placeholder='4.99') }}
 			</div>
 			<div class="form-group">
-					{{ form.listing_category.label }}
-					{{ form.listing_category(class_='form-control') }}
+					{{ form.category_id.label }}
+					{{ form.category_id(class_='form-control') }}
 			</div>
 			<div class="form-group">
 					{{ form.is_tradeable.label }}

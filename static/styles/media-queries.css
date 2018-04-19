@@ -1,6 +1,7 @@
 @media only screen and (min-width: 768px) {
 	.listing-container {
-		width: 100%;
+		margin: 0 auto;
+		width : 100%;
 	}
 	.ul-listing {
 		margin         : 0 auto;
@@ -23,12 +24,11 @@
 @media only screen and (min-width: 1024px) {
 	.dsktp {
 		width: 100%;
-		/* margin-bottom: 8px; */
 	}
 	.dsktp-navi {
 		display        : flex;
 		flex-direction : row;
-		justify-content: space-between;
+		justify-content: center;
 		align-items    : center;
 		height         : 64px;
 	}
@@ -41,20 +41,29 @@
 	.dsktp-left {
 		display       : flex;
 		flex-direction: row;
-		flex          : 2;
+		flex          : 1;
 		margin-left   : 16px;
 	}
 	.dsktp-center {
-		flex           : 3;
+		display        : flex;
+		align-items    : center;
+		justify-content: center;
+		flex-direction : row;
+		flex           : 2;
 		width          : 100%;
-		margin         : 0 16px;
+	}
+	.dsktp-right {
 		display        : flex;
 		flex-direction : row;
 		align-items    : center;
-		justify-content: space-between;
+		justify-content: flex-end;
+		flex           : 1;
+		min-width      : 290px;
+		margin-right   : 16px;
 	}
 	.dsktp-search {
-		width: 75%;
+		width: 100%;
+		max-width: 360px;
 	}
 	.dsktp-search-box {
 		font-family  : 'Titillium Web', sans-serif;
@@ -69,11 +78,6 @@
 	.dsktp-search-box:hover, .dsktp-search-box:focus {
 		color       : #3D9970;
 		border-color: #3D9970;
-	}
-	.dsktp-right {
-		display       : flex;
-		flex-direction: row;
-		margin-right  : 16px;
 	}
 	.dsktp-item {
 		font-family    : 'Roboto', serif;

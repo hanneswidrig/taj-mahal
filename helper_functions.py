@@ -2,19 +2,24 @@ import sys
 import re
 
 def relative_link(request_path, request_referrer): 
-	if request_path is None:
+	path = request_path
+	referrer = request_referrer
+	if path is None:
 		return '/'
 
-	listing_detail = re.compile('/listing/\d*$').findall(request_path)
-	buy_listing    = re.compile('/listing/buy/\d*$').findall(request_path)
-	search         = re.findall('/search', request_referrer)
-	index          = re.compile('\/[0-9]+').findall(request_path)
+	if referrer is None:
+		referrer = ''
+
+	listing_detail = re.compile('/listing/\d*$').findall(path)
+	buy_listing    = re.compile('/listing/buy/\d*$').findall(path)
+	search         = re.findall('/search', referrer)
+	index          = re.compile('\/[0-9]+').findall(path)
 
 	if listing_detail and not search:
 		return '/'
 	elif buy_listing:
 		return '/listing'+index[0]
 	elif search:
-		return request_referrer
+		return referrer
 	elif index:
 		return '/'

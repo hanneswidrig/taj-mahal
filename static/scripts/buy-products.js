@@ -30,7 +30,7 @@ $(document).ready(function() {
 		
 		subtractButton.addEventListener("click", function() {
 			quantity = parseInt(quantityBox.value);
-			if (quantity > 0) {
+			if (quantity > 1) {
 				quantityBox.value = parseInt(quantity) - 1;
 			}
 		});
