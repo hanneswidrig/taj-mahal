@@ -13,7 +13,7 @@
 		{% for listing in results['listings'] %}
 		<li>
 			<a href="{{ url_for('listing_detail', id=listing.listing_id) }}" class="listing-a">
-				<div class="listing" style="background-image: url('{{ listing.photo }}');">
+				<div class="listing" style="background-image: url({{ url_for('static', filename=listing.photo) }});">
 					<div class="listing-body">
 						<div class="bottom-left">
 							<span class="listing-title">{{ listing.title }}</span>
