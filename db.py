@@ -34,11 +34,11 @@ def title_like_listings(search_query):
 def add_listing(new_product):
     query = '''
 		insert into listing(seller_id, title, photo, description, original_quantity, available_quantity, unit_type,
-						total_price, price_per_unit, listing_category, listing_quality, is_tradeable, is_active,
-						date_created, expiration_date, date_modified)
+						total_price, price_per_unit, listing_category, is_tradeable, is_active,
+						date_created, date_harvested, date_modified)
 		values (%(seller_id)s, %(title)s, %(photo)s, %(description)s, %(original_quantity)s,
 			%(available_quantity)s, %(unit_type)s, %(total_price)s, %(price_per_unit)s,
-			%(listing_category)s, %(listing_quality)s, %(is_tradeable)s, true, now(), %(expiration_date)s, now())
+			%(listing_category)s, %(is_tradeable)s, true, now(), %(date_harvested)s, now())
 		'''
     g.cursor.execute(query, new_product)
     g.connection.commit()
@@ -50,9 +50,11 @@ def get_one_listing(listing_id):
         'SELECT * FROM listing WHERE listing_id = %(id)s', {'id': listing_id})
     return g.cursor.fetchone()
 
+
 def get_one_user(user_id):
 		g.cursor.execute('select * FROM "user" WHERE user_id = %(id)s', {'id': user_id})
 		return g.cursor.fetchone()
+
 
 def update_available_quantity(bought_amount, id):
     query = '''

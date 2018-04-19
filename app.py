@@ -110,8 +110,10 @@ def new_listing():
 						'photo': listing_form.photo.data,
 						'description': listing_form.description.data,
 						'original_quantity': listing_form.original_quantity.data,
+						'available_quantity': listing_form.original_quantity.data,
 						'unit_type': listing_form.unit_type.data,
 						'price_per_unit': listing_form.price_per_unit.data,
+						'total_price': listing_form.price_per_unit.data * listing_form.original_quantity.data,
 						'listing_category': listing_form.listing_category.data,
 						'date_harvested': listing_form.date_harvested.data,
 						'is_tradeable': listing_form.is_tradeable.data})
