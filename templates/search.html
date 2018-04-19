@@ -1,11 +1,36 @@
 {% extends "base.html" %}
 {% block title %}Search{% endblock %}
 {% block bar_title %}Search{% endblock %}
-{% block search_query %}{{ search_query }}{% endblock %}
+{% block search_query %}{{ q }}{% endblock %}
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/search.css') }}">
 {% endblock %}
 {% block content %}
+
+{% if results['listings'] %}
+<div class="listing-container">
+	<ul class="ul-listing">
+		{% for listing in results['listings'] %}
+		<li>
+			<a href="{{ url_for('listing_detail', id=listing.listing_id) }}" class="listing-a">
+				<div class="listing" style="background-image: url({{ url_for('static', filename=listing.photo) }});">
+					<div class="listing-body">
+						<div class="bottom-left">
+							<span class="listing-title">{{ listing.title }}</span>
+							<span class="listing-price">{{ '${:,.2f}'.format(listing.price_per_unit) }}</span>
+						</div>
+						<div class="bottom-right">
+							<span class="listing-more">More</span>
+						</div>
+					</div>
+				</div>
+			</a>
+		</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endif %}
+
 {% if results['users'] %}
 <div class="user-container">
 	{% for user in results['users'] %}
@@ -27,13 +52,13 @@
 </div>
 {% endif %}
 
-{% if results['listings'] %}
+{% if (results['categories']) and (c_flag) %}
 <div class="listing-container">
 	<ul class="ul-listing">
-		{% for listing in results['listings'] %}
+		{% for listing in results['categories'] %}
 		<li>
 			<a href="{{ url_for('listing_detail', id=listing.listing_id) }}" class="listing-a">
-				<div class="listing" style="background-image: url('{{ listing.photo }}');">
+				<div class="listing" style="background-image: url({{ url_for('static', filename=listing.photo) }});">
 					<div class="listing-body">
 						<div class="bottom-left">
 							<span class="listing-title">{{ listing.title }}</span>
@@ -51,13 +76,6 @@
 </div>
 {% endif %}
 
-{% if results['categories'] %}
-<div class="category-container">
-	{% for category in results['categories'] %}
-	<div class="category-card">{{ category.name }}</div>
-	{% endfor %}
-</div>
-{% endif %}
 {% if not results['listings'] and not results['categories'] and not results['users'] %}
 <div class="no-results">
 	<img src="{{ url_for('static', filename='images/no-results.png') }}" alt="no results">
