@@ -93,7 +93,7 @@ def new_listing():
 					'unit_type': listing_form.unit_type.data,
 					'total_price': listing_form.price_per_unit.data*listing_form.original_quantity.data,
 					'price_per_unit': listing_form.price_per_unit.data,
-					'listing_category': listing_form.listing_category.data,
+					'category_id': listing_form.listing_category.data,
 					'date_harvested': listing_form.date_harvested.data,
 					'is_tradeable': listing_form.is_tradeable.data})
 

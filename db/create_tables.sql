@@ -21,6 +21,28 @@ create table "user"
 create unique index user_user_id_uindex on "user" (user_id);
 create unique index user_username_uindex on "user" (username);
 
+create table category
+(
+  category_id serial      not null
+    constraint category_pkey
+    primary key,
+  name        varchar(64) not null
+);
+
+create unique index category_category_id_uindex on category (category_id);
+create unique index category_name_uindex on category (name);
+
+create table "state"
+(
+  state_id serial      not null
+    constraint state_pkey
+    primary key,
+  abbrev   varchar(2)  not null,
+  name     varchar(32) not null
+);
+
+create unique index state_state_id_uindex on "state" (state_id);
+
 create table listing
 (
   listing_id         serial                   not null
@@ -46,32 +68,7 @@ create table listing
 );
 
 create unique index listing_listing_id_uindex on listing (listing_id);
-
 create unique index lower_title_idx on listing (lower(title :: text));
-
-
-create table category
-(
-  category_id serial      not null
-    constraint category_pkey
-    primary key,
-  name        varchar(64) not null
-);
-
-create unique index category_category_id_uindex on category (category_id);
-create unique index category_name_uindex on category (name);
-
-
-create table "state"
-(
-  state_id serial      not null
-    constraint state_pkey
-    primary key,
-  abbrev   varchar(2)  not null,
-  name     varchar(32) not null
-);
-
-create unique index state_state_id_uindex on "state" (state_id);
 
 create table "address"
 (
