@@ -36,6 +36,7 @@ def search():
 		q = request.args.get('search')
 		filter_value = request.args.get('filter')
 		results = {'listings': [],'categories': [], 'users': []}
+		c_flag = False
 
 		if q is not None:
 			results = route_functions.search(results, q)
@@ -43,9 +44,9 @@ def search():
 			q = ''
 
 		if filter_value is not None:
-			results = route_functions.filter(results, int(filter_value), q)
+			results, c_flag = route_functions.filter(results, int(filter_value), q)
 
-		return render_template('search.html',results=results,search_query=q)
+		return render_template('search.html', results=results, q=q, c_flag=c_flag)
 
 
 @app.route('/listing/<int:id>')
