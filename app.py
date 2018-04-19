@@ -12,7 +12,7 @@ from werkzeug.utils import secure_filename
 
 app = Flask('Gardener\'s Exchange')
 app.config['SECRET_KEY'] = secret_flask_key()
-UPLOAD_FOLDER = 'static/images/uploaded-images/'
+UPLOAD_FOLDER = 'images/uploaded-images/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.before_request
@@ -81,7 +81,7 @@ def new_listing():
 		if listing_form.submit.data and listing_form.validate_on_submit():
 			filename = secure_filename(listing_form.photo.data.filename)
 			file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-			listing_form.photo.data.save(file_path)
+			listing_form.photo.data.save('static/' + file_path)
 
 			rowcount = db.add_listing({
 					'seller_id': 0,  # CHANGE TO GRAB ACTUAL ID AT LATER TIME
@@ -98,10 +98,10 @@ def new_listing():
 					'is_tradeable': listing_form.is_tradeable.data})
 
 			if rowcount == 1:
-					flash("New listing for {} created.".format(listing_form.title.data))
-					return redirect(url_for('index'))
-			else:
-					flash("New listing not created.")
+				#flash("New listing for {} created.".format(listing_form.title.data))
+				return redirect(url_for('index'))
+			#else:
+				#flash("New listing not created.")
 
 		return render_template('add-listing.html', form=listing_form, rel_link=rel_link)
 
