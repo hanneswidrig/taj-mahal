@@ -1,0 +1,12 @@
+{% if form.errors %}
+    <div class="alert alert-danger">
+        <h2>Please correct the following and resubmit</h2>
+        <ul>
+            {% for field_name in form.errors %}
+                {% for field_error in form.errors[field_name] %}
+                    <li>{{ form[field_name].label }}: {{ field_error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

@@ -2,29 +2,161 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>{% block title %}{% endblock %}</title>
-  
-  <!-- Links -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
-  <link href="https://fonts.googleapis.com/css?family=Merriweather:700" rel="stylesheet">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#3D9970">
+	<title>{% block title %}{% endblock %}</title>
+
+	<!-- Links -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/media-queries.css') }}">
+	{% block css %}{% endblock %}
+	<link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,600,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:500" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="icon" href="{{ url_for('static',filename='images/favicon.ico') }}">
+
+
+	<!-- Scripts -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+	integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+	 crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+	 crossorigin="anonymous"></script>
+	<script src="{{ url_for('static',filename='scripts/scripts.js') }}"></script>
+	{% block javascript %}{% endblock %}
 </head>
 
 <body>
-    <nav class="navbar navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">Gardener's Exchange</a>
-    </nav>
-  <div class="container-fluid">
-    {% block content %}{% endblock %}
-  </div>
-
-  <!-- Scripts -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<header>
+		<div class="dsktp">
+			<nav class="dsktp-navi">
+				<div class="dsktp-left">
+					<div class="dsktp-logo-text">
+						<span>Gardener's Exchange</span>
+					</div>
+					<!-- <a href="#" class="dsktp-logo"><img src="http://via.placeholder.com/48x48"></a> -->
+				</div>
+				<div class="dsktp-center">
+					<div class="dsktp-search">
+						<form method="GET" class="dsktp-search-form" action="{{ url_for('search') }}">
+							<input type="text" name="search" class="dsktp-search-box" placeholder="Search" value="{% block search_query %}{% endblock %}">
+							<input type="submit" style="display: none;" />
+						</form>
+					</div>
+				</div>
+				<div class="dsktp-right">
+					<a href="/" class="dsktp-a">
+						<div class="dsktp-item" id="index-d">
+							<span>Feed</span>
+						</div>
+					</a>
+					<a href="/listing/add" class="dsktp-a">
+						<div class="dsktp-item" id="add-d">
+							<span>Add Product</span>
+						</div>
+					</a>
+					<a href="#" class="dsktp-a">
+						<div class="dsktp-item" id="account-d">
+							<span>Account</span>
+						</div>
+					</a>
+				</div>
+			</nav>
+		</div>
+		<div class="app-bar">
+			{% if request.path == url_for('index') or request.path == url_for('new_listing') %}
+			<div class="app-bar-item">
+				<div class="app-bar-filler"></div>
+			</div>
+			<div class="app-bar-item">
+				<span class="app-bar-title">{% block bar_title %}{% endblock %}</span>
+			</div>
+			<div class="app-bar-item">
+				<div class="app-bar-filler"></div>
+			</div>
+			{% elif request.path == url_for('search') %}
+			<div class="app-bar-item search-element">
+				<div class="search-container">
+					<i class="material-icons">search</i>
+					<form role="search" class="search-form">
+						<input type="text" name="search" class="search-box" placeholder="Search" value="{{ self.search_query() }}">
+					</form>
+					<div class="search-filter">
+						<!-- <a class="search-filter-toggle" href="#">Filter</a> -->
+					</div>
+				</div>
+			</div>
+			<div class="app-bar-item filter-element">
+				<div class="filter-container">
+					<span class="filter-item" id="f1">
+						<div>Products</div>
+					</span>
+					<span class="filter-item" id="f2">
+						<div>Categories</div>
+					</span>
+					<span class="filter-item" id="f3">
+						<div>Users</div>
+					</span>
+				</div>
+			</div>
+			{% else %}
+			<a href="{% block app_bar_rel_link %}{% endblock %}" class="app-bar-item">
+				<div class="go-back">
+					<i class="material-icons">arrow_back</i>
+				</div>
+			</a>
+			<div class="app-bar-item">
+				<div class="app-bar-filler"></div>
+			</div>
+			{% endif %}
+		</div>
+	</header>
+	<div class="navi">
+		<nav class="navi-nav">
+			<a href="/" class="navi-nav-item">
+				<div class="navi-nav-item-link" id="index">
+					<i class="material-icons">home</i>
+					<span>Feed</span>
+				</div>
+			</a>
+			<a href="/search" class="navi-nav-item">
+				<div class="navi-nav-item-link" id="search">
+					<i class="material-icons">search</i>
+					<span>Search</span>
+				</div>
+			</a>
+			<a href="/listing/add" class="navi-nav-item">
+				<div class="navi-nav-item-link" id="add">
+					<i class="material-icons">add</i>
+					<span>Add Product</span>
+				</div>
+			</a>
+			<a href="#" class="navi-nav-item">
+				<div class="navi-nav-item-link" id="account">
+					<i class="material-icons">perm_identity</i>
+					<span>Account</span>
+				</div>
+			</a>
+		</nav>
+	</div>
+	<main>
+		<div class="container-fluid">
+			{% for message in get_flashed_messages() %}
+				<div class="alert alert-primary">{{ message }}</div>
+			{% endfor %}
+			{% block content %}{% endblock %}
+		</div>
+	</main>
+	<footer></footer>
 </body>
 
 </html>
