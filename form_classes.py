@@ -10,6 +10,10 @@ class buy_form(FlaskForm):
 
 
 class add_listing_form(FlaskForm):
+		#c = []
+		#for category in FlaskForm['categories']:
+			#c.append((category['category_id'], category['name']))
+
 		title = StringField('Title', validators=[Length(
 				min=1, message="A title is required.")])
 		photo = FileField('Picture')
@@ -21,8 +25,8 @@ class add_listing_form(FlaskForm):
 														Length(min=1, message="A measurement is required.")])
 		price_per_unit = DecimalField('Price Per Unit', places=2,
 																	validators=[NumberRange(min=1, message="A price is required.")])
-		listing_category = SelectField('Category',
-																	 choices=[('vegetable', 'Vegetable'), ('fruit', 'Fruit'), ('other', 'Other')])
+		category_id = SelectField('Category',
+																	 choices=[(1, 'Vegetable'),(2, 'Fruit'),(3, 'Meat'),(4, 'Cheese')])
 		is_tradeable = BooleanField('Tradeable')
 		date_harvested = DateField('Date Harvested', format="%Y-%m-%d")
 		submit = SubmitField('Add')

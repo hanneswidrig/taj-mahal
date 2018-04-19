@@ -46,6 +46,11 @@ class DatabaseTestCase(FlaskTestCase):
 	"""------------------------"""
 
 	def test_all_listings(self):
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('test')
+		''')
+
 		db.add_listing({
 			'seller_id': 0,
 			'title': "addtest1",
@@ -56,7 +61,7 @@ class DatabaseTestCase(FlaskTestCase):
 			'unit_type': "each",
 			'price_per_unit': 1.1,
 			'total_price': 11.0,
-			'listing_category': "vegetable",
+			'category_id': 1,
 			'date_harvested': "2018-04-19",
 			'is_tradeable': True})
 
@@ -73,7 +78,7 @@ class DatabaseTestCase(FlaskTestCase):
 			'unit_type': "each",
 			'price_per_unit': 1.1,
 			'total_price': 11.0,
-			'listing_category': "vegetable",
+			'category_id': 1,
 			'date_harvested': "2018-04-19",
 			'is_tradeable': True})
 
@@ -81,6 +86,11 @@ class DatabaseTestCase(FlaskTestCase):
 		self.assertEqual(len(listings), 2)
 
 	def test_title_like_listings(self):
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('test')
+		''')
+
 		db.add_listing({
 			'seller_id': 0,
 			'title': "addtest1",
@@ -91,7 +101,7 @@ class DatabaseTestCase(FlaskTestCase):
 			'unit_type': "each",
 			'price_per_unit': 1.1,
 			'total_price': 11.0,
-			'listing_category': "vegetable",
+			'category_id': 1,
 			'date_harvested': "2018-04-19",
 			'is_tradeable': True})
 
@@ -108,7 +118,7 @@ class DatabaseTestCase(FlaskTestCase):
 			'unit_type': "each",
 			'price_per_unit': 1.1,
 			'total_price': 11.0,
-			'listing_category': "vegetable",
+			'category_id': 1,
 			'date_harvested': "2018-04-19",
 			'is_tradeable': True})
 
@@ -116,6 +126,11 @@ class DatabaseTestCase(FlaskTestCase):
 		self.assertEqual(len(listings), 2)
 
 	def test_add_listing(self):
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('test')
+		''')
+
 		row_count = db.add_listing({
 			'seller_id': 0,
 			'title': "addtest",
@@ -126,7 +141,7 @@ class DatabaseTestCase(FlaskTestCase):
 			'unit_type': "each",
 			'price_per_unit': 1.1,
 			'total_price': 11.0,
-			'listing_category': "vegetable",
+			'category_id': 1,
 			'date_harvested': "2018-04-19",
 			'is_tradeable': True})
 		self.assertEqual(row_count, 1)
@@ -156,6 +171,11 @@ select * from public.user where username = 'test'
 		self.assertEqual(user["first_name"], "tester")
 
 	def test_update_available_quantity(self):
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('test')
+		''')
+
 		db.add_listing({
 			'seller_id': 0,
 			'title': "test",
@@ -166,7 +186,7 @@ select * from public.user where username = 'test'
 			'unit_type': "each",
 			'price_per_unit': 1.1,
 			'total_price': 11.0,
-			'listing_category': "vegetable",
+			'category_id': 1,
 			'date_harvested': "2018-04-19",
 			'is_tradeable': True})
 
@@ -204,6 +224,11 @@ class ApplicationTestCase(FlaskTestCase):
 	"""------------------------"""
 
 	def test_index(self):
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('test')
+		''')
+
 		db.add_listing({
 			'seller_id': 0,
 			'title': "test",
@@ -214,7 +239,7 @@ class ApplicationTestCase(FlaskTestCase):
 			'unit_type': "each",
 			'price_per_unit': 1.1,
 			'total_price': 11.0,
-			'listing_category': "vegetable",
+			'category_id': 1,
 			'date_harvested': "2018-04-19",
 			'is_tradeable': True})
 		resp = self.client.get('/')
