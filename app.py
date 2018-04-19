@@ -37,18 +37,11 @@ def search():
 		results = {'listings': listings,'categories': categories, 'users': users}
 		if search_q is not None:
 			results = route_functions.search(results, search_q)
-			listings = results['listings']
-			categories = results['categories']
-			users = results['users']
-		else:
-			search_q = ''
-		if filter_q is not None:
-			listings = route_functions.filter_choice(listings, int(filter_q), search_q)
-		else:
-			pass
 
-		return render_template('search.html', listings=listings,
-		categories=categories, users=users, search_query=search_q)
+		if filter_q is not None:
+			results = route_functions.filter(results, int(filter_q), search_q)
+
+		return render_template('search.html',results=results,search_query=search_q)
 
 
 @app.route('/listing/<int:id>')
@@ -112,4 +105,4 @@ def user_profile(user_id):
 		return 'User ID: {0}'.format(user_id)
 
 
-app.run(host='localhost', port=5000, debug=True)
+app.run(host='0.0.0.0', port=5000, debug=True)

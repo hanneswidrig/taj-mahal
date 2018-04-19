@@ -4,7 +4,7 @@ values (1, 1, 'hannes', 'hannes', 'hannes', 'widrig', 'https://avatars0.githubus
 insert into public.user (user_id, address_id, username, password, first_name, last_name, profile_pic, bio) 
 values (2, 1, 'amish', 'amish', 'amish', 'mishra', 'https://avatars0.githubusercontent.com/u/36204169?s=400&v=4', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
 insert into public.user (user_id, address_id, username, password, first_name, last_name, profile_pic, bio) 
-values (3, 1, 'john', 'john', 'john', 'meharg', 'https://avatars2.githubusercontent.com/u/7091411?s=400&v=4', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
+values (3, 1, 'jon', 'jon', 'jon', 'meharg', 'https://avatars2.githubusercontent.com/u/7091411?s=400&v=4', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
 insert into public.user (user_id, address_id, username, password, first_name, last_name, profile_pic, bio) 
 values (4, 1, 'tim', 'tim', 'tim', 'ours', 'https://avatars2.githubusercontent.com/u/22141109?s=400&v=4', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
 

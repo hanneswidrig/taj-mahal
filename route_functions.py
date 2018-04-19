@@ -2,7 +2,6 @@ import db
 import pprint as pp
 
 def search(results, q):
-	# Run 3 queries
 	listings = db.title_like_listings(q)
 	categories = db.search_like_category(q)
 	users = db.search_like_users(q)
@@ -13,17 +12,16 @@ def search(results, q):
 		results['categories'] = categories	
 	if found_results[2] > 0:
 		results['users'] = users	
-	# pp.pprint(results)
-	print(found_results)
 	return results
 
-def filter_choice(listings, filter_id, q):
+def filter(results, filter_id, q):
+	results['listings'] = []
+	results['categories'] = []
+	results['users'] = []
 	if filter_id == 1:
-		listings = db.title_like_listings(q)
+		results['listings'] = db.title_like_listings(q)
 	elif filter_id == 2:
-		categories = db.search_like_category(q)
+		results['categories'] = db.search_like_category(q)
 	elif filter_id == 3:
-		users = db.search_like_users(q)
-	for listing in listings:
-		listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
-	return listings
+		results['users'] = db.search_like_users(q)
+	return results
