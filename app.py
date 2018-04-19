@@ -1,18 +1,11 @@
 # Pip Dependencies
-from flask import Flask, render_template, request, flash, redirect, url_for
-from flask_wtf import Form, FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, SelectField, DecimalField
-from wtforms.validators import Email, Length, DataRequired, Regexp, NumberRange
-
-import sys
-from flask_wtf import FlaskForm
-from wtforms import StringField, FileField, IntegerField, DecimalField, SelectField, BooleanField, DateField, \
-		SubmitField
-from wtforms.validators import Length, NumberRange
+from flask import Flask, render_template, request, flash, redirect, url_for, session
 
 # Imported Project Files
 import db
 import helper_functions
+import route_functions
+from form_classes import buy_form, add_listing_form
 from secrets import secret_flask_key
 
 app = Flask('Gardener\'s Exchange')
@@ -32,42 +25,40 @@ def after_request():
 def index():
 		listings = db.all_listings()
 		for listing in listings:
-				listing['price_per_unit'] = '${:,.2f}'.format(
-						listing['price_per_unit'])
+				listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
 		return render_template('index.html', listings=listings)
 
 
 @app.route('/search')
 def search():
-		search_query = request.args.get('search')
-		listings = []
-		if search_query is not None:
-				listings = db.title_like_listings(search_query)
+		q = request.args.get('search')
+		filter_value = request.args.get('filter')
+		results = {'listings': [],'categories': [], 'users': []}
+
+		if q is not None:
+			results = route_functions.search(results, q)
 		else:
-				search_query = ''
-		return render_template('search.html', listings=listings, search_query=search_query)
+			q = ''
+
+		if filter_value is not None:
+			results = route_functions.filter(results, int(filter_value), q)
+
+		return render_template('search.html',results=results,search_query=q)
 
 
 @app.route('/listing/<int:id>')
 def listing_detail(id):
 		listing = db.get_one_listing(id)
-		print(listing)
 		user = db.get_one_user(listing['seller_id'])
-		rel_link = helper_functions.relative_link(request.path)
+		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		return render_template('detail-listing.html', listing=listing, user=user, rel_link=rel_link)
-
-
-class BuyForm(FlaskForm):
-		quantity = IntegerField('Quantity to buy', validators=[
-														NumberRange(min=0.01, message="Must buy more than 0.")])
-		submit = SubmitField('Make Purchase')
 
 
 @app.route('/listing/buy/<int:id>', methods=['GET', 'POST'])
 def buy_listing(id):
 		listing = db.get_one_listing(id)
-		buy_item = BuyForm()
-		rel_link = helper_functions.relative_link(request.path)
+		buy_item = buy_form()
+		rel_link = helper_functions.relative_link(request.path, request.referrer)
 
 		if (buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']):
 				db.update_available_quantity(buy_item.quantity.data, id)
@@ -80,29 +71,10 @@ def buy_listing(id):
 		return render_template('buy-listing.html', listing=listing, form=buy_item, rel_link=rel_link)
 
 
-class add_listing_form(FlaskForm):
-		title = StringField('Title', validators=[Length(
-				min=1, message="A title is required.")])
-		photo = FileField('Picture')
-		description = StringField('Description', validators=[
-															Length(min=1, message="A description is required.")])
-		original_quantity = IntegerField(
-				'Quantity', validators=[NumberRange(min=1, message="A quantity is required.")])
-		unit_type = StringField('Measurement', validators=[
-														Length(min=1, message="A measurement is required.")])
-		price_per_unit = DecimalField('Price Per Unit', places=2,
-																	validators=[NumberRange(min=1, message="A price is required.")])
-		listing_category = SelectField('Category',
-																	 choices=[('vegetable', 'Vegetable'), ('fruit', 'Fruit'), ('other', 'Other')])
-		is_tradeable = BooleanField('Tradeable')
-		date_harvested = DateField('Date Harvested', format="%Y-%m-%d")
-		submit = SubmitField('Add')
-
-
 @app.route('/listing/add', methods=['GET', 'POST'])
 def new_listing():
 		listing_form = add_listing_form()
-		rel_link = helper_functions.relative_link(request.path)
+		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		if listing_form.submit.data and listing_form.validate_on_submit():
 				rowcount = db.add_listing({
 						'seller_id': 0,  # CHANGE TO GRAB ACTUAL ID AT LATER TIME
@@ -110,10 +82,8 @@ def new_listing():
 						'photo': listing_form.photo.data,
 						'description': listing_form.description.data,
 						'original_quantity': listing_form.original_quantity.data,
-						'available_quantity': listing_form.original_quantity.data,
 						'unit_type': listing_form.unit_type.data,
 						'price_per_unit': listing_form.price_per_unit.data,
-						'total_price': listing_form.price_per_unit.data * listing_form.original_quantity.data,
 						'listing_category': listing_form.listing_category.data,
 						'date_harvested': listing_form.date_harvested.data,
 						'is_tradeable': listing_form.is_tradeable.data})
@@ -137,5 +107,4 @@ def user_profile(user_id):
 		return 'User ID: {0}'.format(user_id)
 
 
-if __name__ == '__main__':
-	app.run(host='localhost', port=5000, debug=True)
+app.run(host='localhost', port=5000, debug=True)
