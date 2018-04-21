@@ -17,7 +17,7 @@ class add_listing_form(FlaskForm):
 		description = StringField('Description', validators=[Length(min=1, message="A description is required.")])
 		original_quantity = IntegerField('Quantity', validators=[NumberRange(min=1, message="A quantity is required.")])
 		unit_type = StringField('Measurement', validators=[Length(min=1, message="A measurement is required.")])
-		price_per_unit = DecimalField('Price Per Unit', validators=[NumberRange(min=1, message="A price is required.")])
+		price_per_unit = DecimalField('Price Per Unit', validators=[NumberRange(min=0.01, message="A price is required.")])
 		category_id = SelectField('Category', choices=[(1, 'Vegetable'),(2, 'Fruit'),(3, 'Meat'),(4, 'Cheese')], coerce=int)
 		is_tradeable = BooleanField('Tradeable')
 		date_harvested = DateField('Date Harvested', format="%Y-%m-%d")

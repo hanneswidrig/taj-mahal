@@ -1,5 +1,6 @@
 # Pip Dependencies
 from flask import Flask, render_template, request, flash, redirect, url_for
+from PIL import Image
 import pendulum
 
 # Imported Project Files
@@ -83,7 +84,8 @@ def new_listing():
 		if request.method == 'POST':
 				if listing_form.submit.data and listing_form.validate_on_submit():
 						seller_id = 1
-						current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
+
+						# Upload seller's photo
 						file_name = secure_filename(listing_form.photo.data.filename)
 						file_extension = file_name.split('.')[1]
 						seller_dir = './static/images/uploaded-images/{}'.format(seller_id)
@@ -91,11 +93,21 @@ def new_listing():
 							os.mkdir(seller_dir)
 						file_path = os.path.join('images/uploaded-images/{}/'.format(seller_id), file_name)
 						listing_form.photo.data.save('static/' + file_path)
+						
+						# Generate new filename to prevent overwrites
+						current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
 						proc_name = '{}.{}'.format(current_time, file_extension)
 						os.chdir('./static/images/uploaded-images/{}/'.format(seller_id))
 						os.rename(file_name, proc_name)
 						pic_location = 'images/uploaded-images/{}/{}'.format(seller_id, proc_name)
+						
+						# Resize photo to width < 1024 and compress file size
+						img = Image.open(proc_name)
+						maxsize = (1024, 1024)
+						img.thumbnail(maxsize, Image.ANTIALIAS)
+						img.save(proc_name, optimize=True, quality=50)
 
+						# Properly calculate monetary values
 						ppu = float(format(float(listing_form.price_per_unit.data), '.2f'))
 						ogq = float(format(float(listing_form.original_quantity.data), '.2f'))
 						total_price = float(format(ppu * ogq, '.2f'))
