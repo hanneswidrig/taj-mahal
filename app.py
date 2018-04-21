@@ -86,15 +86,15 @@ def new_listing():
 						current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
 						file_name = secure_filename(listing_form.photo.data.filename)
 						file_extension = file_name.split('.')[1]
-						seller_dir = f'./static/images/uploaded-images/{seller_id}'
+						seller_dir = './static/images/uploaded-images/{}'.format(seller_id)
 						if not os.path.exists(seller_dir):
 							os.mkdir(seller_dir)
-						file_path = os.path.join(f'images/uploaded-images/{seller_id}/', file_name)
+						file_path = os.path.join('images/uploaded-images/{}/'.format(seller_id), file_name)
 						listing_form.photo.data.save('static/' + file_path)
-						proc_name = f'{current_time}.{file_extension}'
-						os.chdir(f'./static/images/uploaded-images/{seller_id}/')
+						proc_name = '{}.{}'.format(current_time, file_extension)
+						os.chdir('./static/images/uploaded-images/{}/'.format(seller_id))
 						os.rename(file_name, proc_name)
-						pic_location = f'images/uploaded-images/{seller_id}/{proc_name}'
+						pic_location = 'images/uploaded-images/{}/{}'.format(seller_id, proc_name)
 
 						ppu = float(format(float(listing_form.price_per_unit.data), '.2f'))
 						ogq = float(format(float(listing_form.original_quantity.data), '.2f'))
