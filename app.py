@@ -70,9 +70,9 @@ def buy_listing(id):
 				db.update_available_quantity(buy_item.quantity.data, id)
 				return redirect(url_for('listing_detail', id=id))
 		elif buy_item.validate_on_submit() and buy_item.quantity.data > listing['available_quantity']:
-				flash("Please select no more than the quantity that is available.")
+				flash('Please select no more than the quantity that is available.')
 		elif buy_item.validate_on_submit():
-				flash("Unable to purchase item")
+				flash('Unable to purchase item')
 
 		return render_template('buy-listing.html', listing=listing, form=buy_item, rel_link=rel_link)
 
@@ -86,52 +86,57 @@ def new_listing():
 						seller_id = 1
 
 						# Upload seller's photo
+						approved_file_extensions = {'jpg', 'jpeg', 'png', 'tiff', 'tif', 'bmp'}
 						file_name = secure_filename(listing_form.photo.data.filename)
-						file_extension = file_name.split('.')[1]
-						seller_dir = './static/images/uploaded-images/{}'.format(seller_id)
-						if not os.path.exists(seller_dir):
-							os.mkdir(seller_dir)
-						file_path = os.path.join('images/uploaded-images/{}/'.format(seller_id), file_name)
-						listing_form.photo.data.save('static/' + file_path)
-						
-						# Generate new filename to prevent overwrites
-						current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
-						proc_name = '{}.{}'.format(current_time, file_extension)
-						os.chdir('./static/images/uploaded-images/{}/'.format(seller_id))
-						os.rename(file_name, proc_name)
-						pic_location = 'images/uploaded-images/{}/{}'.format(seller_id, proc_name)
-						
-						# Resize photo to width < 1024 and compress file size
-						img = Image.open(proc_name)
-						maxsize = (1024, 1024)
-						img.thumbnail(maxsize, Image.ANTIALIAS)
-						img.save(proc_name, optimize=True, quality=50)
+						file_extension = file_name.split('.')[-1]
 
-						# Properly calculate monetary values
-						ppu = float(format(float(listing_form.price_per_unit.data), '.2f'))
-						ogq = float(format(float(listing_form.original_quantity.data), '.2f'))
-						total_price = float(format(ppu * ogq, '.2f'))
-						category_id = int(listing_form.category_id.data)
+						if file_extension in approved_file_extensions:
+							seller_dir = './static/images/uploaded-images/{}'.format(seller_id)
+							if not os.path.exists(seller_dir):
+								os.mkdir(seller_dir)
+							file_path = os.path.join('images/uploaded-images/{}/'.format(seller_id), file_name)
+							listing_form.photo.data.save('static/' + file_path)
 
-						rowcount = db.add_listing({
-								'seller_id': seller_id,
-								'title': listing_form.title.data,
-								'photo': pic_location,
-								'description': listing_form.description.data,
-								'original_quantity': int(listing_form.original_quantity.data),
-								'available_quantity': int(listing_form.original_quantity.data),
-								'unit_type': listing_form.unit_type.data,
-								'price_per_unit': ppu,
-								'total_price': total_price,
-								'category_id': category_id,
-								'date_harvested': listing_form.date_harvested.data,
-								'is_tradeable': listing_form.is_tradeable.data})
+							# Generate new filename to prevent overwrites
+							current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
+							proc_name = '{}.{}'.format(current_time, file_extension)
+							os.chdir('./static/images/uploaded-images/{}/'.format(seller_id))
+							os.rename(file_name, proc_name)
+							pic_location = 'images/uploaded-images/{}/{}'.format(seller_id, proc_name)
 
-						if rowcount == 1:
-								flash("New listing for {0} created.".format(listing_form.title.data))
-								return redirect(url_for('index'))
+							# Resize photo to width < 1024 and compress file size
+							img = Image.open(proc_name)
+							maxsize = (1024, 1024)
+							img.thumbnail(maxsize, Image.ANTIALIAS)
+							img.save(proc_name, optimize=True, quality=50)
+
+							# Properly calculate monetary values
+							ppu = float(format(float(listing_form.price_per_unit.data), '.2f'))
+							ogq = float(format(float(listing_form.original_quantity.data), '.2f'))
+							total_price = float(format(ppu * ogq, '.2f'))
+							category_id = int(listing_form.category_id.data)
+
+							rowcount = db.add_listing({
+									'seller_id': seller_id,
+									'title': listing_form.title.data,
+									'photo': pic_location,
+									'description': listing_form.description.data,
+									'original_quantity': int(listing_form.original_quantity.data),
+									'available_quantity': int(listing_form.original_quantity.data),
+									'unit_type': listing_form.unit_type.data,
+									'price_per_unit': ppu,
+									'total_price': total_price,
+									'category_id': category_id,
+									'date_harvested': listing_form.date_harvested.data,
+									'is_tradeable': listing_form.is_tradeable.data})
+
+							if rowcount == 1:
+									flash('New listing for {0} created.'.format(listing_form.title.data))
+									return redirect(url_for('index'))
+							else:
+									flash('New listing not created.')
 						else:
-								flash("New listing not created.")
+							flash('Invalid image file format, please use PNG, JPG, or JPEG.')
 
 		return render_template('add-listing.html', form=listing_form, rel_link=rel_link)
 
@@ -147,4 +152,4 @@ def user_profile(user_id):
 
 
 if __name__ == '__main__':
-		app.run(host='localhost', port=5000, debug=True)
+		app.run(host='0.0.0.0', port=5000, debug=True)
