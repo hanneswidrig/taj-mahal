@@ -87,3 +87,8 @@ def update_available_quantity(bought_amount, id):
     g.cursor.execute(query, {'id': id, 'bought_amount': bought_amount})
     g.connection.commit()
     return g.cursor.rowcount
+
+
+#def get_all_categories():
+#	g.cursor.execute('''select * from category''')
+#	return g.cursor.fetchall()

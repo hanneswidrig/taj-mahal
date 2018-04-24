@@ -1,8 +1,6 @@
-import tempfile
 import unittest
-import os
 
-from flask import g, url_for
+from flask import g
 
 import db
 from app import app
@@ -46,44 +44,13 @@ class DatabaseTestCase(FlaskTestCase):
 	"""------------------------"""
 
 	def test_all_listings(self):
-		g.cursor.execute('''
-			insert into public.category (name) values
-			('test')
-		''')
+		listings = db.all_listings()
+		self.assertEqual(len(listings), 0)
 
-		db.add_listing({
-			'seller_id': 0,
-			'title': "addtest1",
-			'photo': "",
-			'description': "This is a test.",
-			'original_quantity': 10,
-			'available_quantity': 10,
-			'unit_type': "each",
-			'price_per_unit': 1.1,
-			'total_price': 11.0,
-			'category_id': 1,
-			'date_harvested': "2018-04-19",
-			'is_tradeable': True})
+		self.execute_sql("db\seed_tables.sql")
 
 		listings = db.all_listings()
-		self.assertEqual(len(listings), 1)
-
-		db.add_listing({
-			'seller_id': 0,
-			'title': "addtest2",
-			'photo': "",
-			'description': "This is a test.",
-			'original_quantity': 10,
-			'available_quantity': 10,
-			'unit_type': "each",
-			'price_per_unit': 1.1,
-			'total_price': 11.0,
-			'category_id': 1,
-			'date_harvested': "2018-04-19",
-			'is_tradeable': True})
-
-		listings = db.all_listings()
-		self.assertEqual(len(listings), 2)
+		self.assertEqual(len(listings), 5)
 
 	def test_title_like_listings(self):
 		g.cursor.execute('''
@@ -228,6 +195,10 @@ class ApplicationTestCase(FlaskTestCase):
 			insert into public.category (name) values
 			('test')
 		''')
+
+		resp = self.client.get('/')
+		self.assertTrue(b'Product Feed' in resp.data, "Didn't find title on index.")
+		self.assertTrue(b'No search results found' in resp.data, "Didn't find title of listing on index.")
 
 		db.add_listing({
 			'seller_id': 0,
