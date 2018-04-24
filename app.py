@@ -145,6 +145,10 @@ def all_users():
 def user_profile(user_id):
 		return 'User ID: {0}'.format(user_id)
 
+@app.route('/account')
+def log_in():
+
+	return render_template('log-in.html')
 
 if __name__ == '__main__':
 		app.run(host='localhost', port=5000, debug=True)
