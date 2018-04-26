@@ -153,7 +153,8 @@ def settings():
 
 @app.route('/user/<int:user_id>')
 def user_profile(user_id):
-		return 'User ID: {0}'.format(user_id)
+		rel_link = helper_functions.relative_link(request.path, request.referrer)
+		return render_template('profile.html', rel_link=rel_link)
 
 
 if __name__ == '__main__':
