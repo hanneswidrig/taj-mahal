@@ -144,8 +144,9 @@ def listing_new():
 @app.route('/user/<int:user_id>')
 def user_profile(user_id):
 		user = db.get_one_user(user_id)
+		listings = db.get_user_listings(user_id)
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
-		return render_template('profile.html', rel_link=rel_link, user=user)
+		return render_template('profile.html', rel_link=rel_link, user=user, listings=listings)
 
 
 @app.route('/account')

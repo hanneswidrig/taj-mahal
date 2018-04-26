@@ -74,9 +74,13 @@ def get_one_listing(listing_id):
 
 
 def get_one_user(user_id):
-		g.cursor.execute('select * FROM "user" WHERE user_id = %(id)s', {'id': user_id})
+		g.cursor.execute('SELECT * FROM "user" WHERE user_id = %(id)s', {'id': user_id})
 		return g.cursor.fetchone()
 
+
+def get_user_listings(user_id):
+		g.cursor.execute('SELECT * FROM listing where seller_id = %(id)s', {'id': user_id})
+		return g.cursor.fetchall()
 
 def update_available_quantity(bought_amount, id):
     query = '''
