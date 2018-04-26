@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Settings{% endblock %}
+{% block title %}User Profile{% endblock %}
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/settings.css') }}">
 {% endblock %}
@@ -17,4 +17,13 @@
 </div>
 {% endblock %}
 {% block content %}
+<div class="profile-container">
+	<div class="profile-information">
+		<div class="profile-pic"></div>
+		<div class="profile-name"></div>
+		<div class="profile-bio"></div>
+		<div class="profile-location"></div>
+	</div>
+	<div class="listing-container"></div>
+</div>
 {% endblock %}

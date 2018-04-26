@@ -141,6 +141,13 @@ def listing_new():
 		return render_template('listing-new.html', form=listing_form, rel_link=rel_link)
 
 
+@app.route('/user/<int:user_id>')
+def user_profile(user_id):
+		user = db.get_one_user(user_id)
+		rel_link = helper_functions.relative_link(request.path, request.referrer)
+		return render_template('profile.html', rel_link=rel_link, user=user)
+
+
 @app.route('/account')
 def account():
 		return render_template('account.html')
@@ -149,12 +156,6 @@ def account():
 @app.route('/settings')
 def settings():
 		return render_template('settings.html')
-
-
-@app.route('/user/<int:user_id>')
-def user_profile(user_id):
-		rel_link = helper_functions.relative_link(request.path, request.referrer)
-		return render_template('profile.html', rel_link=rel_link)
 
 
 if __name__ == '__main__':
