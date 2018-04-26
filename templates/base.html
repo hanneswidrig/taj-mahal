@@ -64,7 +64,7 @@
 							<span>Add Product</span>
 						</div>
 					</a>
-					<a href="#" class="dsktp-a">
+					<a href="/account" class="dsktp-a">
 						<div class="dsktp-item" id="account-d">
 							<span>Account</span>
 						</div>
@@ -73,74 +73,30 @@
 			</nav>
 		</div>
 		<div class="app-bar">
-			{% if request.path == url_for('index') or request.path == url_for('new_listing') %}
-			<div class="app-bar-item">
-				<div class="app-bar-filler"></div>
-			</div>
-			<div class="app-bar-item">
-				<span class="app-bar-title">{% block bar_title %}{% endblock %}</span>
-			</div>
-			<div class="app-bar-item">
-				<div class="app-bar-filler"></div>
-			</div>
-			{% elif request.path == url_for('search') %}
-			<div class="app-bar-item search-element">
-				<div class="search-container">
-					<i class="material-icons">search</i>
-					<form role="search" class="search-form">
-						<input type="text" name="search" class="search-box" placeholder="Search" value="{{ self.search_query() }}">
-					</form>
-					<div class="search-filter">
-						<!-- <a class="search-filter-toggle" href="#">Filter</a> -->
-					</div>
-				</div>
-			</div>
-			<div class="app-bar-item filter-element">
-				<div class="filter-container">
-					<span class="filter-item" id="f1">
-						<div>Products</div>
-					</span>
-					<span class="filter-item" id="f2">
-						<div>Categories</div>
-					</span>
-					<span class="filter-item" id="f3">
-						<div>Users</div>
-					</span>
-				</div>
-			</div>
-			{% else %}
-			<a href="{% block app_bar_rel_link %}{% endblock %}" class="app-bar-item">
-				<div class="go-back">
-					<i class="material-icons">arrow_back</i>
-				</div>
-			</a>
-			<div class="app-bar-item">
-				<div class="app-bar-filler"></div>
-			</div>
-			{% endif %}
+			{% block app_bar %}{% endblock %}
 		</div>
 	</header>
 	<div class="navi">
 		<nav class="navi-nav">
-			<a href="/" class="navi-nav-item">
+			<a href="{{ url_for('index') }}" class="navi-nav-item">
 				<div class="navi-nav-item-link" id="index">
 					<i class="material-icons">home</i>
 					<span>Feed</span>
 				</div>
 			</a>
-			<a href="/search" class="navi-nav-item">
+			<a href="{{ url_for('search') }}" class="navi-nav-item">
 				<div class="navi-nav-item-link" id="search">
 					<i class="material-icons">search</i>
 					<span>Search</span>
 				</div>
 			</a>
-			<a href="/listing/add" class="navi-nav-item">
+			<a href="{{ url_for('listing_new') }}" class="navi-nav-item">
 				<div class="navi-nav-item-link" id="add">
 					<i class="material-icons">add</i>
 					<span>Add Product</span>
 				</div>
 			</a>
-			<a href="#" class="navi-nav-item">
+			<a href="{{ url_for('account') }}" class="navi-nav-item">
 				<div class="navi-nav-item-link" id="account">
 					<i class="material-icons">perm_identity</i>
 					<span>Account</span>

@@ -1,14 +1,22 @@
 {% extends "base.html" %}
 {% block title %}Buy Product{% endblock %}
-{% block bar_title %}{{ listing.title }}{% endblock %}
-{% block app_bar_rel_link %}{{rel_link}}{% endblock %}
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/listing-purchase.css') }}">
 {% endblock %}
 {% block javascript %}<script src="{{ url_for('static',filename='scripts/buy-products.js') }}" async></script>{% endblock %}
+{% block app_bar %}
+<a href="{{ rel_link }}" class="app-bar-item">
+	<div class="go-back">
+		<i class="material-icons">arrow_back</i>
+	</div>
+</a>
+<div class="app-bar-item">
+	<div class="app-bar-filler"></div>
+</div>
+{% endblock %}
 {% block content %}
 <div class="purchase">
-	<div class="purchase-img" style="background-image: url({{url_for('static', filename=listing.photo)}})"></div>
+	<div class="purchase-img" style="background-image: url({{ url_for('static', filename=listing.photo) }})"></div>
 	<div class="purchase-body">
 		<div class="purchase-title">
 			<h1>{{ listing.title }}</h1>

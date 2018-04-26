@@ -57,11 +57,11 @@ def listing_detail(id):
 		listing = db.get_one_listing(id)
 		user = db.get_one_user(listing['seller_id'])
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
-		return render_template('detail-listing.html', listing=listing, user=user, rel_link=rel_link)
+		return render_template('listing-detail.html', listing=listing, user=user, rel_link=rel_link)
 
 
 @app.route('/listing/buy/<int:id>', methods=['GET', 'POST'])
-def buy_listing(id):
+def listing_purchase(id):
 		listing = db.get_one_listing(id)
 		buy_item = buy_form()
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
@@ -74,11 +74,11 @@ def buy_listing(id):
 		elif buy_item.validate_on_submit():
 				flash('Unable to purchase item')
 
-		return render_template('buy-listing.html', listing=listing, form=buy_item, rel_link=rel_link)
+		return render_template('listing-purchase.html', listing=listing, form=buy_item, rel_link=rel_link)
 
 
 @app.route('/listing/add', methods=['GET', 'POST'])
-def new_listing():
+def listing_new():
 		listing_form = add_listing_form()
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		if request.method == 'POST':
@@ -138,12 +138,17 @@ def new_listing():
 						else:
 							flash('Invalid image file format, please use PNG, JPG, or JPEG.')
 
-		return render_template('add-listing.html', form=listing_form, rel_link=rel_link)
+		return render_template('listing-new.html', form=listing_form, rel_link=rel_link)
 
 
-@app.route('/user')
-def all_users():
-		return '<h1>All Users</h1>'
+@app.route('/account')
+def account():
+		return render_template('account.html')
+
+
+@app.route('/settings')
+def settings():
+		return render_template('settings.html')
 
 
 @app.route('/user/<int:user_id>')
@@ -152,4 +157,4 @@ def user_profile(user_id):
 
 
 if __name__ == '__main__':
-		app.run(host='0.0.0.0', port=5000, debug=True)
+		app.run(host='localhost', port=5000, debug=True)
