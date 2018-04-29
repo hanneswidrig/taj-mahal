@@ -24,9 +24,10 @@
 		<div class="profile-bio">{{ user.bio }}</div>
 		<div class="profile-location">
 			<i class="material-icons">location_on</i>
-			<div class="profile-address"></div>
+			<div class="profile-address"><a href="{{ location_link }}" class="map_link">{{ location_address }}</a></div>
 		</div>
 	</div>
+	<div class="listing-header">My Listings</div>
 	<div class="listing-container">
 		<ul class="ul-listing">
 			{% for listing in listings %}

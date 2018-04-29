@@ -61,6 +61,13 @@
 	text-transform: capitalize;
 	font-weight: 600;
 }
+.seller-profile {
+	color: #000000;
+}
+.seller-profile:hover {
+	text-decoration: none;
+	color: #3D9970;
+}
 .detail-price>.detail-total {
 	font-size  : 1.6rem;
 	font-weight: 700;

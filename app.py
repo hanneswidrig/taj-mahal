@@ -1,7 +1,10 @@
 # Pip Dependencies
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for, session
 from PIL import Image
 import pendulum
+import simplejson
+import urllib.request
+import pprintpp
 
 # Imported Project Files
 import db
@@ -9,7 +12,7 @@ import os
 import helper_functions
 import route_functions
 from form_classes import buy_form, add_listing_form
-from secrets import secret_flask_key
+from secrets import secret_flask_key, google_maps_key
 from werkzeug.utils import secure_filename
 
 app = Flask('Gardener\'s Exchange')
@@ -20,6 +23,8 @@ app.config['UPLOAD_FOLDER'] = 'images/uploaded-images/'
 @app.before_request
 def before_request():
 		db.open_db()
+		session['zipcode'] = '46989'
+		# app.logger.debug()
 
 
 def after_request():
@@ -57,7 +62,17 @@ def listing_detail(id):
 		listing = db.get_one_listing(id)
 		user = db.get_one_user(listing['seller_id'])
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
-		return render_template('listing-detail.html', listing=listing, user=user, rel_link=rel_link)
+		# buyer_address = session['zipcode']
+		# seller_address = helper_functions.address_string(listing['seller_id'])
+		# url = "https://maps.googleapis.com/maps/api/directions/json?origin={}&destination={}&key={}".format(buyer_address, seller_address[1], google_maps_key())
+		# result = simplejson.load(urllib.request.urlopen(url))
+		# result_dist = result['routes'][0]['legs'][0]['distance']['text']
+		# result_time = result['routes'][0]['legs'][0]['duration']['text']
+		# print(result_dist, result_time)
+		time_dist = ['10 mins', '4.5 mi']
+
+		return render_template('listing-detail.html', 
+		listing=listing, user=user, rel_link=rel_link, time_dist=time_dist)
 
 
 @app.route('/listing/buy/<int:id>', methods=['GET', 'POST'])
@@ -146,7 +161,14 @@ def user_profile(user_id):
 		user = db.get_one_user(user_id)
 		listings = db.get_user_listings(user_id)
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
-		return render_template('profile.html', rel_link=rel_link, user=user, listings=listings)
+		address = helper_functions.address_string(user_id)
+		map_url = helper_functions.address_url(address[1])
+		return render_template('profile.html', 
+		rel_link=rel_link, 
+		user=user, 
+		listings=listings, 
+		location_address=address[0],
+		location_link=map_url)
 
 
 @app.route('/account')
@@ -160,4 +182,4 @@ def settings():
 
 
 if __name__ == '__main__':
-		app.run(host='localhost', port=5000, debug=True)
+		app.run(host='0.0.0.0', port=5000, debug=True)
