@@ -59,21 +59,13 @@ def address_url(address):
 
 
 def last_visited(request_path, last_page):
-	# if same page, don't add url to last_page
-	# TODO: It is not adding more than two at a time
+	rel_link = last_page[-1]
 	if request_path == last_page[-1]:
-		print('-1: ', last_page)
-		return last_page
+		return (last_page, rel_link)
 	elif len(last_page) == 5:
 		last_page.pop()
 		last_page.append(request_path)
-		print('5: ', last_page)
-		return last_page
+		return (last_page, rel_link)
 	else:
 		last_page.append(request_path)	
-		print('else: ', last_page, len(last_page))
-		return last_page
-
-def test_rel(request_path, last_page):
-	print(last_page)
-	return last_page[-2]
+		return (last_page, rel_link)

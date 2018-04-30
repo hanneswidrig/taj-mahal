@@ -26,7 +26,6 @@ def before_request():
 		# session.pop('last_page', None)
 		if not session.get('zipcode'):
 			session['zipcode'] = '46989'
-		session.pop('last_page', None)
 		if not session.get('last_page'):
 			session['last_page'] = ['/']
 
@@ -37,7 +36,9 @@ def after_request():
 
 @app.route('/')
 def index():
-		session['last_page'] = helper_functions.last_visited(request.path, session.get('last_page'))
+		relational_link = helper_functions.last_visited(request.path, session.get('last_page'))
+		print(relational_link)
+		session['last_page'] = relational_link[0]
 
 		listings = db.all_listings()
 		for listing in listings:
@@ -47,7 +48,8 @@ def index():
 
 @app.route('/search')
 def search():
-		session['last_page'] = helper_functions.last_visited(request.path, session.get('last_page'))
+		relational_link = helper_functions.last_visited(request.path, session.get('last_page'))
+		session['last_page'] = relational_link[0]
 
 		q = request.args.get('search')
 		filter_value = request.args.get('filter')
@@ -67,8 +69,9 @@ def search():
 
 @app.route('/listing/<int:id>')
 def listing_detail(id):
-		session['last_page'] = helper_functions.last_visited(request.path, session.get('last_page'))
-		rel_link = helper_functions.test_rel(request.path, session.get('last_page'))
+		relational_link = helper_functions.last_visited(request.path, session.get('last_page'))
+		session['last_page'] = relational_link[0]
+		rel_link = relational_link[1]
 
 		listing = db.get_one_listing(id)
 		user = db.get_one_user(listing['seller_id'])
@@ -89,8 +92,9 @@ def listing_detail(id):
 
 @app.route('/listing/buy/<int:id>', methods=['GET', 'POST'])
 def listing_purchase(id):
-		session['last_page'] = helper_functions.last_visited(request.path, session.get('last_page'))
-		rel_link = helper_functions.test_rel(request.path, session.get('last_page'))
+		relational_link = helper_functions.last_visited(request.path, session.get('last_page'))
+		session['last_page'] = relational_link[0]
+		rel_link = relational_link[1]
 
 		listing = db.get_one_listing(id)
 		buy_item = buy_form()
@@ -108,8 +112,9 @@ def listing_purchase(id):
 
 @app.route('/listing/add', methods=['GET', 'POST'])
 def listing_new():
-		session['last_page'] = helper_functions.last_visited(request.path, session.get('last_page'))
-		rel_link = helper_functions.test_rel(request.path, session.get('last_page'))
+		relational_link = helper_functions.last_visited(request.path, session.get('last_page'))
+		session['last_page'] = relational_link[0]
+		rel_link = relational_link[1]
 
 		listing_form = add_listing_form()
 		if request.method == 'POST':
@@ -174,8 +179,7 @@ def listing_new():
 
 @app.route('/user/<int:user_id>')
 def user_profile(user_id):
-		session['last_page'] = helper_functions.last_visited(request.path, session.get('last_page'))
-		rel_link = helper_functions.test_rel(request.path, session.get('last_page'))
+		session['last_page'], rel_link = helper_functions.last_visited(request.path, session.get('last_page'))
 
 		user = db.get_one_user(user_id)
 		listings = db.get_user_listings(user_id)
