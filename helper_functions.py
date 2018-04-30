@@ -56,16 +56,3 @@ def address_string(user_id):
 def address_url(address):
 	map_url = 'https://www.google.com/maps/search/?api=1&query={}'.format(address)
 	return map_url
-
-
-def last_visited(request_path, last_page):
-	rel_link = last_page[-1]
-	if request_path == last_page[-1]:
-		return (last_page, rel_link)
-	elif len(last_page) == 5:
-		last_page.pop()
-		last_page.append(request_path)
-		return (last_page, rel_link)
-	else:
-		last_page.append(request_path)	
-		return (last_page, rel_link)

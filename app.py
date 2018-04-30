@@ -4,7 +4,6 @@ from PIL import Image
 import pendulum
 import simplejson
 import urllib.request
-import pprintpp
 
 # Imported Project Files
 import db
@@ -23,11 +22,8 @@ app.config['UPLOAD_FOLDER'] = 'images/uploaded-images/'
 @app.before_request
 def before_request():
 		db.open_db()
-		# session.pop('last_page', None)
 		if not session.get('zipcode'):
 			session['zipcode'] = '46989'
-		if not session.get('last_page'):
-			session['last_page'] = ['/']
 
 
 def after_request():
@@ -36,10 +32,6 @@ def after_request():
 
 @app.route('/')
 def index():
-		relational_link = helper_functions.last_visited(request.path, session.get('last_page'))
-		print(relational_link)
-		session['last_page'] = relational_link[0]
-
 		listings = db.all_listings()
 		for listing in listings:
 				listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
@@ -48,9 +40,6 @@ def index():
 
 @app.route('/search')
 def search():
-		relational_link = helper_functions.last_visited(request.path, session.get('last_page'))
-		session['last_page'] = relational_link[0]
-
 		q = request.args.get('search')
 		filter_value = request.args.get('filter')
 		results = {'listings': [], 'categories': [], 'users': []}
@@ -69,10 +58,7 @@ def search():
 
 @app.route('/listing/<int:id>')
 def listing_detail(id):
-		relational_link = helper_functions.last_visited(request.path, session.get('last_page'))
-		session['last_page'] = relational_link[0]
-		rel_link = relational_link[1]
-
+		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		listing = db.get_one_listing(id)
 		user = db.get_one_user(listing['seller_id'])
 		# NOTE: GAPI uses are limited, only comment out to make feature actually work
@@ -92,10 +78,7 @@ def listing_detail(id):
 
 @app.route('/listing/buy/<int:id>', methods=['GET', 'POST'])
 def listing_purchase(id):
-		relational_link = helper_functions.last_visited(request.path, session.get('last_page'))
-		session['last_page'] = relational_link[0]
-		rel_link = relational_link[1]
-
+		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		listing = db.get_one_listing(id)
 		buy_item = buy_form()
 
@@ -112,10 +95,7 @@ def listing_purchase(id):
 
 @app.route('/listing/add', methods=['GET', 'POST'])
 def listing_new():
-		relational_link = helper_functions.last_visited(request.path, session.get('last_page'))
-		session['last_page'] = relational_link[0]
-		rel_link = relational_link[1]
-
+		rel_link = helper_functions.relative_link(request.path, request.referrer)	
 		listing_form = add_listing_form()
 		if request.method == 'POST':
 				if listing_form.submit.data and listing_form.validate_on_submit():
@@ -179,8 +159,7 @@ def listing_new():
 
 @app.route('/user/<int:user_id>')
 def user_profile(user_id):
-		session['last_page'], rel_link = helper_functions.last_visited(request.path, session.get('last_page'))
-
+		rel_link = helper_functions.relative_link(request.path, request.referrer)		
 		user = db.get_one_user(user_id)
 		listings = db.get_user_listings(user_id)
 		address = helper_functions.address_string(user_id)
@@ -207,4 +186,4 @@ def settings():
 
 
 if __name__ == '__main__':
-		app.run(host='0.0.0.0', port=5000, debug=True)
+		app.run(host='localhost', port=5000, debug=True)
