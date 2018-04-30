@@ -28,6 +28,11 @@
 			<img class="seller-pic" src="{{ user.profile_pic }}" alt="seller picture">
 			<a href="{{ url_for('user_profile', user_id=user.user_id ) }}" class="seller-profile"><div class="seller-name">{{ user.first_name }} {{ user.last_name }}</div></a>
 		</div>
+		<div class="detail-section detail-time-dist">
+			<div class="detail-time">
+				Approximately <span class="detail-td">{{ time_dist[0] }}</span> 
+				or <span class="detail-td">{{ time_dist[1] }}</span> away</div>
+		</div>
 		<div class="detail-section">
 		 <div class="detail-label">Quantity Available</div>
 		 <div class="detail-total">{{ listing.available_quantity }}</div>

@@ -72,3 +72,11 @@
 	font-size  : 1.6rem;
 	font-weight: 700;
 }
+.detail-time-dist {
+	flex-direction: column;
+	justify-content: space-evenly;
+	margin: 15px 0;
+}
+.detail-td {
+	font-weight: 600;
+}

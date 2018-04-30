@@ -23,8 +23,12 @@ app.config['UPLOAD_FOLDER'] = 'images/uploaded-images/'
 @app.before_request
 def before_request():
 		db.open_db()
-		session['zipcode'] = '46989'
-		# app.logger.debug()
+		# session.pop('last_page', None)
+		if not session.get('zipcode'):
+			session['zipcode'] = '46989'
+		session.pop('last_page', None)
+		if not session.get('last_page'):
+			session['last_page'] = ['/']
 
 
 def after_request():
@@ -33,6 +37,8 @@ def after_request():
 
 @app.route('/')
 def index():
+		session['last_page'] = helper_functions.last_visited(request.path, session.get('last_page'))
+
 		listings = db.all_listings()
 		for listing in listings:
 				listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
@@ -41,6 +47,8 @@ def index():
 
 @app.route('/search')
 def search():
+		session['last_page'] = helper_functions.last_visited(request.path, session.get('last_page'))
+
 		q = request.args.get('search')
 		filter_value = request.args.get('filter')
 		results = {'listings': [], 'categories': [], 'users': []}
@@ -59,9 +67,13 @@ def search():
 
 @app.route('/listing/<int:id>')
 def listing_detail(id):
+		session['last_page'] = helper_functions.last_visited(request.path, session.get('last_page'))
+		rel_link = helper_functions.test_rel(request.path, session.get('last_page'))
+
 		listing = db.get_one_listing(id)
 		user = db.get_one_user(listing['seller_id'])
-		rel_link = helper_functions.relative_link(request.path, request.referrer)
+		# NOTE: GAPI uses are limited, only comment out to make feature actually work
+		# --------------------------------------------------------------------------
 		# buyer_address = session['zipcode']
 		# seller_address = helper_functions.address_string(listing['seller_id'])
 		# url = "https://maps.googleapis.com/maps/api/directions/json?origin={}&destination={}&key={}".format(buyer_address, seller_address[1], google_maps_key())
@@ -77,9 +89,11 @@ def listing_detail(id):
 
 @app.route('/listing/buy/<int:id>', methods=['GET', 'POST'])
 def listing_purchase(id):
+		session['last_page'] = helper_functions.last_visited(request.path, session.get('last_page'))
+		rel_link = helper_functions.test_rel(request.path, session.get('last_page'))
+
 		listing = db.get_one_listing(id)
 		buy_item = buy_form()
-		rel_link = helper_functions.relative_link(request.path, request.referrer)
 
 		if buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']:
 				db.update_available_quantity(buy_item.quantity.data, id)
@@ -94,8 +108,10 @@ def listing_purchase(id):
 
 @app.route('/listing/add', methods=['GET', 'POST'])
 def listing_new():
+		session['last_page'] = helper_functions.last_visited(request.path, session.get('last_page'))
+		rel_link = helper_functions.test_rel(request.path, session.get('last_page'))
+
 		listing_form = add_listing_form()
-		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		if request.method == 'POST':
 				if listing_form.submit.data and listing_form.validate_on_submit():
 						seller_id = 1
@@ -158,13 +174,18 @@ def listing_new():
 
 @app.route('/user/<int:user_id>')
 def user_profile(user_id):
+		session['last_page'] = helper_functions.last_visited(request.path, session.get('last_page'))
+		rel_link = helper_functions.test_rel(request.path, session.get('last_page'))
+
 		user = db.get_one_user(user_id)
 		listings = db.get_user_listings(user_id)
-		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		address = helper_functions.address_string(user_id)
 		map_url = helper_functions.address_url(address[1])
+		name = '{} {}'.format(user['first_name'].capitalize(), user['last_name'].capitalize())
+		
 		return render_template('profile.html', 
 		rel_link=rel_link, 
+		name=name, 
 		user=user, 
 		listings=listings, 
 		location_address=address[0],

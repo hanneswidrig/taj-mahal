@@ -18,15 +18,15 @@
 	display          : flex;
 	justify-content  : center;
 	align-items      : center;
-	height           : 256px;
+	height           : 128px;
 	background-size  : cover;
 	background-repeat: no-repeat;
 	margin: 10px 0;
 }
 .profile-img>img {
-	height: 256px;
-	width: 256px;
-	border-radius: 256px;
+	height: 128px;
+	width: 128px;
+	border-radius: 128px;
 }
 .profile-name {
 	font-size: 2rem;

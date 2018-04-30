@@ -2,9 +2,12 @@ import sys
 import re
 import db
 
+
 def relative_link(request_path, request_referrer): 
 	path = request_path
 	referrer = request_referrer
+	# print('Path: '+path+'\n'+'Referrer: '+referrer)
+
 	if path is None:
 		return '/'
 
@@ -13,13 +16,22 @@ def relative_link(request_path, request_referrer):
 
 	listing_detail   = re.compile(r'/listing/\d*$').findall(path)
 	listing_purchase = re.compile(r'/listing/buy/\d*$').findall(path)
-	search           = re.findall('/search', referrer)
+	user_profile     = re.compile(r'/user/\d*$').findall(path)
+	search           = re.findall(r'/search', referrer)
 	index            = re.compile(r'\/[0-9]+').findall(path)
+
+	# print('1', listing_detail)
+	# print('2', listing_purchase)
+	# print('3', user_profile)
+	# print('4', search)
+	# print('5', index)
 
 	if listing_detail and not search:
 		return '/'
 	elif listing_purchase:
 		return '/listing'+index[0]
+	elif user_profile:
+		return referrer
 	elif search:
 		return referrer
 	elif index:
@@ -44,3 +56,24 @@ def address_string(user_id):
 def address_url(address):
 	map_url = 'https://www.google.com/maps/search/?api=1&query={}'.format(address)
 	return map_url
+
+
+def last_visited(request_path, last_page):
+	# if same page, don't add url to last_page
+	# TODO: It is not adding more than two at a time
+	if request_path == last_page[-1]:
+		print('-1: ', last_page)
+		return last_page
+	elif len(last_page) == 5:
+		last_page.pop()
+		last_page.append(request_path)
+		print('5: ', last_page)
+		return last_page
+	else:
+		last_page.append(request_path)	
+		print('else: ', last_page, len(last_page))
+		return last_page
+
+def test_rel(request_path, last_page):
+	print(last_page)
+	return last_page[-2]
