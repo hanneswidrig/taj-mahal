@@ -24,6 +24,7 @@ def before_request():
 		db.open_db()
 		if not session.get('zipcode'):
 			session['zipcode'] = '46989'
+			# NEEDS TO ASK USER FOR ACTUAL LOCATION
 
 
 def after_request():
@@ -195,4 +196,4 @@ def settings():
 
 
 if __name__ == '__main__':
-		app.run(host='0.0.0.0', port=5000, debug=True)
+		app.run(host='localhost', port=5000, debug=True)
