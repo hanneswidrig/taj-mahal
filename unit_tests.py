@@ -191,14 +191,22 @@ class ApplicationTestCase(FlaskTestCase):
 	"""------------------------"""
 
 	def test_index(self):
+		resp = self.client.get('/')
+		self.assertTrue(b'Product Feed' in resp.data, "Didn't find title on index.")
+		self.assertTrue(b'No search results found' in resp.data, "Didn't find title of listing on index.")
+
 		g.cursor.execute('''
 			insert into public.category (name) values
 			('test')
 		''')
 
-		resp = self.client.get('/')
-		self.assertTrue(b'Product Feed' in resp.data, "Didn't find title on index.")
-		self.assertTrue(b'No search results found' in resp.data, "Didn't find title of listing on index.")
+		self.assertEqual(g.cursor.rowcount, 1)
+
+		g.cursor.execute('''
+			select * from public.category where category_id = 1
+		''')
+
+		self.assertEqual(len(g.cursor.fetchall()), 1)
 
 		db.add_listing({
 			'seller_id': 0,
