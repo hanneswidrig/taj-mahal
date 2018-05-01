@@ -18,9 +18,7 @@
 <div class="purchase">
 	<div class="purchase-img" style="background-image: url({{ url_for('static', filename=listing.photo) }})"></div>
 	<div class="purchase-body">
-		<div class="purchase-title">
-			<h1>{{ listing.title }}</h1>
-	 </div>
+		<div class="purchase-title">{{ listing.title }}</div>
 	 <div class="purchase-div-row">
 		<div class="purchase-label">Quantity Available</div>
 		<div class="purchase-unit-type" id="purchase-total">{{ listing.available_quantity }}</div>
@@ -29,11 +27,11 @@
 		<div class="purchase-label">Unit Type</div>
 		<div class="purchase-unit-type">{{ listing.unit_type }}</div>
 	</div>
-	 <div class="purchase-div-row totals">
+	<div class="purchase-div-row totals">
 		<div class="purchase-label">Total</div>
 		<div class="purchase-total-price">{{ total_price }}</div>
 		<div id="hidden-ppu" style="display:none">{{ ppu }}</div>
-	 </div>
+	</div>
 	 {% include '_form_errors.html' %}
 	 <form method="POST">
 			 {{ form.csrf_token }}

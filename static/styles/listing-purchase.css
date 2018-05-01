@@ -21,7 +21,10 @@
 	margin     : 0 15px;
 }
 .purchase-title {
+	font-size: 2.5rem;
+	font-weight: 600;
 	text-align: center;
+	margin: 6px 0;
 }
 .purchase-description {
 	text-align: center;
