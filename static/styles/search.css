@@ -85,6 +85,7 @@
 	margin         : 12px 4px;
 }
 .user-a {
+	width: 100%;
 	color: #FFF;
 }
 .user-a:hover, .user-a:focus {

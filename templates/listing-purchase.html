@@ -3,7 +3,7 @@
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/listing-purchase.css') }}">
 {% endblock %}
-{% block javascript %}<script src="{{ url_for('static',filename='scripts/buy-products.js') }}" async></script>{% endblock %}
+{% block javascript %}<script src="{{ url_for('static',filename='scripts/buy-products.js') }}"></script>{% endblock %}
 {% block app_bar %}
 <a href="{{ rel_link }}" class="app-bar-item">
 	<div class="go-back">
@@ -21,12 +21,18 @@
 		<div class="purchase-title">
 			<h1>{{ listing.title }}</h1>
 	 </div>
-	 <div class="purchase-description">
-			{{ listing.description }}
+	 <div class="purchase-div-row">
+		<div class="purchase-label">Quantity Available</div>
+		<div class="purchase-unit-type" id="purchase-total">{{ listing.available_quantity }}</div>
 	 </div>
-	 <div class="purchase-quantity">
-		<div class="purchase-quantity-label">Quantity Available</div>
-		<div class="purchase-quantity-total">{{ listing.available_quantity }}</div>
+	 <div class="purchase-div-row">
+		<div class="purchase-label">Unit Type</div>
+		<div class="purchase-unit-type">{{ listing.unit_type }}</div>
+	</div>
+	 <div class="purchase-div-row totals">
+		<div class="purchase-label">Total</div>
+		<div class="purchase-total-price">{{ total_price }}</div>
+		<div id="hidden-ppu" style="display:none">{{ ppu }}</div>
 	 </div>
 	 {% include '_form_errors.html' %}
 	 <form method="POST">

@@ -5,7 +5,7 @@ from wtforms.validators import Email, Length, DataRequired, Regexp, NumberRange
 
 class buy_form(FlaskForm):
 		quantity = IntegerField('Quantity to buy', validators=[NumberRange(min=1, message="Must buy more than 0.")])
-		submit = SubmitField('Make Purchase')
+		submit = SubmitField('Confirm Purchase')
 
 
 class add_listing_form(FlaskForm):

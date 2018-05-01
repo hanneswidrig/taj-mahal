@@ -62,6 +62,7 @@ def listing_detail(id):
 		listing = db.get_one_listing(id)
 		user = db.get_one_user(listing['seller_id'])
 		# NOTE: GAPI uses are limited, only comment out to make feature actually work
+		# NOTE: API CALL FOR GIVEN BUYER -> GIVEN SELLER, applies to all listings by one seller
 		# --------------------------------------------------------------------------
 		# buyer_address = session['zipcode']
 		# seller_address = helper_functions.address_string(listing['seller_id'])
@@ -81,16 +82,24 @@ def listing_purchase(id):
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		listing = db.get_one_listing(id)
 		buy_item = buy_form()
+		ppu = listing['price_per_unit']
+		total_price = "${:.2f}".format(float(listing['price_per_unit']) * 1)
 
 		if buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']:
 				db.update_available_quantity(buy_item.quantity.data, id)
-				return redirect(url_for('listing_detail', id=id))
+				return redirect(url_for('listing_confirmation', order_id=id))
 		elif buy_item.validate_on_submit() and buy_item.quantity.data > listing['available_quantity']:
 				flash('Please select no more than the quantity that is available.')
 		elif buy_item.validate_on_submit():
 				flash('Unable to purchase item')
 
-		return render_template('listing-purchase.html', listing=listing, form=buy_item, rel_link=rel_link)
+		return render_template('listing-purchase.html', 
+		listing=listing, form=buy_item, rel_link=rel_link, total_price=total_price, ppu=ppu)
+
+
+@app.route('/listing/confirmation/<int:order_id>', methods=['GET', 'POST'])
+def listing_confirmation(order_id):
+		return render_template('listing-confirmation.html')
 
 
 @app.route('/listing/add', methods=['GET', 'POST'])
@@ -171,7 +180,7 @@ def user_profile(user_id):
 		name=name, 
 		user=user, 
 		listings=listings, 
-		location_address=address[0],
+		location_address=address[0], 
 		location_link=map_url)
 
 
@@ -186,4 +195,4 @@ def settings():
 
 
 if __name__ == '__main__':
-		app.run(host='localhost', port=5000, debug=True)
+		app.run(host='0.0.0.0', port=5000, debug=True)

@@ -17,16 +17,13 @@ def relative_link(request_path, request_referrer):
 	listing_detail   = re.compile(r'/listing/\d*$').findall(path)
 	listing_purchase = re.compile(r'/listing/buy/\d*$').findall(path)
 	user_profile     = re.compile(r'/user/\d*$').findall(path)
+	user_refer       = re.compile(r'/user/\d*$').findall(referrer)
 	search           = re.findall(r'/search', referrer)
 	index            = re.compile(r'\/[0-9]+').findall(path)
 
-	# print('1', listing_detail)
-	# print('2', listing_purchase)
-	# print('3', user_profile)
-	# print('4', search)
-	# print('5', index)
-
-	if listing_detail and not search:
+	if user_refer and listing_detail:
+		return referrer
+	elif listing_detail and not search:
 		return '/'
 	elif listing_purchase:
 		return '/listing'+index[0]
