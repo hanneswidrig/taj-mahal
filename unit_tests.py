@@ -192,21 +192,14 @@ class ApplicationTestCase(FlaskTestCase):
 
 	def test_index(self):
 		resp = self.client.get('/')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on index.")
 		self.assertTrue(b'Product Feed' in resp.data, "Didn't find title on index.")
-		self.assertTrue(b'No search results found' in resp.data, "Didn't find title of listing on index.")
+		self.assertTrue(b'No search results found' in resp.data, "Didn't find default response for no listings.")
 
 		g.cursor.execute('''
 			insert into public.category (name) values
 			('test')
 		''')
-
-		self.assertEqual(g.cursor.rowcount, 1)
-
-		g.cursor.execute('''
-			select * from public.category where category_id = 1
-		''')
-
-		self.assertEqual(len(g.cursor.fetchall()), 1)
 
 		db.add_listing({
 			'seller_id': 0,
@@ -222,8 +215,49 @@ class ApplicationTestCase(FlaskTestCase):
 			'date_harvested': "2018-04-19",
 			'is_tradeable': True})
 		resp = self.client.get('/')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on index.")
 		self.assertTrue(b'Product Feed' in resp.data, "Didn't find title on index.")
 		self.assertTrue(b'test' in resp.data, "Didn't find title of listing on index.")
+
+	def test_listing_detail(self):
+		try:
+			resp = self.client.get('/listing/1')
+			self.assertTrue(b'Gardener\'s Exchange' in resp.data, "This should fail for non-existent listing.")
+		except:
+			self.assertTrue(True, "This should pass.")
+
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('test')
+		''')
+
+		db.add_listing({
+			'seller_id': 0,
+			'title': "test",
+			'photo': "",
+			'description': "This is a test.",
+			'original_quantity': 10,
+			'available_quantity': 10,
+			'unit_type': "each",
+			'price_per_unit': 1.1,
+			'total_price': 11.0,
+			'category_id': 1,
+			'date_harvested': "2018-04-19",
+			'is_tradeable': True})
+
+		g.cursor.execute('''
+			select * from public.listing limit 1
+		''')
+
+		listing = g.cursor.fetchone()
+		self.assertEqual(listing['title'], "test")
+		self.assertEqual(listing['listing_id'], 1)
+
+		resp = self.client.get('/listing/' + str(listing['listing_id']))
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on listing page.")
+		self.assertTrue(b'test' in resp.data, "Didn't find listing title on listing page.")
+		self.assertTrue(b'1.10' in resp.data, "Didn't find price per unit on listing page.")
+
 
 	#def test_member_page(self):
 	#	"""Verify the member page."""
