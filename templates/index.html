@@ -1,6 +1,16 @@
 {% extends "base.html" %}
-{% block bar_title %}Product Feed{% endblock %}
 {% block title %}Product Feed{% endblock %}
+{% block app_bar %}
+<div class="app-bar-item">
+	<div class="app-bar-filler"></div>
+</div>
+<div class="app-bar-item">
+	<span class="app-bar-title">Product Feed</span>
+</div>
+<div class="app-bar-item">
+	<div class="app-bar-filler"></div>
+</div>
+{% endblock %}
 {% block content %}
 <div class="listing-container">
 		<ul class="ul-listing">

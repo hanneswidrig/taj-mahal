@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ listing.title }}{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/listing-detail.css') }}">
+{% endblock %}
+{% block app_bar %}
+<a href="{{ rel_link }}" class="app-bar-item">
+	<div class="go-back">
+		<i class="material-icons">arrow_back</i>
+	</div>
+</a>
+<div class="app-bar-item">
+	<div class="app-bar-filler"></div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="detail">
+	<div class="detail-img" style="background-image: url({{ url_for('static', filename=listing.photo) }})">
+	</div>
+	<div class="detail-body">
+		<div class="detail-title">
+			 {{ listing.title }}
+		</div>
+		<div class="detail-description">
+			 {{ listing.description }}
+		</div>
+		<div class="detail-section">
+			<a href="{{ url_for('user_profile', user_id=user.user_id ) }}" class="seller-profile">
+				<img class="seller-pic" src="{{ user.profile_pic }}" alt="seller picture">
+				<div class="seller-name">{{ user.first_name }} {{ user.last_name }}</div>
+			</a>
+		</div>
+		<div class="detail-section detail-time-dist">
+			<div class="detail-time">
+				Approximately <span class="detail-td">{{ time_dist[0] }}</span> 
+				or <span class="detail-td">{{ time_dist[1] }}</span> away</div>
+		</div>
+		<div class="detail-section">
+		 <div class="detail-label">Quantity Available</div>
+		 <div class="detail-total">{{ listing.available_quantity }}</div>
+		</div>
+		<div class="detail-section">
+		 <div class="detail-label">Date Harvested</div>
+		 <div class="detail-total">{{ listing.date_harvested.strftime('%B%t%e,%t%Y') }}</div>
+		</div>
+		<div class="detail-section detail-price">
+			<div class="detail-label">Price Per Unit</div>
+			<div class="detail-total">${{ listing.price_per_unit }} / {{ listing.unit_type }}</div>
+		</div>
+		<a 
+			class="btn btn-primary btn-success btn-lg btn-block" 
+			href="{{ url_for('listing_purchase', id=listing.listing_id, _external=True) }}">
+			Buy Now
+		</a>
+	</div>
+</div>
+{% endblock %}

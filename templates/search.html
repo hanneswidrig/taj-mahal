@@ -5,6 +5,32 @@
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/search.css') }}">
 {% endblock %}
+{% block app_bar %}
+<div class="app-bar-item search-element">
+	<div class="search-container">
+		<i class="material-icons">search</i>
+		<form role="search" class="search-form">
+			<input type="text" name="search" class="search-box" placeholder="Search" value="{{ self.search_query() }}">
+		</form>
+		<div class="search-filter">
+			<!-- <a class="search-filter-toggle" href="#">Filter</a> -->
+		</div>
+	</div>
+</div>
+<div class="app-bar-item filter-element">
+	<div class="filter-container">
+		<span class="filter-item" id="f1">
+			<div>Products</div>
+		</span>
+		<span class="filter-item" id="f2">
+			<div>Categories</div>
+		</span>
+		<span class="filter-item" id="f3">
+			<div>Users</div>
+		</span>
+	</div>
+</div>
+{% endblock %}
 {% block content %}
 
 {% if results['listings'] %}
