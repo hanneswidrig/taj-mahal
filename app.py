@@ -25,37 +25,36 @@ def before_request():
 		db.open_db()
 		if not session.get('zipcode'):
 			session['zipcode'] = '46989'
-			# NEEDS TO ASK USER FOR ACTUAL LOCATION
 
 
 def after_request():
-		db.close_db()
+	db.close_db()
 
 
 @app.route('/')
 def index():
-		listings = db.all_listings()
-		for listing in listings:
-				listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
-		return render_template('index.html', listings=listings)
+	listings = db.all_listings()
+	for listing in listings:
+		listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
+	return render_template('index.html', listings=listings)
 
 
 @app.route('/search')
 def search():
-		q = request.args.get('search')
-		filter_value = request.args.get('filter')
-		results = {'listings': [], 'categories': [], 'users': []}
-		c_flag = False
+	q = request.args.get('search')
+	filter_value = request.args.get('filter')
+	results = {'listings': [], 'categories': [], 'users': []}
+	c_flag = False
 
-		if q is not None:
-				results = route_functions.search(results, q)
-		else:
-				q = ''
+	if q is not None:
+		results = route_functions.search(results, q)
+	else:
+			q = ''
 
-		if filter_value is not None:
-				results, c_flag = route_functions.filter(results, int(filter_value), q)
+	if filter_value is not None:
+		results, c_flag = route_functions.filter(results, int(filter_value), q)
 
-		return render_template('search.html', results=results, q=q, c_flag=c_flag)
+	return render_template('search.html', results=results, q=q, c_flag=c_flag)
 
 
 @app.route('/listing/<int:listing_id>')

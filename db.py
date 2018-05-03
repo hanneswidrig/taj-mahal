@@ -92,7 +92,7 @@ def update_available_quantity(bought_amount, listing_id):
     g.connection.commit()
     return g.cursor.rowcount
 
-
+  
 def get_user_address(user_id):
 		query = '''
 		SELECT street, city, state.name, abbrev, zipcode FROM ("user"
