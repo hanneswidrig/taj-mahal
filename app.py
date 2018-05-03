@@ -199,6 +199,9 @@ def log_in():
 	if login_form.validate_on_submit():
 		# If we get here, we've received a POST request and
 		# our login form has been validated.
+		if login_form.email.data not in :
+			# Bogus password
+			flash('Invalid password')
 		if login_form.password.data != 'password!0!':
 			# Bogus password
 			flash('Invalid password')

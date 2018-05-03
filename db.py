@@ -45,7 +45,7 @@ def search_like_users(search_query):
     search_query = '%' + search_query + '%'
     query = '''
 		select * from "user" 
-		where lower(username) LIKE  %(search_query)s 
+		where lower(email) LIKE  %(search_query)s 
 		or lower(first_name) LIKE  %(search_query)s 
 		or lower(last_name) LIKE  %(search_query)s;
 		'''
