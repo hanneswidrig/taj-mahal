@@ -401,7 +401,16 @@ class ApplicationTestCase(FlaskTestCase):
 		# app.post("/listing/buy/1", data=dict(quantity=2))
 
 	def test_new_listing(self):
-		self.assertTrue(True, "")
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('vegetable')
+		''')
+
+		resp = self.client.get('/listing/add')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Did not find site title on add listing page.")
+		self.assertTrue(b'Title' in resp.data, "Did not find title field on add listing page.")
+		# self.assertTrue(b'vegetable' in resp.data, "Did not find expected category on add listing page.")
+
 
 
 if __name__ == '__main__':
