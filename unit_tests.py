@@ -92,6 +92,7 @@ class DatabaseTestCase(FlaskTestCase):
 		listings = db.title_like_listings("addtest")
 		self.assertEqual(len(listings), 2)
 
+
 	def test_add_listing(self):
 		g.cursor.execute('''
 			insert into public.category (name) values
@@ -257,6 +258,43 @@ class ApplicationTestCase(FlaskTestCase):
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on listing page.")
 		self.assertTrue(b'test' in resp.data, "Didn't find listing title on listing page.")
 		self.assertTrue(b'1.10' in resp.data, "Didn't find price per unit on listing page.")
+
+
+	def test_search(self):
+		resp = self.client.get('/search')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on search page.")
+		self.assertTrue(b'No matches found' in resp.data, "Found matches for no search.")
+
+		resp = self.client.get('/search?search=thing')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on search page.")
+		self.assertTrue(b'No matches found' in resp.data, "Found matches for bad search.")
+
+		resp = self.client.get('/search?search=tes&filter=3')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on search page.")
+		self.assertTrue(b'No matches found' in resp.data, "Found matches for listing while searching for users.")
+
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('test')
+		''')
+
+		db.add_listing({
+			'seller_id': 0,
+			'title': "test",
+			'photo': "",
+			'description': "This is a test.",
+			'original_quantity': 10,
+			'available_quantity': 10,
+			'unit_type': "each",
+			'price_per_unit': 1.1,
+			'total_price': 11.0,
+			'category_id': 1,
+			'date_harvested': "2018-04-19",
+			'is_tradeable': True})
+
+		resp = self.client.get('/search?search=tes')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on search page.")
+		self.assertTrue(b'test' in resp.data, "Did not find listing when searching for it.")
 
 
 	#def test_member_page(self):
