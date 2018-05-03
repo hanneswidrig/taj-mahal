@@ -92,6 +92,70 @@ class DatabaseTestCase(FlaskTestCase):
 		listings = db.title_like_listings("addtest")
 		self.assertEqual(len(listings), 2)
 
+	def test_search_like_category(self):
+		listings = db.search_like_category("veg")
+		self.assertEqual(len(listings), 0)
+
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('vegetable')
+		''')
+
+		db.add_listing({
+			'seller_id': 0,
+			'title': "addtest1",
+			'photo': "",
+			'description': "This is a test.",
+			'original_quantity': 10,
+			'available_quantity': 10,
+			'unit_type': "each",
+			'price_per_unit': 1.1,
+			'total_price': 11.0,
+			'category_id': 1,
+			'date_harvested': "2018-04-19",
+			'is_tradeable': True})
+
+		listings = db.search_like_category("veg")
+		self.assertEqual(len(listings), 1)
+
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('fruit')
+		''')
+
+		db.add_listing({
+			'seller_id': 0,
+			'title': "addtest2",
+			'photo': "",
+			'description': "This is a test.",
+			'original_quantity': 10,
+			'available_quantity': 10,
+			'unit_type': "each",
+			'price_per_unit': 1.1,
+			'total_price': 11.0,
+			'category_id': 1,
+			'date_harvested': "2018-04-19",
+			'is_tradeable': True})
+
+		db.add_listing({
+			'seller_id': 0,
+			'title': "addtest3",
+			'photo': "",
+			'description': "This is a test.",
+			'original_quantity': 10,
+			'available_quantity': 10,
+			'unit_type': "each",
+			'price_per_unit': 1.1,
+			'total_price': 11.0,
+			'category_id': 2,
+			'date_harvested': "2018-04-19",
+			'is_tradeable': True})
+
+		listings = db.search_like_category("veg")
+		self.assertEqual(len(listings), 2)
+
+	def test_search_like_users(self):
+		self.assertTrue(True, "")
 
 	def test_add_listing(self):
 		g.cursor.execute('''
@@ -258,7 +322,6 @@ class ApplicationTestCase(FlaskTestCase):
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on listing page.")
 		self.assertTrue(b'test' in resp.data, "Didn't find listing title on listing page.")
 		self.assertTrue(b'1.10' in resp.data, "Didn't find price per unit on listing page.")
-
 
 	def test_search(self):
 		resp = self.client.get('/search')
