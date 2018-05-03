@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Buy Product{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/listing-purchase.css') }}">
+{% endblock %}
+{% block javascript %}<script src="{{ url_for('static',filename='scripts/buy-products.js') }}"></script>{% endblock %}
+{% block app_bar %}
+<a href="{{ rel_link }}" class="app-bar-item">
+	<div class="go-back">
+		<i class="material-icons">arrow_back</i>
+	</div>
+</a>
+<div class="app-bar-item">
+	<div class="app-bar-filler"></div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="purchase">
+	<div class="purchase-img" style="background-image: url({{ url_for('static', filename=listing.photo) }})"></div>
+	<div class="purchase-body">
+		<div class="purchase-title">{{ listing.title }}</div>
+	 <div class="purchase-div-row">
+		<div class="purchase-label">Quantity Available</div>
+		<div class="purchase-unit-type" id="purchase-total">{{ listing.available_quantity }}</div>
+	 </div>
+	 <div class="purchase-div-row">
+		<div class="purchase-label">Unit Type</div>
+		<div class="purchase-unit-type">{{ listing.unit_type }}</div>
+	</div>
+	<div class="purchase-div-row totals">
+		<div class="purchase-label">Total</div>
+		<div class="purchase-total-price">{{ total_price }}</div>
+		<div id="hidden-ppu" style="display:none">{{ ppu }}</div>
+	</div>
+	 {% include '_form_errors.html' %}
+	 <form method="POST">
+			 {{ form.csrf_token }}
+			 <div class="purchase-quantity-resize">
+				<div class="subtract-quantity">
+					<button class="subtract-button quantity-button" type="button"><i class="material-icons">remove</i></button>
+				</div>
+				{{ form.quantity(
+					class_='quantity-resize', 
+					placeholder='1',
+					value='1',
+					type='number', readonly='') }}
+				<div class="add-quantity">
+					<button class="add-button quantity-button" type="button"><i class="material-icons">add</i></button>
+				</div>
+			</div>
+			<div>{{ form.submit(class_="btn btn-primary btn-success btn-lg btn-block") }}</div>
+	 </form>
+	</div>
+</div>
+{% endblock %}

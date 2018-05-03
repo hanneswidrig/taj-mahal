@@ -10,7 +10,7 @@ $(document).ready(function() {
 			$('#add').addClass('nav-item-active');
 		} else if (window.location.pathname == '/search') {
 			$('#search').addClass('nav-item-active');
-		} else if (window.location.pathname == '/user') {
+		} else if (window.location.pathname == '/account') {
 			$('#account').addClass('nav-item-active');
 		}
 	}
@@ -19,7 +19,7 @@ $(document).ready(function() {
 			$('#index-d').addClass('dsktp-item-active');
 		} else if (window.location.pathname == '/listing/add') {
 			$('#add-d').addClass('dsktp-item-active');
-		} else if (window.location.pathname == '/user') {
+		} else if (window.location.pathname == '/account') {
 			$('#account-d').addClass('dsktp-item-active');
 		}
 	}

@@ -1,11 +1,10 @@
 $(document).ready(function() {
-	buyProductPage();
 	subtractFromPurchase();
 	addToPurchase();
 
 	function buyProductPage() {
-		availableQuantity = document.querySelector('.purchase-quantity-total').innerHTML;
-		submitButton = document.querySelector('#submit');
+		// availableQuantity = document.querySelector('#purchase-total').innerHTML;
+		// submitButton = document.querySelector('#submit');
 
 		// THIS IS BUGGY RIGHT NOW
 		// if(parseInt(availableQuantity) === 0) {
@@ -26,25 +25,35 @@ $(document).ready(function() {
 
 	function subtractFromPurchase() {
 		subtractButton = document.querySelector('.subtract-button');
+		ppu = document.querySelector('#hidden-ppu').innerHTML;
+
 		quantityBox = getQuantityBox();
 		
 		subtractButton.addEventListener("click", function() {
 			quantity = parseInt(quantityBox.value);
 			if (quantity > 1) {
 				quantityBox.value = parseInt(quantity) - 1;
+				total = document.querySelector('.purchase-total-price');
+				new_price = parseFloat(ppu) * quantityBox.value;
+				total.innerHTML = `$${new_price.toFixed(2)}`;
 			}
 		});
 	}
 	
 	function addToPurchase() {
 		addButton = document.querySelector('.add-button');
-		availableQuantity = parseInt(document.querySelector('.purchase-quantity-total').innerHTML);
+		availableQuantity = parseInt(document.querySelector('#purchase-total').innerHTML);
+		ppu = document.querySelector('#hidden-ppu').innerHTML;
+
 		quantityBox = getQuantityBox();
 		
 		addButton.addEventListener("click", function() {
 			quantity = parseInt(quantityBox.value);
 			if (quantity < availableQuantity) {
 				quantityBox.value = parseInt(quantity) + 1;
+				total = document.querySelector('.purchase-total-price');
+				new_price = parseFloat(ppu) * quantityBox.value;
+				total.innerHTML = `$${new_price.toFixed(2)}`;
 			}
 		});
 	}
