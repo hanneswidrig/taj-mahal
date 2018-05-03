@@ -155,7 +155,15 @@ class DatabaseTestCase(FlaskTestCase):
 		self.assertEqual(len(listings), 2)
 
 	def test_search_like_users(self):
-		self.assertTrue(True, "")
+		users = db.search_like_users("ha")
+		self.assertEqual(len(users), 0)
+		
+		self.execute_sql("db\seed_tables.sql")
+		
+		users = db.search_like_users("hann")
+		self.assertEqual(len(users), 1)
+		users = db.search_like_users("ha")
+		self.assertEqual(len(users), 2)
 
 	def test_add_listing(self):
 		g.cursor.execute('''
@@ -359,11 +367,41 @@ class ApplicationTestCase(FlaskTestCase):
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on search page.")
 		self.assertTrue(b'test' in resp.data, "Did not find listing when searching for it.")
 
+	def test_buy_listing(self):
+		try:
+			resp = self.client.get('/listing/buy/1')
+			self.assertTrue(b'Gardener\'s Exchange' in resp.data, "This should fail for non-existent listing.")
+		except:
+			self.assertTrue(True, "This should pass.")
 
-	#def test_member_page(self):
-	#	"""Verify the member page."""
-	#	resp = self.client.get(url_for('all_members'))
-	#	self.assertTrue(b'Comments' in resp.data)
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('test')
+		''')
+
+		db.add_listing({
+			'seller_id': 0,
+			'title': "test",
+			'photo': "",
+			'description': "This is a test.",
+			'original_quantity': 13,
+			'available_quantity': 13,
+			'unit_type': "each",
+			'price_per_unit': 1.1,
+			'total_price': 11.0,
+			'category_id': 1,
+			'date_harvested': "2018-04-19",
+			'is_tradeable': True})
+
+		resp = self.client.get('/listing/buy/1')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Did not find site title on buy listing page.")
+		self.assertTrue(b'Quantity Available' in resp.data, "Did not find quantity available on buy listing page.")
+		self.assertTrue(b'13' in resp.data, "Did not find expected available quantity on buy listing page.")
+
+		# app.post("/listing/buy/1", data=dict(quantity=2))
+
+	def test_new_listing(self):
+		self.assertTrue(True, "")
 
 
 if __name__ == '__main__':
