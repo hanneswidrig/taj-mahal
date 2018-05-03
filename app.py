@@ -230,8 +230,8 @@ def logout():
     #    Removing the email from the session has the effect of logging out the user.
     # 2. If 'email' is not in the session, return the second argument (None)
     #session.pop('remember', None)
-    user_name = session.pop('email', None)
-    flash('User {} logged out'.format(user_name))
+    email = session.pop('email', None)
+    flash('User {} logged out'.format(email))
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
