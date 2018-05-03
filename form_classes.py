@@ -1,6 +1,6 @@
 from flask_wtf import Form, FlaskForm
 from wtforms import StringField, SubmitField, IntegerField, SelectField, \
-DecimalField, DateField, BooleanField, FileField, SubmitField
+DecimalField, DateField, BooleanField, FileField, SubmitField, PasswordField
 from wtforms.validators import Email, Length, DataRequired, Regexp, NumberRange
 
 class buy_form(FlaskForm):
@@ -22,3 +22,8 @@ class add_listing_form(FlaskForm):
 		is_tradeable = BooleanField('Tradeable')
 		date_harvested = DateField('Date Harvested', format="%Y-%m-%d")
 		submit = SubmitField('Add')
+
+class LoginForm(Form):
+    email = StringField('E-mail Address', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Log In')

@@ -10,10 +10,9 @@ import db
 import os
 import helper_functions
 import route_functions
-from form_classes import buy_form, add_listing_form
+from form_classes import buy_form, add_listing_form, LoginForm
 from secrets import secret_flask_key, google_maps_key
 from werkzeug.utils import secure_filename
-
 app = Flask('Gardener\'s Exchange')
 app.config['SECRET_KEY'] = secret_flask_key()
 app.config['UPLOAD_FOLDER'] = 'images/uploaded-images/'
@@ -194,10 +193,42 @@ def account():
 def settings():
 		return render_template('settings.html')
 
-@app.route('/account')
+@app.route('/login', methods=['GET', 'POST'])
 def log_in():
+	login_form = LoginForm()
+	if login_form.validate_on_submit():
+		# If we get here, we've received a POST request and
+		# our login form has been validated.
+		if login_form.password.data != 'password!0!':
+			# Bogus password
+			flash('Invalid password')
+		else:
+			# Correct password. Add a value to the session object
+			# to show that the user is logged in. Redirect to home page.
+			session['email'] = login_form.email.data
+			#session['remember'] = login_form.remember.data
+			flash('User {} logged in'.format(session['email']))
+			return redirect(url_for('account'))
 
-	return render_template('log-in.html')
+	# Render the form if:
+	# 1. This is a GET request and we want to send the empty form.
+	# 2. This is a POST request and the form failed to validate.
+	# 3. The form validated but the password was wrong.
+
+	return render_template('log-in.html', form=login_form)
+
+@app.route('/logout')
+def logout():
+    # Remove the 'email' entry from the session.
+    # The pop() method behaves as follows:
+    # 1. If 'email' is in the session, remove it and return its value.
+    #    The value will be the user name stored there by the login() view function.
+    #    Removing the email from the session has the effect of logging out the user.
+    # 2. If 'email' is not in the session, return the second argument (None)
+    #session.pop('remember', None)
+    user_name = session.pop('email', None)
+    flash('User {} logged out'.format(user_name))
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
 		app.run(host='localhost', port=5000, debug=True)
