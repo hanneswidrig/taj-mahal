@@ -112,3 +112,4 @@ venv.bak/
 
 # SPECIAL files to ignore
 secrets.py
+static/images/uploaded-images/*

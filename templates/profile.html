@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}User Profile{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/profile.css') }}">
+{% endblock %}
+{% block app_bar %}
+<a href="{{ rel_link }}" class="app-bar-item">
+	<div class="go-back">
+		<i class="material-icons">arrow_back</i>
+	</div>
+</a>
+<div class="app-bar-item">
+	<div class="app-bar-filler"></div>
+</div>
+<div class="app-bar-item">
+	<div class="app-bar-filler"></div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="profile-container">
+	<div class="profile-information">
+		<div class="profile-img"><img src="{{ user.profile_pic }}" alt="profile pic"></div>
+		<div class="profile-name">{{ name }}</div>
+		<div class="profile-bio">{{ user.bio }}</div>
+		<div class="profile-location">
+			<i class="material-icons">location_on</i>
+			<div class="profile-address"><a href="{{ location_link }}" class="map_link">{{ location_address }}</a></div>
+		</div>
+	</div>
+	<div class="listing-header">Listings</div>
+	<div class="listing-container">
+		<ul class="ul-listing">
+			{% for listing in listings %}
+			<li>
+				<a href="{{ url_for('listing_detail', listing_id=listing.listing_id) }}" class="listing-a">
+					<div class="listing" style="background-image: url({{ url_for('static', filename=listing.photo) }});">
+						<div class="listing-body">
+							<div class="bottom-left">
+								<span class="listing-title">{{ listing.title }}</span>
+								<span class="listing-price">{{ listing.price_per_unit }} / {{ listing.unit_type }}</span>
+							</div>
+							<div class="bottom-right">
+								<span class="listing-more">More</span>
+							</div>
+						</div>
+					</div>
+				</a>
+			</li>
+			{% else %}
+			<div class="no-results">
+				<img src="{{ url_for('static', filename='images/no-results.png') }}" alt="no results">
+				<span class="search-none">No search results found</span>
+			</div>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+{% endblock %}
