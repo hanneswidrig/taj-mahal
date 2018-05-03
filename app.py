@@ -88,7 +88,8 @@ def listing_purchase(id):
 
 		if buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']:
 				db.update_available_quantity(buy_item.quantity.data, id)
-				return redirect(url_for('listing_confirmation', order_id=id))
+				# return redirect(url_for('listing_confirmation', order_id=id))
+				return redirect(url_for('index'))
 		elif buy_item.validate_on_submit() and buy_item.quantity.data > listing['available_quantity']:
 				flash('Please select no more than the quantity that is available.')
 		elif buy_item.validate_on_submit():
