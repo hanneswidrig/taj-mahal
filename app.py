@@ -199,10 +199,11 @@ def log_in():
 	if login_form.validate_on_submit():
 		# If we get here, we've received a POST request and
 		# our login form has been validated.
-		if login_form.email.data not in :
+		user = db.get_one_login(login_form.email.data)
+		if user == None:
 			# Bogus password
-			flash('Invalid password')
-		if login_form.password.data != 'password!0!':
+			flash('Invalid email')
+		elif login_form.password.data != user['password']:
 			# Bogus password
 			flash('Invalid password')
 		else:
@@ -218,7 +219,7 @@ def log_in():
 	# 2. This is a POST request and the form failed to validate.
 	# 3. The form validated but the password was wrong.
 
-	return render_template('log-in.html', form=login_form)
+	return render_template('index.html', form=login_form)
 
 @app.route('/logout')
 def logout():
