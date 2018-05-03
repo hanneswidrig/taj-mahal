@@ -2,6 +2,7 @@ $(document).ready(function() {
 	activePageMobile();
 	activePageDesktop();
 	chooseFilter();
+	fileUpload();
 
 	function activePageMobile() {
 		if (window.location.pathname == '/' || window.location.pathname == '') {
@@ -22,6 +23,13 @@ $(document).ready(function() {
 		} else if (window.location.pathname == '/account') {
 			$('#account-d').addClass('dsktp-item-active');
 		}
+	}
+	function fileUpload() {
+		$('#cFile').change(function() {
+			var i = $(this).prev('.custom-file-label').clone();
+			var file = $('#cFile')[0].files[0].name;
+			$(this).prev('.custom-file-label').text(file);
+		});
 	}
 	function createFilterURL(filterID) {
 		var url = new URL(window.location.href);

@@ -3,16 +3,6 @@
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/listing-confirmation.css') }}">
 {% endblock %}
-{% block app_bar %}
-<a href="{{ rel_link }}" class="app-bar-item">
-	<div class="go-back">
-		<i class="material-icons">arrow_back</i>
-	</div>
-</a>
-<div class="app-bar-item">
-	<div class="app-bar-filler"></div>
-</div>
-{% endblock %}
 {% block content %}
 <div class="confirmation-title">
 	Order Confirmation

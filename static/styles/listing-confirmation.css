@@ -5,6 +5,9 @@
 	margin     : 6px 0;
 	font-family: 'Titillium Web', sans-serif;
 }
+.app-bar {
+	display: none;
+}
 .confirmation-container {
 	display        : flex;
 	flex-direction : column;
@@ -12,7 +15,6 @@
 	margin         : 15px;
 	font-family    : 'Titillium Web', sans-serif;
 	font-weight    : 600;
-	height         : 75vh;
 }
 .confirmation-buttons {
 	display       : flex;

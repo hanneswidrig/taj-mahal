@@ -18,7 +18,7 @@ def close_db():
 
 
 def all_listings():
-    g.cursor.execute('''SELECT * FROM listing ORDER BY date_created DESC;''')
+    g.cursor.execute('''SELECT * FROM listing WHERE available_quantity > 0 ORDER BY date_created DESC;''')
     return g.cursor.fetchall()
 
 

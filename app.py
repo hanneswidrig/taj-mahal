@@ -124,7 +124,18 @@ def listing_purchase(listing_id):
 
 @app.route('/listing/confirmation/<int:listing_id>', methods=['GET', 'POST'])
 def listing_confirmation(listing_id):
-		return render_template('listing-confirmation.html')
+		order = {
+    	'listing_detail': [
+    	    'Invalid Product',
+    	    'images/uploaded-images/1/20180503T091858.jpeg',
+    	    'each',
+    	    'john',
+    	    'doe',
+    	],
+    	'qty': 0,
+    	'total_price': '$0.00'
+		}
+		return render_template('listing-confirmation.html', order=order)
 
 
 @app.route('/listing/add', methods=['GET', 'POST'])
