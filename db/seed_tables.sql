@@ -7,7 +7,7 @@ insert into public.user (user_id, address_id, email, password, first_name, last_
 values (3, 1, 'jon@meharg.gov', 'jon', 'jon', 'meharg', 'https://avatars2.githubusercontent.com/u/7091411?s=400&v=4', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
 insert into public.user (user_id, address_id, email, password, first_name, last_name, profile_pic, bio)
 values (4, 1, 'tim@ours.org', 'tim', 'tim', 'ours', 'https://avatars2.githubusercontent.com/u/22141109?s=400&v=4', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
-
+alter sequence user_user_id_seq restart with 5;
 -- category table
 insert into public.category (category_id, name) values (1, 'vegetable');
 insert into public.category (category_id, name) values (2, 'fruit');

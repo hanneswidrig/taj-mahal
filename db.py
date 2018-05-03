@@ -121,13 +121,28 @@ def get_user_address_via_listing(listing_id):
 		g.cursor.execute(query, {'id': listing_id})
 		return g.cursor.fetchone()
 
-def find_member(memberEmail):
-    """Look up a single member."""
-    query = """
-    SELECT m.email, m.first_name, m.last_name, p.file_path
-    FROM member AS m
-       LEFT OUTER JOIN photo AS p ON m.email = p.member_email 
-    WHERE email = %(emailParam)s
-    """
-    g.cursor.execute(query, {'emailParam': memberEmail})
-    return g.cursor.fetchone()
+# def find_user(userEmail):
+#     """Look up a single user."""
+#     # query = """
+#     # SELECT m.email, m.first_name, m.last_name, p.file_path
+#     # FROM user AS m
+#     #    LEFT OUTER JOIN photo AS p ON m.email = p.user_email
+#     # WHERE email = %(emailParam)s
+#     # """
+#     query = """
+#         SELECT email, first_name, last_name
+#         FROM user
+#         WHERE email = %(emailParam)s
+#         """
+#     g.cursor.execute(query, {'emailParam': userEmail})
+#     return g.cursor.fetchone()
+
+def create_user(email, first_name, last_name, password, bio):
+    """Create a new user."""
+    query = '''
+INSERT INTO public.user(address_id, email, first_name, last_name, password, bio)
+VALUES (1, %(email)s, %(first)s, %(last)s, %(pass)s, %(bio)s)
+    '''
+    g.cursor.execute(query, {'email': email, 'first': first_name, 'last': last_name, 'pass': password, 'bio': bio})
+    g.connection.commit()
+    return g.cursor.rowcount

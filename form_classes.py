@@ -1,7 +1,7 @@
 from flask_wtf import Form, FlaskForm
 from wtforms import StringField, SubmitField, IntegerField, SelectField, \
 DecimalField, DateField, BooleanField, FileField, SubmitField, PasswordField
-from wtforms.validators import Email, Length, DataRequired, Regexp, NumberRange
+from wtforms.validators import Email, Length, DataRequired, Regexp, NumberRange, EqualTo
 
 class buy_form(FlaskForm):
 		quantity = IntegerField('Quantity to buy', validators=[NumberRange(min=1, message="Must buy more than 0.")])
@@ -32,7 +32,8 @@ class MemberForm(FlaskForm):
 	email = StringField('Email', validators=[Email()])
 	first_name = StringField('First Name', validators=[Length(min=1, max=40)])
 	last_name = StringField('Last Name', validators=[Length(min=1, max=40)])
-	photo = FileField('Photo', validators=[FileRequired()])
-	password = PasswordField('New Password', [InputRequired(), EqualTo('confirm', message='Passwords must match')])
+	#photo = FileField('Photo', validators=[FileRequired()])
+	bio = StringField('Bio', validators=[Length(min=1, max=250)])
+	password = PasswordField('Password', [DataRequired(), EqualTo('confirm', message='Passwords must match')])
 	confirm = PasswordField('Repeat Password')
 	submit = SubmitField('Create Member')

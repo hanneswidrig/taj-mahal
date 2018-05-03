@@ -7,16 +7,39 @@
 {% block content %}
 
     <h2>Create an Account</h2>
-    <form method="POST">
-        <p>
-            <label for="email">Email Address</label>
-            <input id="email" name="email" type="email">
-        </p>
-        <p>
-            <label for="password">Password</label>
-            <input id="password" name="password" type="password">
-        </p>
-        <input type="submit" value="Create my account" class="btn btn-primary btn-success btn-lg btn-block">
-    </form>
+{#    <form method="POST">#}
+{#        <p>#}
+{#            <label for="email">Email Address</label>#}
+{#            <input id="email" name="email" type="email">#}
+{#        </p>#}
+{#        <p>#}
+{#            <label for="password">Password</label>#}
+{#            <input id="password" name="password" type="password">#}
+{#        </p>#}
+{#        <input type="submit" value="Create my account" class="btn btn-primary btn-success btn-lg btn-block">#}
+{#    </form>#}
+{% macro wtfield(field) %}
+    <p>
+        {{ field.label }} {{ field() }}
+        {% if field.errors %}
+            {% for error in field.errors %}
+                {{ error }}
+            {% endfor %}
 
+        {% endif %}
+    </p>
+{% endmacro %}
+<div class="add-body">
+	{% include '_form_errors.html' %}
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ wtfield(form.email) }}
+        {{ wtfield(form.first_name) }}
+        {{ wtfield(form.last_name) }}
+        {{ wtfield(form.bio) }}
+        {{ wtfield(form.password) }}
+        {{ wtfield(form.confirm) }}
+        <p>{{ form.submit(class_="btn btn-primary btn-success btn-lg btn-block") }}</p>
+    </form>
+</div>
 {% endblock %}
