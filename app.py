@@ -201,7 +201,6 @@ def log_in():
 		# our login form has been validated.
 		if login_form.password.data != 'password!0!':
 			# Bogus password
-
 			flash('Invalid password')
 		else:
 			# Correct password. Add a value to the session object
