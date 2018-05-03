@@ -24,5 +24,6 @@
     <p>Logged in as {{ session.email }}; <a href="{{ url_for('logout') }}">log out</a>.</p>
 {% else %}
     <p>Not logged in; <a href="{{ url_for('log_in') }}">log in now</a>.</p>
+    <p> Want to join the community? <a href="{{ url_for('create_account') }}">Create an Account</a>.</p>
 {% endif %}
 {% endblock %}

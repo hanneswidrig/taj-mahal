@@ -234,5 +234,82 @@ def logout():
     flash('User {} logged out'.format(email))
     return redirect(url_for('index'))
 
+@app.route('/account/create', methods=['GET', 'POST'])
+def create_account():
+	# Create new member form. Will automatically populate from request.form.
+	member_form = MemberForm()
+
+	# The validate_on_submit() method checks for two conditions.
+	# 1. If we're handling a GET request, it returns false,
+	#    and we fall through to render_template(), which sends the empty form.
+	# 2. Otherwise, we're handling a POST request, so it runs the validators on the form,
+	#    and returns false if any fail, so we also fall through to render_template()
+	#    which renders the form and shows any error messages stored by the validators.
+	if member_form.validate_on_submit():
+		member = db.find_member(member_form.email.data)
+
+		if member is not None:
+			flash("Member {} already exists".format(member_form.email.data));
+		else:
+			rowcount = db.create_member(member_form.email.data,
+			                            member_form.first_name.data,
+			                            member_form.last_name.data,
+			                            member_form.password.data)
+
+			if rowcount == 1:
+				# Grab the photo data and create an initial database record.
+				uploaded_photo = member_form.photo.data
+				photo_row = db.init_photo(member_form.email.data)
+				print("PHOTO ROW", photo_row)
+
+				# Come up with our own name for the file (more secure than user-supplied file)
+				file_name = "file{:04d}".format(photo_row['id'])
+				print("FILE NAME", file_name)
+
+				# Grab the file extension from the original file and add it to our name.
+				# N.B.: THIS EXPOSES US TO A MODERATE SECURITY RISK: Better to inspect the
+				# file content rather than rely on the user-supplied file name.
+				extension = PurePath(uploaded_photo.filename).suffix
+				file_name += extension
+				print("FILE+EXT", file_name)
+
+				# Create path to file that will be within the 'static' folder of the application
+				file_path = os.path.join('photos', file_name)
+				print("FILE PATH", file_path)
+
+				# Save the file to the 'static' folder; use absolute path based on app.static_folder.
+				save_path = os.path.join(app.static_folder, file_path)
+				uploaded_photo.save(save_path)
+				print("SAVE PATH", save_path)
+
+				# Update the database row now that we know the name and location of the file
+				db.set_photo(photo_row['id'], file_path)
+
+				flash("Member {} created".format(member_form.email.data))
+				return redirect(url_for('all_members'))
+			else:
+				flash("New member not created")
+
+	# We will get here under any of the following conditions:
+	# 1. We're handling a GET request, so we render the (empty) form.
+	# 2. We're handling a POST request, and some validator failed, so we render the
+	#    form with the same values so that the member can try again. The template
+	#    will extract and display the error messages stored on the form object
+	#    by the validators that failed.
+	# 3. The email entered in the form corresponds to an existing member.
+	#    The template will render an error message from the flash.
+	# 4. Something happened when we tried to update the database (rowcount != 1).
+	#    The template will render an error message from the flash.
+	return render_template('member-form.html', form=member_form, mode='create')
+
+	if request.method == 'POST':
+		session= {
+			'email': request.form['email']
+		}
+		flash('User {} created'.format(session['email']))
+		return redirect(url_for('index'))
+	else:
+		return render_template("create-account.html", message="Please sign up")
+
 if __name__ == '__main__':
 		app.run(host='localhost', port=5000, debug=True)

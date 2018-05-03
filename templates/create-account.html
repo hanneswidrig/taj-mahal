@@ -1,0 +1,22 @@
+{% extends "base.html" %} 
+{% block title %}Create an Account{% endblock %}
+{% block bar_title %}Create an Account{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/listing-new.css') }}">
+{% endblock %}
+{% block content %}
+
+    <h2>Create an Account</h2>
+    <form method="POST">
+        <p>
+            <label for="email">Email Address</label>
+            <input id="email" name="email" type="email">
+        </p>
+        <p>
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password">
+        </p>
+        <input type="submit" value="Create my account" class="btn btn-primary btn-success btn-lg btn-block">
+    </form>
+
+{% endblock %}

@@ -23,7 +23,16 @@ class add_listing_form(FlaskForm):
 		date_harvested = DateField('Date Harvested', format="%Y-%m-%d")
 		submit = SubmitField('Add')
 
-class LoginForm(Form):
+class LoginForm(FlaskForm):
     email = StringField('E-mail Address', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log In')
+
+class MemberForm(FlaskForm):
+	email = StringField('Email', validators=[Email()])
+	first_name = StringField('First Name', validators=[Length(min=1, max=40)])
+	last_name = StringField('Last Name', validators=[Length(min=1, max=40)])
+	photo = FileField('Photo', validators=[FileRequired()])
+	password = PasswordField('New Password', [InputRequired(), EqualTo('confirm', message='Passwords must match')])
+	confirm = PasswordField('Repeat Password')
+	submit = SubmitField('Create Member')
