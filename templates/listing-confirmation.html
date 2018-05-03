@@ -21,18 +21,18 @@
 	<div class="confirmation-receipt">
 		<div class="confirmation-item">
 			<div class="cn-item-left">
-				<div class="cn-item-pic"><img src="http://localhost:5000/static/images/uploaded-images/1/20180421T120126.jpeg" alt="product image"></div>
-				<div class="cn-item-name">Grapes</div>
+				<div class="cn-item-pic"><img src="{{ url_for('static', filename=order['listing_detail'][1]) }}" alt="product image"></div>
+				<div class="cn-item-name">{{ order['listing_detail'][0] }}</div>
 			</div>
 			<div class="cn-item-right">
-				<div class="cn-item-qty">45 qty</div>
+				<div class="cn-item-qty">{{ order.qty }} qty</div>
 			</div>
 		</div>
 		<div class="cn-item-total">
 			<div class="cn-item-label">Total</div>
-			<div class="cn-item-price">$27.50</div>
+			<div class="cn-item-price">{{ order.total_price }}</div>
 		</div>
-		<div class="confirmation-address"></div>
+		<div class="confirmation-address" style="display:none;">{{ name }}</div>
 	</div>
 	<div class="confirmation-buttons">
 		<a href="/" style="width:100%;">

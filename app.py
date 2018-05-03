@@ -8,6 +8,7 @@ import urllib.request
 # Imported Project Files
 import db
 import os
+import pprintpp as pp
 import helper_functions
 import route_functions
 from form_classes import buy_form, add_listing_form
@@ -57,40 +58,57 @@ def search():
 		return render_template('search.html', results=results, q=q, c_flag=c_flag)
 
 
-@app.route('/listing/<int:id>')
-def listing_detail(id):
+@app.route('/listing/<int:listing_id>')
+def listing_detail(listing_id):
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
-		listing = db.get_one_listing(id)
+		listing = db.get_one_listing(listing_id)
 		user = db.get_one_user(listing['seller_id'])
 		# NOTE: GAPI uses are limited, only comment out to make feature actually work
 		# NOTE: API CALL FOR GIVEN BUYER -> GIVEN SELLER, applies to all listings by one seller
 		# --------------------------------------------------------------------------
-		# buyer_address = session['zipcode']
-		# seller_address = helper_functions.address_string(listing['seller_id'])
-		# url = "https://maps.googleapis.com/maps/api/directions/json?origin={}&destination={}&key={}".format(buyer_address, seller_address[1], google_maps_key())
-		# result = simplejson.load(urllib.request.urlopen(url))
-		# result_dist = result['routes'][0]['legs'][0]['distance']['text']
-		# result_time = result['routes'][0]['legs'][0]['duration']['text']
-		# print(result_dist, result_time)
-		time_dist = ['10 mins', '4.5 mi']
+		buyer_address = session['zipcode']
+		seller_address = helper_functions.address_string(listing['seller_id'])
+		url = "https://maps.googleapis.com/maps/api/directions/json?origin={}&destination={}&key={}".format(buyer_address, seller_address[1], google_maps_key())
+		result = simplejson.load(urllib.request.urlopen(url))
+		result_dist = result['routes'][0]['legs'][0]['distance']['text']
+		result_time = result['routes'][0]['legs'][0]['duration']['text']
+		time_dist = [result_time, result_dist]
+		# time_dist = ['10 mins', '4.5 mi']
 
 		return render_template('listing-detail.html', 
 		listing=listing, user=user, rel_link=rel_link, time_dist=time_dist)
 
 
-@app.route('/listing/buy/<int:id>', methods=['GET', 'POST'])
-def listing_purchase(id):
+@app.route('/listing/buy/<int:listing_id>', methods=['GET', 'POST'])
+def listing_purchase(listing_id):
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
-		listing = db.get_one_listing(id)
+		listing = db.get_one_listing(listing_id)
 		buy_item = buy_form()
 		ppu = listing['price_per_unit']
 		total_price = "${:.2f}".format(float(listing['price_per_unit']) * 1)
+		qty_purchased = buy_item.quantity.data
 
-		if buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']:
-				db.update_available_quantity(buy_item.quantity.data, id)
-				# return redirect(url_for('listing_confirmation', order_id=id))
-				return redirect(url_for('index'))
-		elif buy_item.validate_on_submit() and buy_item.quantity.data > listing['available_quantity']:
+		if buy_item.validate_on_submit() and qty_purchased <= listing['available_quantity']:
+				db.update_available_quantity(qty_purchased, listing_id)
+				total_cost = round(float(listing['price_per_unit']) * int(qty_purchased))
+				order_created = db.add_new_order(listing_id, qty_purchased, total_cost, 1) # DEFAULT VALUE BC NO ACCOUNTS YET
+
+				if order_created == 1:
+					listing_detail = db.get_listing_details_for_confirmation_page(listing_id)
+					order = {
+						'listing_detail': listing_detail, 
+						'qty': qty_purchased, 
+						'total_price': "${:.2f}".format(total_cost)
+					}
+					name = '{} {}'.format(
+						order['listing_detail'][3].capitalize(),
+						order['listing_detail'][4].capitalize())
+				else:
+					flash('FAILED TO CREATE ORDER')
+				return render_template('listing-confirmation.html', 
+				listing_id=listing_id, order=order, name=name)
+
+		elif buy_item.validate_on_submit() and qty_purchased > listing['available_quantity']:
 				flash('Please select no more than the quantity that is available.')
 		elif buy_item.validate_on_submit():
 				flash('Unable to purchase item')
@@ -99,8 +117,8 @@ def listing_purchase(id):
 		listing=listing, form=buy_item, rel_link=rel_link, total_price=total_price, ppu=ppu)
 
 
-@app.route('/listing/confirmation/<int:order_id>', methods=['GET', 'POST'])
-def listing_confirmation(order_id):
+@app.route('/listing/confirmation/<int:listing_id>', methods=['GET', 'POST'])
+def listing_confirmation(listing_id):
 		return render_template('listing-confirmation.html')
 
 
@@ -115,7 +133,7 @@ def listing_new():
 						# Upload seller's photo
 						approved_file_extensions = {'jpg', 'jpeg', 'png', 'tiff', 'tif', 'bmp'}
 						file_name = secure_filename(listing_form.photo.data.filename)
-						file_extension = file_name.split('.')[-1]
+						file_extension = file_name.split('.')[-1].lower()
 
 						if file_extension in approved_file_extensions:
 							seller_dir = './static/images/uploaded-images/{}'.format(seller_id)

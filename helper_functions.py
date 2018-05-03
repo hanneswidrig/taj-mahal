@@ -44,8 +44,8 @@ def address_string(user_id):
 			address['zipcode'])
 	for_gapi = '{}+{}%2C+{}+{}'.format(
 			'+'.join(address['street'].split(' ')), 
-			address['city'], 
-			address['name'],
+			'+'.join(address['city'].split(' ')), 
+			'+'.join(address['name'].split(' ')),
 			address['zipcode'])
 	return (location_address, for_gapi)
 

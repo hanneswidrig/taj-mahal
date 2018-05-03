@@ -114,3 +114,28 @@ def get_user_address_via_listing(listing_id):
 		'''
 		g.cursor.execute(query, {'id': listing_id})
 		return g.cursor.fetchone()
+
+
+def get_listing_details_for_confirmation_page(listing_id):
+		query = '''
+		SELECT listing.title, listing.photo, listing.unit_type,
+		"user".first_name, "user".last_name FROM (listing
+		INNER JOIN "user" on listing.seller_id = "user".user_id)
+		WHERE listing.listing_id = %(listing_id)s;
+		'''
+		g.cursor.execute(query, {'listing_id': listing_id})
+		return g.cursor.fetchone()
+
+
+def add_new_order(listing_id, qty, total_cost, buyer_id):
+		query = '''
+		INSERT into orders(listing_id, quantity, total_cost, buyer_id, time_placed)
+		values(%(listing_id)s, %(qty)s, %(total_cost)s, %(buyer_id)s, now());
+		'''
+		g.cursor.execute(query, {
+			'listing_id': listing_id, 
+			'qty': qty, 
+			'total_cost': total_cost,
+			'buyer_id': buyer_id})
+		g.connection.commit()
+		return g.cursor.rowcount
