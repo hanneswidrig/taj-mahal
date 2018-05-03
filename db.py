@@ -120,3 +120,14 @@ def get_user_address_via_listing(listing_id):
 		'''
 		g.cursor.execute(query, {'id': listing_id})
 		return g.cursor.fetchone()
+
+def find_member(memberEmail):
+    """Look up a single member."""
+    query = """
+    SELECT m.email, m.first_name, m.last_name, p.file_path
+    FROM member AS m
+       LEFT OUTER JOIN photo AS p ON m.email = p.member_email 
+    WHERE email = %(emailParam)s
+    """
+    g.cursor.execute(query, {'emailParam': memberEmail})
+    return g.cursor.fetchone()

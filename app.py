@@ -10,7 +10,7 @@ import db
 import os
 import helper_functions
 import route_functions
-from form_classes import buy_form, add_listing_form, LoginForm
+from form_classes import buy_form, add_listing_form, LoginForm, MemberForm
 from secrets import secret_flask_key, google_maps_key
 from werkzeug.utils import secure_filename
 app = Flask('Gardener\'s Exchange')
