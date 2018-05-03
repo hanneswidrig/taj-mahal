@@ -212,14 +212,14 @@ def log_in():
 			session['email'] = login_form.email.data
 			#session['remember'] = login_form.remember.data
 			flash('User {} logged in'.format(session['email']))
-			return redirect(url_for('account'))
+			return redirect(url_for('index'))
 
 	# Render the form if:
 	# 1. This is a GET request and we want to send the empty form.
 	# 2. This is a POST request and the form failed to validate.
 	# 3. The form validated but the password was wrong.
 
-	return render_template('index.html', form=login_form)
+	return render_template('log-in.html', form=login_form)
 
 @app.route('/logout')
 def logout():

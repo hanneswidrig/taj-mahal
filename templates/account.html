@@ -17,6 +17,12 @@
 		</div>
 	</a>
 </div>
+
 {% endblock %}
 {% block content %}
+    {% if 'email' in session %}
+    <p>Logged in as {{ session.email }}; <a href="{{ url_for('logout') }}">log out</a>.</p>
+{% else %}
+    <p>Not logged in; <a href="{{ url_for('log_in') }}">log in now</a>.</p>
+{% endif %}
 {% endblock %}
