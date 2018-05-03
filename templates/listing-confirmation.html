@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{% endblock %}
 {% block css %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/listing-confirm.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/listing-confirmation.css') }}">
 {% endblock %}
 {% block app_bar %}
 <a href="{{ rel_link }}" class="app-bar-item">
@@ -14,5 +14,32 @@
 </div>
 {% endblock %}
 {% block content %}
-<h1>ORDER CONFIRMED!</h1>
+<div class="confirmation-title">
+	Order Confirmation
+</div>
+<div class="confirmation-container">
+	<div class="confirmation-receipt">
+		<div class="confirmation-item">
+			<div class="cn-item-left">
+				<div class="cn-item-pic"><img src="http://localhost:5000/static/images/uploaded-images/1/20180421T120126.jpeg" alt="product image"></div>
+				<div class="cn-item-name">Grapes</div>
+			</div>
+			<div class="cn-item-right">
+				<div class="cn-item-qty">45 qty</div>
+			</div>
+		</div>
+		<div class="cn-item-total">
+			<div class="cn-item-label">Total</div>
+			<div class="cn-item-price">$27.50</div>
+		</div>
+		<div class="confirmation-address"></div>
+	</div>
+	<div class="confirmation-buttons">
+		<a href="/" style="width:100%;">
+			<div class="confirmation-close">
+				<button class="btn btn-secondary btn-lg btn-confirmation">Close</button>
+			</div>
+		</a>
+	</div>
+</div>
 {% endblock %}
