@@ -4,6 +4,19 @@ from flask import g
 
 import db
 from app import app
+import sys
+import re
+
+
+def getCSRF(resp):
+	lines = resp.get_data(as_text=True).split("\n")
+	csrf = ""
+	for line in lines:
+		match = re.match(r'.*id="csrf_token".*value="(.*)".*', line)
+		if match is not None:
+			csrf = match.group(1)
+			break
+	return csrf
 
 
 class FlaskTestCase(unittest.TestCase):
@@ -398,7 +411,20 @@ class ApplicationTestCase(FlaskTestCase):
 		self.assertTrue(b'Quantity Available' in resp.data, "Did not find quantity available on buy listing page.")
 		self.assertTrue(b'13' in resp.data, "Did not find expected available quantity on buy listing page.")
 
-		# app.post("/listing/buy/1", data=dict(quantity=2))
+		csrf = getCSRF(resp)
+		resp = self.client.post("/listing/buy/1", data=dict(csrf_token=csrf, quantity=2, submit="Make+Purchase"), follow_redirects=True)
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Did not find site title on listing page.")
+		self.assertTrue(b'Quantity Available' in resp.data, "Did not find quantity available on listing page.")
+		self.assertTrue(b'11' in resp.data, "Did not find expected available quantity on listing page.")
+
+		resp = self.client.get('/listing/buy/1')
+		csrf = getCSRF(resp)
+		resp = self.client.post("/listing/buy/1", data=dict(csrf_token=csrf, quantity=14, submit="Make+Purchase"), follow_redirects=True)
+		self.assertTrue(b'Make Purchase' in resp.data, "Should still be on buy listing page.")
+		self.assertTrue(b'Please select no more than the quantity that is available.' in resp.data, "Missing flash message.")
+		self.assertTrue(b'Quantity Available' in resp.data, "Did not find quantity available on buy listing page.")
+		self.assertTrue(b'11' in resp.data, "Did not find expected available quantity on buy listing page.")
+
 
 	def test_new_listing(self):
 		g.cursor.execute('''
