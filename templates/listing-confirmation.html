@@ -4,6 +4,7 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/listing-confirmation.css') }}">
 {% endblock %}
 {% block content %}
+{% if order %}
 <div class="confirmation-title">
 	Order Confirmation
 </div>
@@ -32,4 +33,11 @@
 		</a>
 	</div>
 </div>
+{% else %}
+<div class="confirmation-container">
+	<div class="confirmation-title">
+		Error 404: Not found
+	</div>
+</div>
+{% endif %}
 {% endblock %}
