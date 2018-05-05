@@ -140,7 +140,6 @@ def listing_new():
 							ogq = float(format(float(listing_form.original_quantity.data), '.2f'))
 							total_price = float(format(ppu * ogq, '.2f'))
 							category_id = int(listing_form.category_id.data)
-
 							rowcount = db.add_listing({
 									'seller_id': seller_id,
 									'title': listing_form.title.data,
@@ -251,47 +250,52 @@ def create_account():
 		if 1 == 0: #member is not None:
 			flash("Member {} already exists".format(user_form.email.data));
 		else:
-			rowcount = db.create_user(user_form.email.data,
-			                            user_form.first_name.data,
-			                            user_form.last_name.data,
-			                            user_form.password.data,
-			                            user_form.bio.data)
+			seller_id = 10
+			# Upload seller's photo
+			approved_file_extensions = {'jpg', 'jpeg', 'png', 'tiff', 'tif', 'bmp'}
+			file_name = secure_filename(user_form.photo.data.filename)
+			file_extension = file_name.split('.')[-1]
 
-			if rowcount == 1:
-				# Grab the photo data and create an initial database record.
-				# uploaded_photo = user_form.photo.data
-				# photo_row = db.init_photo(user_form.email.data)
-				# print("PHOTO ROW", photo_row)
-				#
-				# # Come up with our own name for the file (more secure than user-supplied file)
-				# file_name = "file{:04d}".format(photo_row['id'])
-				# print("FILE NAME", file_name)
-				#
-				# # Grab the file extension from the original file and add it to our name.
-				# # N.B.: THIS EXPOSES US TO A MODERATE SECURITY RISK: Better to inspect the
-				# # file content rather than rely on the user-supplied file name.
-				# extension = PurePath(uploaded_photo.filename).suffix
-				# file_name += extension
-				# print("FILE+EXT", file_name)
-				#
-				# # Create path to file that will be within the 'static' folder of the application
-				# file_path = os.path.join('photos', file_name)
-				# print("FILE PATH", file_path)
-				#
-				# # Save the file to the 'static' folder; use absolute path based on app.static_folder.
-				# save_path = os.path.join(app.static_folder, file_path)
-				# uploaded_photo.save(save_path)
-				# print("SAVE PATH", save_path)
-				#
+			if file_extension in approved_file_extensions:
+				seller_dir = './static/images/uploaded-images/{}'.format(seller_id)
+				if not os.path.exists(seller_dir):
+					os.mkdir(seller_dir)
+				file_path = os.path.join('images/uploaded-images/{}/'.format(seller_id), file_name)
+				user_form.photo.data.save('static/' + file_path)
+
+				# Generate new filename to prevent overwrites
+				current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
+				proc_name = '{}.{}'.format(current_time, file_extension)
+				os.chdir('./static/images/uploaded-images/{}/'.format(seller_id))
+				os.rename(file_name, proc_name)
+				pic_location = 'images/uploaded-images/{}/{}'.format(seller_id, proc_name)
+
+				# Resize photo to width < 1024 and compress file size
+				img = Image.open(proc_name)
+				maxsize = (1024, 1024)
+				img.thumbnail(maxsize, Image.ANTIALIAS)
+				img.save(proc_name, optimize=True, quality=50)
 				# # Update the database row now that we know the name and location of the file
-				# db.set_photo(photo_row['id'], file_path)
-				session = {
-					'email': request.form['email']
-				}
-				flash('User {} created'.format(session['email']))
-				return redirect(url_for('index'))
+				rowcount = db.create_user(user_form.email.data,
+				                            user_form.first_name.data,
+				                            user_form.last_name.data,
+				                            pic_location,
+				                            user_form.password.data,
+				                            user_form.bio.data)
+				if rowcount == 1:
+					session = {
+						'email': request.form['email']
+					}
+					flash('User {} created'.format(session['email']))
+					return redirect(url_for('index'))
+				else:
+					flash('New user not created.')
 			else:
-				flash("New member not created")
+				flash('Invalid image file format, please use PNG, JPG, or JPEG.')
+
+
+			# else:
+			# 	flash("New member not created")
 
 	# We will get here under any of the following conditions:
 	# 1. We're handling a GET request, so we render the (empty) form.

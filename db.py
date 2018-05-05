@@ -137,12 +137,12 @@ def get_user_address_via_listing(listing_id):
 #     g.cursor.execute(query, {'emailParam': userEmail})
 #     return g.cursor.fetchone()
 
-def create_user(email, first_name, last_name, password, bio):
+def create_user(email, first_name, last_name, photo, password, bio):
     """Create a new user."""
     query = '''
-INSERT INTO public.user(address_id, email, first_name, last_name, password, bio)
-VALUES (1, %(email)s, %(first)s, %(last)s, %(pass)s, %(bio)s)
+INSERT INTO public.user(address_id, email, first_name, last_name, profile_pic, password, bio)
+VALUES (1, %(email)s, %(first)s, %(last)s, %(photo)s, %(pass)s, %(bio)s)
     '''
-    g.cursor.execute(query, {'email': email, 'first': first_name, 'last': last_name, 'pass': password, 'bio': bio})
+    g.cursor.execute(query, {'email': email, 'first': first_name, 'last': last_name, 'photo': photo, 'pass': password, 'bio': bio})
     g.connection.commit()
     return g.cursor.rowcount
