@@ -10,7 +10,7 @@ create table "user"
     constraint user_pkey
     primary key,
   address_id  integer     not null,
-  username    varchar(64) not null,
+  email    varchar(64) not null,
   password    varchar(64) not null,
   first_name  varchar(64) not null,
   last_name   varchar(64) not null,
@@ -19,7 +19,7 @@ create table "user"
 );
 
 create unique index user_user_id_uindex on "user" (user_id);
-create unique index user_username_uindex on "user" (username);
+create unique index user_email_uindex on "user" (email);
 
 create table category
 (

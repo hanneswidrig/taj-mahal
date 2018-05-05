@@ -1,9 +1,8 @@
 from flask_wtf import Form, FlaskForm
 from flask_wtf.file import FileRequired
 from wtforms import StringField, SubmitField, IntegerField, SelectField, \
-DecimalField, DateField, BooleanField, FileField, SubmitField, TextAreaField
-from wtforms.validators import Email, Length, DataRequired, Regexp, \
-NumberRange
+DecimalField, DateField, BooleanField, FileField, SubmitField, TextAreaField, PasswordField
+from wtforms.validators import Email, Length, DataRequired, Regexp, NumberRange, EqualTo
 
 class buy_form(FlaskForm):
 		quantity = IntegerField('Quantity to buy', validators=[NumberRange(min=1, message="Must buy more than 0.")])
@@ -11,9 +10,6 @@ class buy_form(FlaskForm):
 
 
 class add_listing_form(FlaskForm):
-		#c = []
-		#for category in FlaskForm['categories']:
-			#c.append((category['category_id'], category['name']))
 		title = StringField('Title', validators=[Length(min=1, message="A title is required.")])
 		photo = FileField('Product Photo', validators=[FileRequired(message="Please choose an image to upload.")])
 		description = TextAreaField('Description', validators=[Length(min=1, message="A description is required.")])
@@ -24,3 +20,19 @@ class add_listing_form(FlaskForm):
 		is_tradeable = BooleanField('Should this product be tradeable?')
 		date_harvested = DateField('Date Harvested', format="%Y-%m-%d")
 		submit = SubmitField('Add')
+
+class login_form(FlaskForm):
+    email = StringField('E-mail Address', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Log In')
+
+class member_form(FlaskForm):
+		email = StringField('Email', validators=[Email()])
+		first_name = StringField('First Name', validators=[Length(min=1, max=40)])
+		last_name = StringField('Last Name', validators=[Length(min=1, max=40)])
+		address = StringField ('Pickup address', validators=[Length(min=1, max= 250)])
+		photo = FileField('Photo')
+		bio = StringField('Bio', validators=[Length(min=1, max=250)])
+		password = PasswordField('Password', [DataRequired(), EqualTo('confirm', message='Passwords must match')])
+		confirm = PasswordField('Repeat Password')
+		submit = SubmitField('Create Member')
