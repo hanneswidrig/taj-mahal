@@ -8,11 +8,13 @@ import urllib.request
 # Imported Project Files
 import db
 import os
+import pprintpp as pp
 import helper_functions
 import route_functions
-from form_classes import buy_form, add_listing_form, LoginForm, MemberForm
+from form_classes import buy_form, add_listing_form
 from secrets import secret_flask_key, google_maps_key
 from werkzeug.utils import secure_filename
+
 app = Flask('Gardener\'s Exchange')
 app.config['SECRET_KEY'] = secret_flask_key()
 app.config['UPLOAD_FOLDER'] = 'images/uploaded-images/'
@@ -22,8 +24,7 @@ app.config['UPLOAD_FOLDER'] = 'images/uploaded-images/'
 def before_request():
 		db.open_db()
 		if not session.get('zipcode'):
-			session['zipcode'] = '46989'
-			# NEEDS TO ASK USER FOR ACTUAL LOCATION
+				session['zipcode'] = '46989'
 
 
 def after_request():
@@ -34,7 +35,8 @@ def after_request():
 def index():
 		listings = db.all_listings()
 		for listing in listings:
-				listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
+				listing['price_per_unit'] = '${:,.2f}'.format(
+						listing['price_per_unit'])
 		return render_template('index.html', listings=listings)
 
 
@@ -56,131 +58,164 @@ def search():
 		return render_template('search.html', results=results, q=q, c_flag=c_flag)
 
 
-@app.route('/listing/<int:id>')
-def listing_detail(id):
+@app.route('/listing/<int:listing_id>')
+def listing_detail(listing_id):
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
-		listing = db.get_one_listing(id)
+		listing = db.get_one_listing(listing_id)
 		user = db.get_one_user(listing['seller_id'])
 		# NOTE: GAPI uses are limited, only comment out to make feature actually work
 		# NOTE: API CALL FOR GIVEN BUYER -> GIVEN SELLER, applies to all listings by one seller
 		# --------------------------------------------------------------------------
-		# buyer_address = session['zipcode']
-		# seller_address = helper_functions.address_string(listing['seller_id'])
-		# url = "https://maps.googleapis.com/maps/api/directions/json?origin={}&destination={}&key={}".format(buyer_address, seller_address[1], google_maps_key())
-		# result = simplejson.load(urllib.request.urlopen(url))
-		# result_dist = result['routes'][0]['legs'][0]['distance']['text']
-		# result_time = result['routes'][0]['legs'][0]['duration']['text']
-		# print(result_dist, result_time)
-		time_dist = ['10 mins', '4.5 mi']
+		buyer_address = session['zipcode']
+		seller_address = helper_functions.address_string(listing['seller_id'])
+		url = "https://maps.googleapis.com/maps/api/directions/json?origin={}&destination={}&key={}".format(
+				buyer_address, seller_address[1], google_maps_key())
+		result = simplejson.load(urllib.request.urlopen(url))
+		result_dist = result['routes'][0]['legs'][0]['distance']['text']
+		result_time = result['routes'][0]['legs'][0]['duration']['text']
+		time_dist = [result_time, result_dist]
+		# time_dist = ['10 mins', '4.5 mi']
 
-		return render_template('listing-detail.html', 
-		listing=listing, user=user, rel_link=rel_link, time_dist=time_dist)
+		return render_template('listing-detail.html',
+													 listing=listing, user=user, rel_link=rel_link, time_dist=time_dist)
 
 
-@app.route('/listing/buy/<int:id>', methods=['GET', 'POST'])
-def listing_purchase(id):
+@app.route('/listing/buy/<int:listing_id>', methods=['GET', 'POST'])
+def listing_purchase(listing_id):
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
-		listing = db.get_one_listing(id)
+		listing = db.get_one_listing(listing_id)
 		buy_item = buy_form()
 		ppu = listing['price_per_unit']
 		total_price = "${:.2f}".format(float(listing['price_per_unit']) * 1)
+		qty_purchased = buy_item.quantity.data
 
-		if buy_item.validate_on_submit() and buy_item.quantity.data <= listing['available_quantity']:
-				db.update_available_quantity(buy_item.quantity.data, id)
-				return redirect(url_for('listing_confirmation', order_id=id))
-		elif buy_item.validate_on_submit() and buy_item.quantity.data > listing['available_quantity']:
+		if buy_item.validate_on_submit() and qty_purchased <= listing['available_quantity']:
+				db.update_available_quantity(qty_purchased, listing_id)
+				total_cost = round(
+						float(listing['price_per_unit']) * int(qty_purchased))
+				# DEFAULT VALUE BC NO ACCOUNTS YET
+				order_created = db.add_new_order(
+						listing_id, qty_purchased, total_cost, 1)
+
+				if order_created == 1:
+						listing_detail = db.get_listing_details_for_confirmation_page(
+								listing_id)
+						order = {
+								'listing_detail': listing_detail,
+								'qty': qty_purchased,
+								'total_price': "${:.2f}".format(total_cost)
+						}
+						name = '{} {}'.format(
+								order['listing_detail'][3].capitalize(),
+								order['listing_detail'][4].capitalize())
+				else:
+						flash('FAILED TO CREATE ORDER')
+				return render_template('listing-confirmation.html',
+															 listing_id=listing_id, order=order, name=name)
+
+		elif buy_item.validate_on_submit() and qty_purchased > listing['available_quantity']:
 				flash('Please select no more than the quantity that is available.')
 		elif buy_item.validate_on_submit():
 				flash('Unable to purchase item')
 
-		return render_template('listing-purchase.html', 
-		listing=listing, form=buy_item, rel_link=rel_link, total_price=total_price, ppu=ppu)
+		return render_template('listing-purchase.html',
+													 listing=listing, form=buy_item, rel_link=rel_link, total_price=total_price, ppu=ppu)
 
 
-@app.route('/listing/confirmation/<int:order_id>', methods=['GET', 'POST'])
-def listing_confirmation(order_id):
+@app.route('/listing/confirmation/<int:listing_id>', methods=['GET', 'POST'])
+def listing_confirmation(listing_id):
 		return render_template('listing-confirmation.html')
 
 
 @app.route('/listing/add', methods=['GET', 'POST'])
 def listing_new():
-		rel_link = helper_functions.relative_link(request.path, request.referrer)	
+		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		listing_form = add_listing_form()
 		if request.method == 'POST':
 				if listing_form.submit.data and listing_form.validate_on_submit():
 						seller_id = 1
 
 						# Upload seller's photo
-						approved_file_extensions = {'jpg', 'jpeg', 'png', 'tiff', 'tif', 'bmp'}
+						approved_file_extensions = {
+								'jpg', 'jpeg', 'png', 'tiff', 'tif', 'bmp'}
 						file_name = secure_filename(listing_form.photo.data.filename)
-						file_extension = file_name.split('.')[-1]
+						file_extension = file_name.split('.')[-1].lower()
 
 						if file_extension in approved_file_extensions:
-							seller_dir = './static/images/uploaded-images/{}'.format(seller_id)
-							if not os.path.exists(seller_dir):
-								os.mkdir(seller_dir)
-							file_path = os.path.join('images/uploaded-images/{}/'.format(seller_id), file_name)
-							listing_form.photo.data.save('static/' + file_path)
+								seller_dir = './static/images/uploaded-images/{}'.format(
+										seller_id)
+								if not os.path.exists(seller_dir):
+										os.mkdir(seller_dir)
+								file_path = os.path.join(
+										'images/uploaded-images/{}/'.format(seller_id), file_name)
+								listing_form.photo.data.save('static/' + file_path)
 
-							# Generate new filename to prevent overwrites
-							current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
-							proc_name = '{}.{}'.format(current_time, file_extension)
-							os.chdir('./static/images/uploaded-images/{}/'.format(seller_id))
-							os.rename(file_name, proc_name)
-							pic_location = 'images/uploaded-images/{}/{}'.format(seller_id, proc_name)
+								# Generate new filename to prevent overwrites
+								current_time = pendulum.now(
+										'America/Indianapolis').format(r'%Y%m%dT%H%M%S')
+								proc_name = '{}.{}'.format(current_time, file_extension)
+								os.chdir('./static/images/uploaded-images/{}/'.format(seller_id))
+								os.rename(file_name, proc_name)
+								pic_location = 'images/uploaded-images/{}/{}'.format(
+										seller_id, proc_name)
 
-							# Resize photo to width < 1024 and compress file size
-							img = Image.open(proc_name)
-							maxsize = (1024, 1024)
-							img.thumbnail(maxsize, Image.ANTIALIAS)
-							img.save(proc_name, optimize=True, quality=50)
+								# Resize photo to width < 1024 and compress file size
+								img = Image.open(proc_name)
+								maxsize = (1024, 1024)
+								img.thumbnail(maxsize, Image.ANTIALIAS)
+								img.save(proc_name, optimize=True, quality=50)
 
-							# Properly calculate monetary values
-							ppu = float(format(float(listing_form.price_per_unit.data), '.2f'))
-							ogq = float(format(float(listing_form.original_quantity.data), '.2f'))
-							total_price = float(format(ppu * ogq, '.2f'))
-							category_id = int(listing_form.category_id.data)
-							rowcount = db.add_listing({
-									'seller_id': seller_id,
-									'title': listing_form.title.data,
-									'photo': pic_location,
-									'description': listing_form.description.data,
-									'original_quantity': int(listing_form.original_quantity.data),
-									'available_quantity': int(listing_form.original_quantity.data),
-									'unit_type': listing_form.unit_type.data,
-									'price_per_unit': ppu,
-									'total_price': total_price,
-									'category_id': category_id,
-									'date_harvested': listing_form.date_harvested.data,
-									'is_tradeable': listing_form.is_tradeable.data})
+								# Properly calculate monetary values
+								ppu = float(
+										format(float(listing_form.price_per_unit.data), '.2f'))
+								ogq = float(
+										format(float(listing_form.original_quantity.data), '.2f'))
+								total_price = float(format(ppu * ogq, '.2f'))
+								category_id = int(listing_form.category_id.data)
 
-							if rowcount == 1:
-									flash('New listing for {0} created.'.format(listing_form.title.data))
-									return redirect(url_for('index'))
-							else:
-									flash('New listing not created.')
+								rowcount = db.add_listing({
+										'seller_id': seller_id,
+										'title': listing_form.title.data,
+										'photo': pic_location,
+										'description': listing_form.description.data,
+										'original_quantity': int(listing_form.original_quantity.data),
+										'available_quantity': int(listing_form.original_quantity.data),
+										'unit_type': listing_form.unit_type.data,
+										'price_per_unit': ppu,
+										'total_price': total_price,
+										'category_id': category_id,
+										'date_harvested': listing_form.date_harvested.data,
+										'is_tradeable': listing_form.is_tradeable.data})
+
+								if rowcount == 1:
+										flash('New listing for {0} created.'.format(
+												listing_form.title.data))
+										return redirect(url_for('index'))
+								else:
+										flash('New listing not created.')
 						else:
-							flash('Invalid image file format, please use PNG, JPG, or JPEG.')
+								flash('Invalid image file format, please use PNG, JPG, or JPEG.')
 
 		return render_template('listing-new.html', form=listing_form, rel_link=rel_link)
 
 
 @app.route('/user/<int:user_id>')
 def user_profile(user_id):
-		rel_link = helper_functions.relative_link(request.path, request.referrer)		
+		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		user = db.get_one_user(user_id)
 		listings = db.get_user_listings(user_id)
 		address = helper_functions.address_string(user_id)
 		map_url = helper_functions.address_url(address[1])
-		name = '{} {}'.format(user['first_name'].capitalize(), user['last_name'].capitalize())
-		
-		return render_template('profile.html', 
-		rel_link=rel_link, 
-		name=name, 
-		user=user, 
-		listings=listings, 
-		location_address=address[0], 
-		location_link=map_url)
+		name = '{} {}'.format(user['first_name'].capitalize(),
+													user['last_name'].capitalize())
+
+		return render_template('profile.html',
+													 rel_link=rel_link,
+													 name=name,
+													 user=user,
+													 listings=listings,
+													 location_address=address[0],
+													 location_link=map_url)
 
 
 @app.route('/account')
@@ -191,124 +226,6 @@ def account():
 @app.route('/settings')
 def settings():
 		return render_template('settings.html')
-
-@app.route('/login', methods=['GET', 'POST'])
-def log_in():
-	login_form = LoginForm()
-	if login_form.validate_on_submit():
-		# If we get here, we've received a POST request and
-		# our login form has been validated.
-		user = db.get_one_login(login_form.email.data)
-		if user == None:
-			# Bogus password
-			flash('Invalid email')
-		elif login_form.password.data != user['password']:
-			# Bogus password
-			flash('Invalid password')
-		else:
-			# Correct password. Add a value to the session object
-			# to show that the user is logged in. Redirect to home page.
-			session['email'] = login_form.email.data
-			#session['remember'] = login_form.remember.data
-			flash('User {} logged in'.format(session['email']))
-			return redirect(url_for('index'))
-
-	# Render the form if:
-	# 1. This is a GET request and we want to send the empty form.
-	# 2. This is a POST request and the form failed to validate.
-	# 3. The form validated but the password was wrong.
-
-	return render_template('log-in.html', form=login_form)
-
-@app.route('/logout')
-def logout():
-    # Remove the 'email' entry from the session.
-    # The pop() method behaves as follows:
-    # 1. If 'email' is in the session, remove it and return its value.
-    #    The value will be the user name stored there by the login() view function.
-    #    Removing the email from the session has the effect of logging out the user.
-    # 2. If 'email' is not in the session, return the second argument (None)
-    #session.pop('remember', None)
-    email = session.pop('email', None)
-    flash('User {} logged out'.format(email))
-    return redirect(url_for('index'))
-
-@app.route('/account/create', methods=['GET', 'POST'])
-def create_account():
-	# Create new member form. Will automatically populate from request.form.
-	user_form = MemberForm()
-
-	# The validate_on_submit() method checks for two conditions.
-	# 1. If we're handling a GET request, it returns false,
-	#    and we fall through to render_template(), which sends the empty form.
-	# 2. Otherwise, we're handling a POST request, so it runs the validators on the form,
-	#    and returns false if any fail, so we also fall through to render_template()
-	#    which renders the form and shows any error messages stored by the validators.
-	if user_form.validate_on_submit():
-		#member = db.find_user(user_form.email.data)
-
-		if 1 == 0: #member is not None:
-			flash("Member {} already exists".format(user_form.email.data));
-		else:
-			seller_id = 10
-			# Upload seller's photo
-			approved_file_extensions = {'jpg', 'jpeg', 'png', 'tiff', 'tif', 'bmp'}
-			file_name = secure_filename(user_form.photo.data.filename)
-			file_extension = file_name.split('.')[-1]
-
-			if file_extension in approved_file_extensions:
-				seller_dir = './static/images/uploaded-images/{}'.format(seller_id)
-				if not os.path.exists(seller_dir):
-					os.mkdir(seller_dir)
-				file_path = os.path.join('images/uploaded-images/{}/'.format(seller_id), file_name)
-				user_form.photo.data.save('static/' + file_path)
-
-				# Generate new filename to prevent overwrites
-				current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
-				proc_name = '{}.{}'.format(current_time, file_extension)
-				os.chdir('./static/images/uploaded-images/{}/'.format(seller_id))
-				os.rename(file_name, proc_name)
-				pic_location = 'images/uploaded-images/{}/{}'.format(seller_id, proc_name)
-
-				# Resize photo to width < 1024 and compress file size
-				img = Image.open(proc_name)
-				maxsize = (1024, 1024)
-				img.thumbnail(maxsize, Image.ANTIALIAS)
-				img.save(proc_name, optimize=True, quality=50)
-				# # Update the database row now that we know the name and location of the file
-				rowcount = db.create_user(user_form.email.data,
-				                            user_form.first_name.data,
-				                            user_form.last_name.data,
-				                            pic_location,
-				                            user_form.password.data,
-				                            user_form.bio.data)
-				if rowcount == 1:
-					session = {
-						'email': request.form['email']
-					}
-					flash('User {} created'.format(session['email']))
-					return redirect(url_for('index'))
-				else:
-					flash('New user not created.')
-			else:
-				flash('Invalid image file format, please use PNG, JPG, or JPEG.')
-
-
-			# else:
-			# 	flash("New member not created")
-
-	# We will get here under any of the following conditions:
-	# 1. We're handling a GET request, so we render the (empty) form.
-	# 2. We're handling a POST request, and some validator failed, so we render the
-	#    form with the same values so that the member can try again. The template
-	#    will extract and display the error messages stored on the form object
-	#    by the validators that failed.
-	# 3. The email entered in the form corresponds to an existing member.
-	#    The template will render an error message from the flash.
-	# 4. Something happened when we tried to update the database (rowcount != 1).
-	#    The template will render an error message from the flash.
-	return render_template('create-account.html', form=user_form, mode='create')
-
 
 
 if __name__ == '__main__':

@@ -18,7 +18,7 @@ def close_db():
 
 
 def all_listings():
-    g.cursor.execute('''SELECT * FROM listing ORDER BY date_created DESC;''')
+    g.cursor.execute('''SELECT * FROM listing WHERE available_quantity > 0 ORDER BY date_created DESC;''')
     return g.cursor.fetchall()
 
 
@@ -45,7 +45,7 @@ def search_like_users(search_query):
     search_query = '%' + search_query + '%'
     query = '''
 		select * from "user" 
-		where lower(email) LIKE  %(search_query)s 
+		where lower(username) LIKE  %(search_query)s 
 		or lower(first_name) LIKE  %(search_query)s 
 		or lower(last_name) LIKE  %(search_query)s;
 		'''
@@ -77,12 +77,6 @@ def get_one_user(user_id):
 		return g.cursor.fetchone()
 
 
-def get_one_login(email):
-	g.cursor.execute('SELECT * FROM "user" WHERE email = %(email)s;', {'email': email})
-	return g.cursor.fetchone()
-
-
-
 def get_user_listings(user_id):
 		g.cursor.execute('SELECT * FROM listing where seller_id = %(id)s;', {'id': user_id})
 		return g.cursor.fetchall()
@@ -98,7 +92,7 @@ def update_available_quantity(bought_amount, listing_id):
     g.connection.commit()
     return g.cursor.rowcount
 
-
+  
 def get_user_address(user_id):
 		query = '''
 		SELECT street, city, state.name, abbrev, zipcode FROM ("user"
@@ -121,28 +115,27 @@ def get_user_address_via_listing(listing_id):
 		g.cursor.execute(query, {'id': listing_id})
 		return g.cursor.fetchone()
 
-# def find_user(userEmail):
-#     """Look up a single user."""
-#     # query = """
-#     # SELECT m.email, m.first_name, m.last_name, p.file_path
-#     # FROM user AS m
-#     #    LEFT OUTER JOIN photo AS p ON m.email = p.user_email
-#     # WHERE email = %(emailParam)s
-#     # """
-#     query = """
-#         SELECT email, first_name, last_name
-#         FROM user
-#         WHERE email = %(emailParam)s
-#         """
-#     g.cursor.execute(query, {'emailParam': userEmail})
-#     return g.cursor.fetchone()
 
-def create_user(email, first_name, last_name, photo, password, bio):
-    """Create a new user."""
-    query = '''
-INSERT INTO public.user(address_id, email, first_name, last_name, profile_pic, password, bio)
-VALUES (1, %(email)s, %(first)s, %(last)s, %(photo)s, %(pass)s, %(bio)s)
-    '''
-    g.cursor.execute(query, {'email': email, 'first': first_name, 'last': last_name, 'photo': photo, 'pass': password, 'bio': bio})
-    g.connection.commit()
-    return g.cursor.rowcount
+def get_listing_details_for_confirmation_page(listing_id):
+		query = '''
+		SELECT listing.title, listing.photo, listing.unit_type,
+		"user".first_name, "user".last_name FROM (listing
+		INNER JOIN "user" on listing.seller_id = "user".user_id)
+		WHERE listing.listing_id = %(listing_id)s;
+		'''
+		g.cursor.execute(query, {'listing_id': listing_id})
+		return g.cursor.fetchone()
+
+
+def add_new_order(listing_id, qty, total_cost, buyer_id):
+		query = '''
+		INSERT into orders(listing_id, quantity, total_cost, buyer_id, time_placed)
+		values(%(listing_id)s, %(qty)s, %(total_cost)s, %(buyer_id)s, now());
+		'''
+		g.cursor.execute(query, {
+			'listing_id': listing_id, 
+			'qty': qty, 
+			'total_cost': total_cost,
+			'buyer_id': buyer_id})
+		g.connection.commit()
+		return g.cursor.rowcount

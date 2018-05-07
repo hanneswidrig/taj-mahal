@@ -1,5 +1,5 @@
 body {
-	background-color: #FFF;
+	background-color: #fafafa;
 }
 main {
 	padding-bottom: 100px;
@@ -7,12 +7,17 @@ main {
 .container-fluid {
 	max-width: 1024px;
 }
-::placeholder {
-	color  : #CCC;
-	opacity: 1;
+.form-control::-webkit-input-placeholder {
+	color:#DDD;
 }
-::-ms-input-placeholder {
-	color: #CCC;
+.form-control::-moz-placeholder {
+	color:#DDD;
+}
+.form-control::-ms-placeholder {
+	color:#DDD;
+}
+.form-control::placeholder {
+	color:#DDD;
 }
 .app-bar {
 	display         : flex;
@@ -160,12 +165,14 @@ a.navi-nav-item {
 }
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { 
+	appearance        : none;
 	-webkit-appearance: none;
 	display           : none;
   margin            : 0;
 }
 input[type='number'] {
-	-moz-appearance:textfield;
+	-moz-appearance: textfield;
+	appearance     : auto;
 }
 .no-results {
 	display        : flex;

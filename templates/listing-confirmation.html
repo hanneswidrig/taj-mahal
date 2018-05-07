@@ -1,18 +1,43 @@
 {% extends "base.html" %}
 {% block title %}{% endblock %}
 {% block css %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/listing-confirm.css') }}">
-{% endblock %}
-{% block app_bar %}
-<a href="{{ rel_link }}" class="app-bar-item">
-	<div class="go-back">
-		<i class="material-icons">arrow_back</i>
-	</div>
-</a>
-<div class="app-bar-item">
-	<div class="app-bar-filler"></div>
-</div>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/listing-confirmation.css') }}">
 {% endblock %}
 {% block content %}
-<h1>ORDER CONFIRMED!</h1>
+{% if order %}
+<div class="confirmation-title">
+	Order Confirmation
+</div>
+<div class="confirmation-container">
+	<div class="confirmation-receipt">
+		<div class="confirmation-item">
+			<div class="cn-item-left">
+				<div class="cn-item-pic"><img src="{{ url_for('static', filename=order['listing_detail'][1]) }}" alt="product image"></div>
+				<div class="cn-item-name">{{ order['listing_detail'][0] }}</div>
+			</div>
+			<div class="cn-item-right">
+				<div class="cn-item-qty">{{ order.qty }} qty</div>
+			</div>
+		</div>
+		<div class="cn-item-total">
+			<div class="cn-item-label">Total</div>
+			<div class="cn-item-price">{{ order.total_price }}</div>
+		</div>
+		<div class="confirmation-address" style="display:none;">{{ name }}</div>
+	</div>
+	<div class="confirmation-buttons">
+		<a href="/" style="width:100%;">
+			<div class="confirmation-close">
+				<button class="btn btn-secondary btn-lg btn-confirmation">Close</button>
+			</div>
+		</a>
+	</div>
+</div>
+{% else %}
+<div class="confirmation-container">
+	<div class="confirmation-title">
+		Error 404: Not found
+	</div>
+</div>
+{% endif %}
 {% endblock %}

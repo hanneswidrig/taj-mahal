@@ -24,36 +24,50 @@
 					{{ form.title(class_='form-control') }}
 			</div>
 			<div class="form-group">
-					{{ form.photo.label }}
-					{{ form.photo(class_='form-control', accept='image/*') }}
+				{{ form.photo.label }}
+				<div class="custom-file">
+					<label class="custom-file-label" for="cFile">Upload...</label>
+					{{ form.photo(class_='custom-file-input', accept='image/*', id='cFile') }}
+				</div>
 			</div>
 			<div class="form-group">
 					{{ form.description.label }}
 					{{ form.description(class_='form-control') }}
 			</div>
-			<div class="form-group">
+			<div class="form-row">
+				<div class="form-group col">
 					{{ form.original_quantity.label }}
-					{{ form.original_quantity(class_='form-control') }}
-			</div>
-			<div class="form-group">
+					{{ form.original_quantity(class_='form-control', placeholder='0', type='number') }}
+				</div>
+				<div class="form-group col">
 					{{ form.unit_type.label }}
 					{{ form.unit_type(class_='form-control', placeholder='each, bushel, lb...') }}
+				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-row">
+				<div class="form-group col">
 					{{ form.price_per_unit.label }}
-					{{ form.price_per_unit(class_='form-control', placeholder='4.99', type='number') }}
-			</div>
-			<div class="form-group">
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<span class="input-group-text">$</span>
+						</div>
+						{{ form.price_per_unit(class_='form-control', placeholder='0.00', type='number', step='any') }}
+					</div>
+				</div>
+				<div class="form-group col">
 					{{ form.category_id.label }}
-					{{ form.category_id(class_='form-control') }}
+					{{ form.category_id(class_='custom-select') }}
+				</div>
+			</div>
+			<div class="form-group" style="margin-top: -15px;">
+				{{ form.date_harvested.label }}
+				{{ form.date_harvested(class_='form-control', placeholder='YYYY-MM-DD' ) }}
 			</div>
 			<div class="form-group">
-					{{ form.is_tradeable.label }}
-					{{ form.is_tradeable(class_='form-control') }}
-			</div>
-			<div class="form-group">
-					{{ form.date_harvested.label }}
-					{{ form.date_harvested(class_='form-control', placeholder='YYYY-MM-DD' ) }}
+				<div class="custom-control custom-checkbox">
+					{{ form.is_tradeable(class_='custom-control-input', id='cC1') }}
+					<label class="custom-control-label" for="cC1">{{ form.is_tradeable.label }}</label>
+				</div>
 			</div>
 			{{ form.submit(class_="btn btn-primary btn-success btn-lg btn-block") }}
 	</form>

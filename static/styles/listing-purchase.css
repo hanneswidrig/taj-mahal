@@ -51,6 +51,7 @@ input[type=submit].btn-block {
 	text-align   : center; 
 	border       : 2px solid transparent;
 	border-radius: 4px;
+	background   : transparent;
 }
 .totals {
 	display: flex;

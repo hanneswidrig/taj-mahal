@@ -1,11 +1,22 @@
-import tempfile
 import unittest
-import os
 
-from flask import g, url_for
+from flask import g
 
 import db
 from app import app
+import sys
+import re
+
+
+def getCSRF(resp):
+	lines = resp.get_data(as_text=True).split("\n")
+	csrf = ""
+	for line in lines:
+		match = re.match(r'.*id="csrf_token".*value="(.*)".*', line)
+		if match is not None:
+			csrf = match.group(1)
+			break
+	return csrf
 
 
 class FlaskTestCase(unittest.TestCase):
@@ -46,44 +57,13 @@ class DatabaseTestCase(FlaskTestCase):
 	"""------------------------"""
 
 	def test_all_listings(self):
-		g.cursor.execute('''
-			insert into public.category (name) values
-			('test')
-		''')
+		listings = db.all_listings()
+		self.assertEqual(len(listings), 0)
 
-		db.add_listing({
-			'seller_id': 0,
-			'title': "addtest1",
-			'photo': "",
-			'description': "This is a test.",
-			'original_quantity': 10,
-			'available_quantity': 10,
-			'unit_type': "each",
-			'price_per_unit': 1.1,
-			'total_price': 11.0,
-			'category_id': 1,
-			'date_harvested': "2018-04-19",
-			'is_tradeable': True})
+		self.execute_sql("db\seed_tables.sql")
 
 		listings = db.all_listings()
-		self.assertEqual(len(listings), 1)
-
-		db.add_listing({
-			'seller_id': 0,
-			'title': "addtest2",
-			'photo': "",
-			'description': "This is a test.",
-			'original_quantity': 10,
-			'available_quantity': 10,
-			'unit_type': "each",
-			'price_per_unit': 1.1,
-			'total_price': 11.0,
-			'category_id': 1,
-			'date_harvested': "2018-04-19",
-			'is_tradeable': True})
-
-		listings = db.all_listings()
-		self.assertEqual(len(listings), 2)
+		self.assertEqual(len(listings), 5)
 
 	def test_title_like_listings(self):
 		g.cursor.execute('''
@@ -124,6 +104,79 @@ class DatabaseTestCase(FlaskTestCase):
 
 		listings = db.title_like_listings("addtest")
 		self.assertEqual(len(listings), 2)
+
+	def test_search_like_category(self):
+		listings = db.search_like_category("veg")
+		self.assertEqual(len(listings), 0)
+
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('vegetable')
+		''')
+
+		db.add_listing({
+			'seller_id': 0,
+			'title': "addtest1",
+			'photo': "",
+			'description': "This is a test.",
+			'original_quantity': 10,
+			'available_quantity': 10,
+			'unit_type': "each",
+			'price_per_unit': 1.1,
+			'total_price': 11.0,
+			'category_id': 1,
+			'date_harvested': "2018-04-19",
+			'is_tradeable': True})
+
+		listings = db.search_like_category("veg")
+		self.assertEqual(len(listings), 1)
+
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('fruit')
+		''')
+
+		db.add_listing({
+			'seller_id': 0,
+			'title': "addtest2",
+			'photo': "",
+			'description': "This is a test.",
+			'original_quantity': 10,
+			'available_quantity': 10,
+			'unit_type': "each",
+			'price_per_unit': 1.1,
+			'total_price': 11.0,
+			'category_id': 1,
+			'date_harvested': "2018-04-19",
+			'is_tradeable': True})
+
+		db.add_listing({
+			'seller_id': 0,
+			'title': "addtest3",
+			'photo': "",
+			'description': "This is a test.",
+			'original_quantity': 10,
+			'available_quantity': 10,
+			'unit_type': "each",
+			'price_per_unit': 1.1,
+			'total_price': 11.0,
+			'category_id': 2,
+			'date_harvested': "2018-04-19",
+			'is_tradeable': True})
+
+		listings = db.search_like_category("veg")
+		self.assertEqual(len(listings), 2)
+
+	def test_search_like_users(self):
+		users = db.search_like_users("ha")
+		self.assertEqual(len(users), 0)
+		
+		self.execute_sql("db\seed_tables.sql")
+		
+		users = db.search_like_users("hann")
+		self.assertEqual(len(users), 1)
+		users = db.search_like_users("ha")
+		self.assertEqual(len(users), 2)
 
 	def test_add_listing(self):
 		g.cursor.execute('''
@@ -224,6 +277,11 @@ class ApplicationTestCase(FlaskTestCase):
 	"""------------------------"""
 
 	def test_index(self):
+		resp = self.client.get('/')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on index.")
+		self.assertTrue(b'Product Feed' in resp.data, "Didn't find title on index.")
+		self.assertTrue(b'No search results found' in resp.data, "Didn't find default response for no listings.")
+
 		g.cursor.execute('''
 			insert into public.category (name) values
 			('test')
@@ -243,13 +301,142 @@ class ApplicationTestCase(FlaskTestCase):
 			'date_harvested': "2018-04-19",
 			'is_tradeable': True})
 		resp = self.client.get('/')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on index.")
 		self.assertTrue(b'Product Feed' in resp.data, "Didn't find title on index.")
 		self.assertTrue(b'test' in resp.data, "Didn't find title of listing on index.")
 
-	#def test_member_page(self):
-	#	"""Verify the member page."""
-	#	resp = self.client.get(url_for('all_members'))
-	#	self.assertTrue(b'Comments' in resp.data)
+	def test_listing_detail(self):
+		try:
+			resp = self.client.get('/listing/1')
+			self.assertTrue(b'Gardener\'s Exchange' in resp.data, "This should fail for non-existent listing.")
+		except:
+			self.assertTrue(True, "This should pass.")
+
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('test')
+		''')
+
+		db.add_listing({
+			'seller_id': 0,
+			'title': "test",
+			'photo': "",
+			'description': "This is a test.",
+			'original_quantity': 10,
+			'available_quantity': 10,
+			'unit_type': "each",
+			'price_per_unit': 1.1,
+			'total_price': 11.0,
+			'category_id': 1,
+			'date_harvested': "2018-04-19",
+			'is_tradeable': True})
+
+		g.cursor.execute('''
+			select * from public.listing limit 1
+		''')
+
+		listing = g.cursor.fetchone()
+		self.assertEqual(listing['title'], "test")
+		self.assertEqual(listing['listing_id'], 1)
+
+		resp = self.client.get('/listing/' + str(listing['listing_id']))
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on listing page.")
+		self.assertTrue(b'test' in resp.data, "Didn't find listing title on listing page.")
+		self.assertTrue(b'1.10' in resp.data, "Didn't find price per unit on listing page.")
+
+	def test_search(self):
+		resp = self.client.get('/search')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on search page.")
+		self.assertTrue(b'No matches found' in resp.data, "Found matches for no search.")
+
+		resp = self.client.get('/search?search=thing')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on search page.")
+		self.assertTrue(b'No matches found' in resp.data, "Found matches for bad search.")
+
+		resp = self.client.get('/search?search=tes&filter=3')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on search page.")
+		self.assertTrue(b'No matches found' in resp.data, "Found matches for listing while searching for users.")
+
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('test')
+		''')
+
+		db.add_listing({
+			'seller_id': 0,
+			'title': "test",
+			'photo': "",
+			'description': "This is a test.",
+			'original_quantity': 10,
+			'available_quantity': 10,
+			'unit_type': "each",
+			'price_per_unit': 1.1,
+			'total_price': 11.0,
+			'category_id': 1,
+			'date_harvested': "2018-04-19",
+			'is_tradeable': True})
+
+		resp = self.client.get('/search?search=tes')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on search page.")
+		self.assertTrue(b'test' in resp.data, "Did not find listing when searching for it.")
+
+	def test_buy_listing(self):
+		try:
+			resp = self.client.get('/listing/buy/1')
+			self.assertTrue(b'Gardener\'s Exchange' in resp.data, "This should fail for non-existent listing.")
+		except:
+			self.assertTrue(True, "This should pass.")
+
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('test')
+		''')
+
+		db.add_listing({
+			'seller_id': 0,
+			'title': "test",
+			'photo': "",
+			'description': "This is a test.",
+			'original_quantity': 13,
+			'available_quantity': 13,
+			'unit_type': "each",
+			'price_per_unit': 1.1,
+			'total_price': 11.0,
+			'category_id': 1,
+			'date_harvested': "2018-04-19",
+			'is_tradeable': True})
+
+		resp = self.client.get('/listing/buy/1')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Did not find site title on buy listing page.")
+		self.assertTrue(b'Quantity Available' in resp.data, "Did not find quantity available on buy listing page.")
+		self.assertTrue(b'13' in resp.data, "Did not find expected available quantity on buy listing page.")
+
+		csrf = getCSRF(resp)
+		resp = self.client.post("/listing/buy/1", data=dict(csrf_token=csrf, quantity=2, submit="Make+Purchase"), follow_redirects=True)
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Did not find site title on listing page.")
+		self.assertTrue(b'Quantity Available' in resp.data, "Did not find quantity available on listing page.")
+		self.assertTrue(b'11' in resp.data, "Did not find expected available quantity on listing page.")
+
+		resp = self.client.get('/listing/buy/1')
+		csrf = getCSRF(resp)
+		resp = self.client.post("/listing/buy/1", data=dict(csrf_token=csrf, quantity=14, submit="Make+Purchase"), follow_redirects=True)
+		self.assertTrue(b'Make Purchase' in resp.data, "Should still be on buy listing page.")
+		self.assertTrue(b'Please select no more than the quantity that is available.' in resp.data, "Missing flash message.")
+		self.assertTrue(b'Quantity Available' in resp.data, "Did not find quantity available on buy listing page.")
+		self.assertTrue(b'11' in resp.data, "Did not find expected available quantity on buy listing page.")
+
+
+	def test_new_listing(self):
+		g.cursor.execute('''
+			insert into public.category (name) values
+			('vegetable')
+		''')
+
+		resp = self.client.get('/listing/add')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Did not find site title on add listing page.")
+		self.assertTrue(b'Title' in resp.data, "Did not find title field on add listing page.")
+		# self.assertTrue(b'vegetable' in resp.data, "Did not find expected category on add listing page.")
+
 
 
 if __name__ == '__main__':

@@ -84,3 +84,19 @@ create table "address"
 );
 
 create unique index address_address_id_uindex on "address" (address_id);
+
+create table orders
+(
+  order_id    serial                   not null
+    constraint order_pkey
+    primary key,
+  listing_id  integer                  not null
+    constraint order_listing_listing_id_fk
+    references listing,
+  quantity    integer                  not null,
+  total_cost  numeric(5, 2)            not null,
+  buyer_id    integer                  not null,
+  time_placed timestamp with time zone not null
+);
+
+create unique index order_order_id_uindex on orders (order_id);
