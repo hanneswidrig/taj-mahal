@@ -4,6 +4,7 @@ import psycopg2.extras
 from secrets import database_login_info
 import sys
 
+
 database_config = database_login_info()
 
 
@@ -45,7 +46,7 @@ def search_like_users(search_query):
     search_query = '%' + search_query + '%'
     query = '''
 		select * from "user" 
-		where lower(username) LIKE  %(search_query)s 
+		where lower(email) LIKE  %(search_query)s 
 		or lower(first_name) LIKE  %(search_query)s 
 		or lower(last_name) LIKE  %(search_query)s;
 		'''
@@ -75,6 +76,12 @@ def get_one_listing(listing_id):
 def get_one_user(user_id):
 		g.cursor.execute('SELECT * FROM "user" WHERE user_id = %(id)s;', {'id': user_id})
 		return g.cursor.fetchone()
+
+
+def get_one_login(email):
+	g.cursor.execute('SELECT * FROM "user" WHERE email = %(email)s;', {'email': email})
+	return g.cursor.fetchone()
+
 
 
 def get_user_listings(user_id):
@@ -139,3 +146,31 @@ def add_new_order(listing_id, qty, total_cost, buyer_id):
 			'buyer_id': buyer_id})
 		g.connection.commit()
 		return g.cursor.rowcount
+
+
+# def find_user(userEmail):
+#     """Look up a single user."""
+#     # query = """
+#     # SELECT m.email, m.first_name, m.last_name, p.file_path
+#     # FROM user AS m
+#     #    LEFT OUTER JOIN photo AS p ON m.email = p.user_email
+#     # WHERE email = %(emailParam)s
+#     # """
+#     query = """
+#         SELECT email, first_name, last_name
+#         FROM user
+#         WHERE email = %(emailParam)s
+#         """
+#     g.cursor.execute(query, {'emailParam': userEmail})
+#     return g.cursor.fetchone()
+
+
+def create_user(email, first_name, last_name, photo, password, bio):
+    """Create a new user."""
+    query = '''
+INSERT INTO public.user(address_id, email, first_name, last_name, profile_pic, password, bio)
+VALUES (1, %(email)s, %(first)s, %(last)s, %(photo)s, %(pass)s, %(bio)s)
+    '''
+    g.cursor.execute(query, {'email': email, 'first': first_name, 'last': last_name, 'photo': photo, 'pass': password, 'bio': bio})
+    g.connection.commit()
+    return g.cursor.rowcount

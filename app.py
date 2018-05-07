@@ -11,10 +11,9 @@ import os
 import pprintpp as pp
 import helper_functions
 import route_functions
-from form_classes import buy_form, add_listing_form
+from form_classes import buy_form, add_listing_form, login_form, member_form
 from secrets import secret_flask_key, google_maps_key
 from werkzeug.utils import secure_filename
-
 app = Flask('Gardener\'s Exchange')
 app.config['SECRET_KEY'] = secret_flask_key()
 app.config['UPLOAD_FOLDER'] = 'images/uploaded-images/'
@@ -142,57 +141,49 @@ def listing_new():
 						file_extension = file_name.split('.')[-1].lower()
 
 						if file_extension in approved_file_extensions:
-								seller_dir = './static/images/uploaded-images/{}'.format(
-										seller_id)
-								if not os.path.exists(seller_dir):
-										os.mkdir(seller_dir)
-								file_path = os.path.join(
-										'images/uploaded-images/{}/'.format(seller_id), file_name)
-								listing_form.photo.data.save('static/' + file_path)
+							seller_dir = './static/images/uploaded-images/{}'.format(seller_id)
+							if not os.path.exists(seller_dir):
+								os.mkdir(seller_dir)
+							file_path = os.path.join('images/uploaded-images/{}/'.format(seller_id), file_name)
+							listing_form.photo.data.save('static/' + file_path)
 
-								# Generate new filename to prevent overwrites
-								current_time = pendulum.now(
-										'America/Indianapolis').format(r'%Y%m%dT%H%M%S')
-								proc_name = '{}.{}'.format(current_time, file_extension)
-								os.chdir('./static/images/uploaded-images/{}/'.format(seller_id))
-								os.rename(file_name, proc_name)
-								pic_location = 'images/uploaded-images/{}/{}'.format(
-										seller_id, proc_name)
+							# Generate new filename to prevent overwrites
+							current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
+							proc_name = '{}.{}'.format(current_time, file_extension)
+							os.chdir('./static/images/uploaded-images/{}/'.format(seller_id))
+							os.rename(file_name, proc_name)
+							pic_location = 'images/uploaded-images/{}/{}'.format(seller_id, proc_name)
 
-								# Resize photo to width < 1024 and compress file size
-								img = Image.open(proc_name)
-								maxsize = (1024, 1024)
-								img.thumbnail(maxsize, Image.ANTIALIAS)
-								img.save(proc_name, optimize=True, quality=50)
+							# Resize photo to width < 1024 and compress file size
+							img = Image.open(proc_name)
+							maxsize = (1024, 1024)
+							img.thumbnail(maxsize, Image.ANTIALIAS)
+							img.save(proc_name, optimize=True, quality=50)
 
-								# Properly calculate monetary values
-								ppu = float(
-										format(float(listing_form.price_per_unit.data), '.2f'))
-								ogq = float(
-										format(float(listing_form.original_quantity.data), '.2f'))
-								total_price = float(format(ppu * ogq, '.2f'))
-								category_id = int(listing_form.category_id.data)
+							# Properly calculate monetary values
+							ppu = float(format(float(listing_form.price_per_unit.data), '.2f'))
+							ogq = float(format(float(listing_form.original_quantity.data), '.2f'))
+							total_price = float(format(ppu * ogq, '.2f'))
+							category_id = int(listing_form.category_id.data)
+							rowcount = db.add_listing({
+									'seller_id': seller_id,
+									'title': listing_form.title.data,
+									'photo': pic_location,
+									'description': listing_form.description.data,
+									'original_quantity': int(listing_form.original_quantity.data),
+									'available_quantity': int(listing_form.original_quantity.data),
+									'unit_type': listing_form.unit_type.data,
+									'price_per_unit': ppu,
+									'total_price': total_price,
+									'category_id': category_id,
+									'date_harvested': listing_form.date_harvested.data,
+									'is_tradeable': listing_form.is_tradeable.data})
 
-								rowcount = db.add_listing({
-										'seller_id': seller_id,
-										'title': listing_form.title.data,
-										'photo': pic_location,
-										'description': listing_form.description.data,
-										'original_quantity': int(listing_form.original_quantity.data),
-										'available_quantity': int(listing_form.original_quantity.data),
-										'unit_type': listing_form.unit_type.data,
-										'price_per_unit': ppu,
-										'total_price': total_price,
-										'category_id': category_id,
-										'date_harvested': listing_form.date_harvested.data,
-										'is_tradeable': listing_form.is_tradeable.data})
-
-								if rowcount == 1:
-										flash('New listing for {0} created.'.format(
-												listing_form.title.data))
-										return redirect(url_for('index'))
-								else:
-										flash('New listing not created.')
+							if rowcount == 1:
+									flash('New listing for {0} created.'.format(listing_form.title.data))
+									return redirect(url_for('index'))
+							else:
+									flash('New listing not created.')
 						else:
 								flash('Invalid image file format, please use PNG, JPG, or JPEG.')
 
@@ -226,6 +217,124 @@ def account():
 @app.route('/settings')
 def settings():
 		return render_template('settings.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def log_in():
+	loginform = login_form()
+	if loginform.validate_on_submit():
+		# If we get here, we've received a POST request and
+		# our login form has been validated.
+		user = db.get_one_login(loginform.email.data)
+		if user == None:
+			# Bogus password
+			flash('Invalid email')
+		elif loginform.password.data != user['password']:
+			# Bogus password
+			flash('Invalid password')
+		else:
+			# Correct password. Add a value to the session object
+			# to show that the user is logged in. Redirect to home page.
+			session['email'] = loginform.email.data
+			#session['remember'] = loginform.remember.data
+			flash('User {} logged in'.format(session['email']))
+			return redirect(url_for('index'))
+
+	# Render the form if:
+	# 1. This is a GET request and we want to send the empty form.
+	# 2. This is a POST request and the form failed to validate.
+	# 3. The form validated but the password was wrong.
+
+	return render_template('log-in.html', form=loginform)
+
+@app.route('/logout')
+def logout():
+    # Remove the 'email' entry from the session.
+    # The pop() method behaves as follows:
+    # 1. If 'email' is in the session, remove it and return its value.
+    #    The value will be the user name stored there by the login() view function.
+    #    Removing the email from the session has the effect of logging out the user.
+    # 2. If 'email' is not in the session, return the second argument (None)
+    #session.pop('remember', None)
+    email = session.pop('email', None)
+    flash('User {} logged out'.format(email))
+    return redirect(url_for('index'))
+
+@app.route('/account/create', methods=['GET', 'POST'])
+def create_account():
+	# Create new member form. Will automatically populate from request.form.
+	user_form = member_form()
+
+	# The validate_on_submit() method checks for two conditions.
+	# 1. If we're handling a GET request, it returns false,
+	#    and we fall through to render_template(), which sends the empty form.
+	# 2. Otherwise, we're handling a POST request, so it runs the validators on the form,
+	#    and returns false if any fail, so we also fall through to render_template()
+	#    which renders the form and shows any error messages stored by the validators.
+	if user_form.validate_on_submit():
+		#member = db.find_user(user_form.email.data)
+
+		if 1 == 0: #member is not None:
+			flash("Member {} already exists".format(user_form.email.data))
+		else:
+			seller_id = 10
+			# Upload seller's photo
+			approved_file_extensions = {'jpg', 'jpeg', 'png', 'tiff', 'tif', 'bmp'}
+			file_name = secure_filename(user_form.photo.data.filename)
+			file_extension = file_name.split('.')[-1]
+
+			if file_extension in approved_file_extensions:
+				seller_dir = './static/images/uploaded-images/{}'.format(seller_id)
+				if not os.path.exists(seller_dir):
+					os.mkdir(seller_dir)
+				file_path = os.path.join('images/uploaded-images/{}/'.format(seller_id), file_name)
+				user_form.photo.data.save('static/' + file_path)
+
+				# Generate new filename to prevent overwrites
+				current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
+				proc_name = '{}.{}'.format(current_time, file_extension)
+				os.chdir('./static/images/uploaded-images/{}/'.format(seller_id))
+				os.rename(file_name, proc_name)
+				pic_location = 'images/uploaded-images/{}/{}'.format(seller_id, proc_name)
+
+				# Resize photo to width < 1024 and compress file size
+				img = Image.open(proc_name)
+				maxsize = (1024, 1024)
+				img.thumbnail(maxsize, Image.ANTIALIAS)
+				img.save(proc_name, optimize=True, quality=50)
+				# # Update the database row now that we know the name and location of the file
+				rowcount = db.create_user(user_form.email.data,
+				                            user_form.first_name.data,
+				                            user_form.last_name.data,
+				                            pic_location,
+				                            user_form.password.data,
+				                            user_form.bio.data)
+				if rowcount == 1:
+					session = {
+						'email': request.form['email']
+					}
+					flash('User {} created'.format(session['email']))
+					return redirect(url_for('index'))
+				else:
+					flash('New user not created.')
+			else:
+				flash('Invalid image file format, please use PNG, JPG, or JPEG.')
+
+
+			# else:
+			# 	flash("New member not created")
+
+	# We will get here under any of the following conditions:
+	# 1. We're handling a GET request, so we render the (empty) form.
+	# 2. We're handling a POST request, and some validator failed, so we render the
+	#    form with the same values so that the member can try again. The template
+	#    will extract and display the error messages stored on the form object
+	#    by the validators that failed.
+	# 3. The email entered in the form corresponds to an existing member.
+	#    The template will render an error message from the flash.
+	# 4. Something happened when we tried to update the database (rowcount != 1).
+	#    The template will render an error message from the flash.
+	return render_template('create-account.html', form=user_form, mode='create')
+
 
 
 if __name__ == '__main__':
