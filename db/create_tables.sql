@@ -3,6 +3,7 @@ drop table if exists listing cascade;
 drop table if exists category cascade;
 drop table if exists "state" cascade;
 drop table if exists "address" cascade;
+drop table if exists "orders" cascade;
 
 create table "user"
 (
