@@ -82,7 +82,7 @@ def listing_detail(listing_id):
 @app.route('/listing/buy/<int:listing_id>', methods=['GET', 'POST'])
 def listing_purchase(listing_id):
 		if 'user_id' not in session:
-			return redirect(url_for('account'))
+			return redirect(url_for('log_in'))
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		listing = db.get_one_listing(listing_id)
 		buy_item = buy_form()
@@ -144,7 +144,7 @@ def listing_new():
 							if file_extension in approved_file_extensions:
 								user_email = session['email']
 								seller_dir = './static/images/uploaded-images/{}'.format(user_email)
-								if not os.path.exists(seller_dir): #TODO: Fix this!
+								if not os.path.exists(seller_dir): #TODO: Fix this! this if always comes out true because the path existing is false
 									print("im tryna make a path.")
 									os.mkdir(seller_dir)
 								file_path = os.path.join('images/uploaded-images/{}/'.format(user_email), file_name)
@@ -190,7 +190,7 @@ def listing_new():
 							else:
 									flash('Invalid image file format, please use PNG, JPG, or JPEG.')
 		else:
-			return redirect(url_for('account'))
+			return redirect(url_for('log_in'))
 		return render_template('listing-new.html', form=listing_form, rel_link=rel_link)
 
 
