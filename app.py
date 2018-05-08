@@ -81,6 +81,8 @@ def listing_detail(listing_id):
 
 @app.route('/listing/buy/<int:listing_id>', methods=['GET', 'POST'])
 def listing_purchase(listing_id):
+		if 'user_id' not in session:
+			return redirect(url_for('account'))
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		listing = db.get_one_listing(listing_id)
 		buy_item = buy_form()
@@ -130,7 +132,6 @@ def listing_confirmation(listing_id):
 def listing_new():
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		if 'user_id' in session:  #checks to see if someone is logged in
-			print(session)
 			listing_form = add_listing_form()
 			if request.method == 'POST':
 					if listing_form.submit.data and listing_form.validate_on_submit():
