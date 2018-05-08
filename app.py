@@ -129,64 +129,67 @@ def listing_confirmation(listing_id):
 @app.route('/listing/add', methods=['GET', 'POST'])
 def listing_new():
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
-		listing_form = add_listing_form()
-		if request.method == 'POST':
-				if listing_form.submit.data and listing_form.validate_on_submit():
-						seller_id = 1
+		if 'user_id' in session:  #checks to see if someone is logged in
+			print(session)
+			listing_form = add_listing_form()
+			if request.method == 'POST':
+					if listing_form.submit.data and listing_form.validate_on_submit():
+							# Upload seller's photo
+							approved_file_extensions = {
+									'jpg', 'jpeg', 'png', 'tiff', 'tif', 'bmp'}
+							file_name = secure_filename(listing_form.photo.data.filename)
+							file_extension = file_name.split('.')[-1].lower()
 
-						# Upload seller's photo
-						approved_file_extensions = {
-								'jpg', 'jpeg', 'png', 'tiff', 'tif', 'bmp'}
-						file_name = secure_filename(listing_form.photo.data.filename)
-						file_extension = file_name.split('.')[-1].lower()
+							if file_extension in approved_file_extensions:
+								user_email = session['email']
+								seller_dir = './static/images/uploaded-images/{}'.format(user_email)
+								if not os.path.exists(seller_dir):
+									print("im tryna make a path.")
+									os.mkdir(seller_dir)
+								file_path = os.path.join('images/uploaded-images/{}/'.format(user_email), file_name)
+								listing_form.photo.data.save('static/' + file_path)
 
-						if file_extension in approved_file_extensions:
-							seller_dir = './static/images/uploaded-images/{}'.format(seller_id)
-							if not os.path.exists(seller_dir):
-								os.mkdir(seller_dir)
-							file_path = os.path.join('images/uploaded-images/{}/'.format(seller_id), file_name)
-							listing_form.photo.data.save('static/' + file_path)
+								# Generate new filename to prevent overwrites
+								current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
+								proc_name = '{}.{}'.format(current_time, file_extension)
+								os.chdir('./static/images/uploaded-images/{}/'.format(user_email))
+								os.rename(file_name, proc_name)
+								pic_location = 'images/uploaded-images/{}/{}'.format(user_email, proc_name)
 
-							# Generate new filename to prevent overwrites
-							current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
-							proc_name = '{}.{}'.format(current_time, file_extension)
-							os.chdir('./static/images/uploaded-images/{}/'.format(seller_id))
-							os.rename(file_name, proc_name)
-							pic_location = 'images/uploaded-images/{}/{}'.format(seller_id, proc_name)
+								# Resize photo to width < 1024 and compress file size
+								img = Image.open(proc_name)
+								maxsize = (1024, 1024)
+								img.thumbnail(maxsize, Image.ANTIALIAS)
+								img.save(proc_name, optimize=True, quality=50)
 
-							# Resize photo to width < 1024 and compress file size
-							img = Image.open(proc_name)
-							maxsize = (1024, 1024)
-							img.thumbnail(maxsize, Image.ANTIALIAS)
-							img.save(proc_name, optimize=True, quality=50)
+								# Properly calculate monetary values
+								ppu = float(format(float(listing_form.price_per_unit.data), '.2f'))
+								ogq = float(format(float(listing_form.original_quantity.data), '.2f'))
+								total_price = float(format(ppu * ogq, '.2f'))
+								category_id = int(listing_form.category_id.data)
+								rowcount = db.add_listing({
+										'seller_id': session['user_id'],
+										'title': listing_form.title.data,
+										'photo': pic_location,
+										'description': listing_form.description.data,
+										'original_quantity': int(listing_form.original_quantity.data),
+										'available_quantity': int(listing_form.original_quantity.data),
+										'unit_type': listing_form.unit_type.data,
+										'price_per_unit': ppu,
+										'total_price': total_price,
+										'category_id': category_id,
+										'date_harvested': listing_form.date_harvested.data,
+										'is_tradeable': listing_form.is_tradeable.data})
 
-							# Properly calculate monetary values
-							ppu = float(format(float(listing_form.price_per_unit.data), '.2f'))
-							ogq = float(format(float(listing_form.original_quantity.data), '.2f'))
-							total_price = float(format(ppu * ogq, '.2f'))
-							category_id = int(listing_form.category_id.data)
-							rowcount = db.add_listing({
-									'seller_id': seller_id,
-									'title': listing_form.title.data,
-									'photo': pic_location,
-									'description': listing_form.description.data,
-									'original_quantity': int(listing_form.original_quantity.data),
-									'available_quantity': int(listing_form.original_quantity.data),
-									'unit_type': listing_form.unit_type.data,
-									'price_per_unit': ppu,
-									'total_price': total_price,
-									'category_id': category_id,
-									'date_harvested': listing_form.date_harvested.data,
-									'is_tradeable': listing_form.is_tradeable.data})
-
-							if rowcount == 1:
-									flash('New listing for {0} created.'.format(listing_form.title.data))
-									return redirect(url_for('index'))
+								if rowcount == 1:
+										flash('New listing for {0} created.'.format(listing_form.title.data))
+										return redirect(url_for('index'))
+								else:
+										flash('New listing not created.')
 							else:
-									flash('New listing not created.')
-						else:
-								flash('Invalid image file format, please use PNG, JPG, or JPEG.')
-
+									flash('Invalid image file format, please use PNG, JPG, or JPEG.')
+		else:
+			return redirect(url_for('account'))
 		return render_template('listing-new.html', form=listing_form, rel_link=rel_link)
 
 
@@ -235,6 +238,8 @@ def log_in():
 			# Correct password. Add a value to the session object
 			# to show that the user is logged in. Redirect to home page.
 			session['email'] = loginform.email.data
+			session['user_id'] = user['user_id']
+			print(session)
 			#session['remember'] = loginform.remember.data
 			flash('User {} logged in'.format(session['email']))
 			return redirect(url_for('index'))
@@ -256,6 +261,7 @@ def logout():
     # 2. If 'email' is not in the session, return the second argument (None)
     #session.pop('remember', None)
     email = session.pop('email', None)
+    session.clear()
     flash('User {} logged out'.format(email))
     return redirect(url_for('index'))
 
@@ -276,25 +282,25 @@ def create_account():
 		if 1 == 0: #member is not None:
 			flash("Member {} already exists".format(user_form.email.data))
 		else:
-			seller_id = 10
 			# Upload seller's photo
 			approved_file_extensions = {'jpg', 'jpeg', 'png', 'tiff', 'tif', 'bmp'}
 			file_name = secure_filename(user_form.photo.data.filename)
-			file_extension = file_name.split('.')[-1]
+			file_extension = file_name.split('.')[-1].lower()
 
 			if file_extension in approved_file_extensions:
-				seller_dir = './static/images/uploaded-images/{}'.format(seller_id)
+				user_name = user_form.email.data
+				seller_dir = './static/images/uploaded-images/{}'.format(user_name)
 				if not os.path.exists(seller_dir):
 					os.mkdir(seller_dir)
-				file_path = os.path.join('images/uploaded-images/{}/'.format(seller_id), file_name)
+				file_path = os.path.join('images/uploaded-images/{}/'.format(user_name), file_name)
 				user_form.photo.data.save('static/' + file_path)
 
 				# Generate new filename to prevent overwrites
 				current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
 				proc_name = '{}.{}'.format(current_time, file_extension)
-				os.chdir('./static/images/uploaded-images/{}/'.format(seller_id))
+				os.chdir('./static/images/uploaded-images/{}/'.format(user_name))
 				os.rename(file_name, proc_name)
-				pic_location = 'images/uploaded-images/{}/{}'.format(seller_id, proc_name)
+				pic_location = 'images/uploaded-images/{}/{}'.format(user_name, proc_name)
 
 				# Resize photo to width < 1024 and compress file size
 				img = Image.open(proc_name)
@@ -309,11 +315,14 @@ def create_account():
 				                            user_form.password.data,
 				                            user_form.bio.data)
 				if rowcount == 1:
+					user = db.get_one_login(loginform.email.data)
 					session = {
-						'email': request.form['email']
+						'email': request.form['email'],
+						'user_id': user['user_id']
 					}
+
 					flash('User {} created'.format(session['email']))
-					return redirect(url_for('index'))
+					return redirect(url_for('log_in'))
 				else:
 					flash('New user not created.')
 			else:
