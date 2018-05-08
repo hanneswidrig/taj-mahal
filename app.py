@@ -143,7 +143,7 @@ def listing_new():
 							if file_extension in approved_file_extensions:
 								user_email = session['email']
 								seller_dir = './static/images/uploaded-images/{}'.format(user_email)
-								if not os.path.exists(seller_dir):
+								if not os.path.exists(seller_dir): #TODO: Fix this!
 									print("im tryna make a path.")
 									os.mkdir(seller_dir)
 								file_path = os.path.join('images/uploaded-images/{}/'.format(user_email), file_name)
@@ -277,9 +277,8 @@ def create_account():
 	#    and returns false if any fail, so we also fall through to render_template()
 	#    which renders the form and shows any error messages stored by the validators.
 	if user_form.validate_on_submit():
-		#member = db.find_user(user_form.email.data)
-
-		if 1 == 0: #member is not None:
+		member = db.find_user(user_form.email.data)
+		if member is not None:
 			flash("Member {} already exists".format(user_form.email.data))
 		else:
 			# Upload seller's photo
@@ -315,7 +314,7 @@ def create_account():
 				                            user_form.password.data,
 				                            user_form.bio.data)
 				if rowcount == 1:
-					user = db.get_one_login(loginform.email.data)
+					user = db.get_one_login(user_form.email.data)
 					session = {
 						'email': request.form['email'],
 						'user_id': user['user_id']

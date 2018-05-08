@@ -77,6 +77,9 @@ def get_one_user(user_id):
 		g.cursor.execute('SELECT * FROM "user" WHERE user_id = %(id)s;', {'id': user_id})
 		return g.cursor.fetchone()
 
+def find_user(email):
+	g.cursor.execute('SELECT * FROM "user" WHERE email = %(email)s;', {'email': email})
+	return g.cursor.fetchone()
 
 def get_one_login(email):
 	g.cursor.execute('SELECT * FROM "user" WHERE email = %(email)s;', {'email': email})
