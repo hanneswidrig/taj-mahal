@@ -144,29 +144,24 @@ def listing_new():
 							file_extension = file_name.split('.')[-1].lower()
 
 							if file_extension in approved_file_extensions:
-								user_email = session['email']
-								directory_created = './static/images/uploaded-images/{}'.format(user_email)
-								if not os.path.exists(directory_created): #TODO: Fix this! this if always comes out true because the path existing is false
-									print("im tryna make a path.")
-									os.mkdir(directory_created)
-								file_path = os.path.join('images/uploaded-images/{}/'.format(user_email), file_name)
-								listing_form.photo.data.save('static/' + file_path)
+								user_name = listing_form.email.data
+								directory_created = os.path.join('{}'.format(app.config['SCRIPT_LOCATION']),
+								 'static', 'images', 'uploaded-images', '{}'.format(user_name))
+								file_path = os.path.join(directory_created, file_name)
+								listing_form.photo.data.save(file_path)
 
 								# Generate new filename to prevent overwrites
 								current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
 								proc_name = '{}.{}'.format(current_time, file_extension)
-								os.chdir('./static/images/uploaded-images/{}/'.format(user_email))
+								os.chdir(directory_created)
 								os.rename(file_name, proc_name)
-								pic_location = 'images/uploaded-images/{}/{}'.format(user_email, proc_name)
+								pic_location = 'images/uploaded-images/{}/{}'.format(user_name, proc_name)
 
 								# Resize photo to width < 1024 and compress file size
 								img = Image.open(proc_name)
 								maxsize = (1024, 1024)
 								img.thumbnail(maxsize, Image.ANTIALIAS)
 								img.save(proc_name, optimize=True, quality=50)
-								
-								# Change directory back to uploaded-images
-								os.chdir('..')
 
 								# Properly calculate monetary values
 								ppu = float(format(float(listing_form.price_per_unit.data), '.2f'))
@@ -342,12 +337,9 @@ def create_account():
 				
 				if rowcount == 1:
 					user = db.get_one_login(user_form.email.data)
-					session = {
-						'email': request.form['email'],
-						'user_id': user['user_id']
-					}
-
-					flash('User {} created'.format(session['email']))
+					session['email'] = request.form['email']
+					session['user_id'] = user['user_id']
+					flash('Your new account was created.')
 					return redirect(url_for('login'))
 				else:
 					flash('New user not created.')

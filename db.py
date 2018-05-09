@@ -153,8 +153,8 @@ def add_new_order(listing_id, qty, total_cost, buyer_id):
 
 def create_new_address(address):
 		query = '''
-		INSERT INTO public.address(street, city, state_id, zipcode)
-		VALUES (%(street)s, %(city)s, %(state)s, %(zipcode)s);
+		INSERT INTO public.address(address_id, street, city, state_id, zipcode)
+		VALUES (default ,%(street)s, %(city)s, %(state)s, %(zipcode)s);
 		'''
 		g.cursor.execute(query, address)
 		g.connection.commit()
