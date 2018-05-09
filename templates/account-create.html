@@ -4,8 +4,18 @@
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/listing-new.css') }}">
 {% endblock %}
+{% block app_bar %}
+<div class="app-bar-item">
+	<div class="app-bar-filler"></div>
+</div>
+<div class="app-bar-item">
+	<span class="app-bar-title">Create an Account</span>
+</div>
+<div class="app-bar-item">
+	<div class="app-bar-filler"></div>
+</div>
+{% endblock %}
 {% block content %}
-<div class="page-header-title">Create an Account</div>
 {% macro wtfield(field) %}
     <p>
         {{ field.label }} {{ field() }}

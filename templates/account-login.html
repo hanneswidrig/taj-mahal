@@ -4,8 +4,18 @@
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/login.css') }}">
 {% endblock %}
+{% block app_bar %}
+<div class="app-bar-item">
+	<div class="app-bar-filler"></div>
+</div>
+<div class="app-bar-item">
+	<span class="app-bar-title">Login</span>
+</div>
+<div class="app-bar-item">
+	<div class="app-bar-filler"></div>
+</div>
+{% endblock %}
 {% block content %}
-<div class="page-header-title">Log In</div>
 <div class="add-body">
     {% include '_form_errors.html' %}
     <form enctype="multipart/form-data" method="POST">
