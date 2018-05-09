@@ -21,10 +21,12 @@ class add_listing_form(FlaskForm):
 		date_harvested    = DateField('Date Harvested', format="%Y-%m-%d")
 		submit            = SubmitField('Add')
 
+
 class login_form(FlaskForm): 
     email    = StringField('E-mail Address', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit   = SubmitField('Log In')
+
 
 class member_form(FlaskForm): 
 		email           = StringField('Email', validators=[Email()])

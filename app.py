@@ -8,6 +8,7 @@ import urllib.request
 # Imported Project Files
 import db
 import os
+import sys
 import pprintpp as pp
 import helper_functions
 import route_functions
@@ -17,6 +18,7 @@ from werkzeug.utils import secure_filename
 app = Flask('Gardener\'s Exchange')
 app.config['SECRET_KEY'] = secret_flask_key()
 app.config['UPLOAD_FOLDER'] = 'images/uploaded-images/'
+app.config['SCRIPT_LOCATION'] = os.path.dirname(os.path.realpath(sys.argv[0]))
 
 
 @app.before_request
@@ -143,10 +145,10 @@ def listing_new():
 
 							if file_extension in approved_file_extensions:
 								user_email = session['email']
-								seller_dir = './static/images/uploaded-images/{}'.format(user_email)
-								if not os.path.exists(seller_dir): #TODO: Fix this! this if always comes out true because the path existing is false
+								directory_created = './static/images/uploaded-images/{}'.format(user_email)
+								if not os.path.exists(directory_created): #TODO: Fix this! this if always comes out true because the path existing is false
 									print("im tryna make a path.")
-									os.mkdir(seller_dir)
+									os.mkdir(directory_created)
 								file_path = os.path.join('images/uploaded-images/{}/'.format(user_email), file_name)
 								listing_form.photo.data.save('static/' + file_path)
 
@@ -296,16 +298,17 @@ def create_account():
 
 			if file_extension in approved_file_extensions:
 				user_name = user_form.email.data
-				seller_dir = './static/images/uploaded-images/{}'.format(user_name)
-				if not os.path.exists(seller_dir):
-					os.mkdir(seller_dir)
-				file_path = os.path.join('images/uploaded-images/{}/'.format(user_name), file_name)
-				user_form.photo.data.save('static/' + file_path)
+				directory_created = os.path.join('{}'.format(app.config['SCRIPT_LOCATION']),
+				 'static', 'images', 'uploaded-images', '{}'.format(user_name))
+				if not os.path.exists(directory_created):
+					os.mkdir(directory_created)
+				file_path = os.path.join(directory_created, file_name)
+				user_form.photo.data.save(file_path)
 
 				# Generate new filename to prevent overwrites
 				current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
 				proc_name = '{}.{}'.format(current_time, file_extension)
-				os.chdir('./static/images/uploaded-images/{}/'.format(user_name))
+				os.chdir(directory_created)
 				os.rename(file_name, proc_name)
 				pic_location = 'images/uploaded-images/{}/{}'.format(user_name, proc_name)
 
@@ -315,16 +318,28 @@ def create_account():
 				img.thumbnail(maxsize, Image.ANTIALIAS)
 				img.save(proc_name, optimize=True, quality=50)
 
-				# # Update the database row now that we know the name and location of the file
-				rowcount = db.create_user(user_form.email.data,
-				                            user_form.first_name.data,
-				                            user_form.last_name.data,
-				                            pic_location,
-				                            user_form.password.data,
-				                            user_form.bio.data)
+				# Create Address row
+				address_id = db.create_new_address({
+					'street' : str(user_form.address_street.data).strip(),
+					'city'   : str(user_form.address_city.data).strip(),
+					'state'  : str(user_form.address_state.data).strip(),
+					'zipcode': user_form.address_zipcode.data
+				})
+
+				# Create User row
+				if address_id[0] == 1:
+					rowcount = db.create_user({
+						'address_id': int(address_id[1]),
+						'email': str(user_form.email.data).strip(),
+						'first': str(user_form.first_name.data).strip(),
+						'last' : str(user_form.last_name.data).strip(),
+						'photo': pic_location,
+						'pass' : user_form.password.data,
+						'bio'  : user_form.bio.data
+					})
+				else:
+					flash('Invalid address fields.')
 				
-				# Change directory back to uploaded-images
-				os.chdir('..')
 				if rowcount == 1:
 					user = db.get_one_login(user_form.email.data)
 					session = {
@@ -338,10 +353,6 @@ def create_account():
 					flash('New user not created.')
 			else:
 				flash('Invalid image file format, please use PNG, JPG, or JPEG.')
-
-
-			# else:
-			# 	flash("New member not created")
 
 	# We will get here under any of the following conditions:
 	# 1. We're handling a GET request, so we render the (empty) form.
