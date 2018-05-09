@@ -97,12 +97,21 @@
 					<span>Add Product</span>
 				</div>
 			</a>
+			{% if 'user_id' in session %}
 			<a href="{{ url_for('account') }}" class="navi-nav-item">
 				<div class="navi-nav-item-link" id="account">
 					<i class="material-icons">perm_identity</i>
 					<span>Account</span>
 				</div>
 			</a>
+			{% else %}
+			<a href="{{ url_for('login') }}" class="navi-nav-item">
+				<div class="navi-nav-item-link" id="account">
+					<i class="material-icons">perm_identity</i>
+					<span>Login</span>
+				</div>
+			</a>
+			{% endif %}
 		</nav>
 	</div>
 	<main>

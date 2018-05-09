@@ -8,6 +8,7 @@ import urllib.request
 # Imported Project Files
 import db
 import os
+import sys
 import pprintpp as pp
 import helper_functions
 import route_functions
@@ -17,6 +18,7 @@ from werkzeug.utils import secure_filename
 app = Flask('Gardener\'s Exchange')
 app.config['SECRET_KEY'] = secret_flask_key()
 app.config['UPLOAD_FOLDER'] = 'images/uploaded-images/'
+app.config['SCRIPT_LOCATION'] = os.path.dirname(os.path.realpath(sys.argv[0]))
 
 
 @app.before_request
@@ -82,7 +84,7 @@ def listing_detail(listing_id):
 @app.route('/listing/buy/<int:listing_id>', methods=['GET', 'POST'])
 def listing_purchase(listing_id):
 		if 'user_id' not in session:
-			return redirect(url_for('log_in'))
+			return redirect(url_for('login'))
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		listing = db.get_one_listing(listing_id)
 		buy_item = buy_form()
@@ -143,10 +145,10 @@ def listing_new():
 
 							if file_extension in approved_file_extensions:
 								user_email = session['email']
-								seller_dir = './static/images/uploaded-images/{}'.format(user_email)
-								if not os.path.exists(seller_dir): #TODO: Fix this! this if always comes out true because the path existing is false
+								directory_created = './static/images/uploaded-images/{}'.format(user_email)
+								if not os.path.exists(directory_created): #TODO: Fix this! this if always comes out true because the path existing is false
 									print("im tryna make a path.")
-									os.mkdir(seller_dir)
+									os.mkdir(directory_created)
 								file_path = os.path.join('images/uploaded-images/{}/'.format(user_email), file_name)
 								listing_form.photo.data.save('static/' + file_path)
 
@@ -162,6 +164,9 @@ def listing_new():
 								maxsize = (1024, 1024)
 								img.thumbnail(maxsize, Image.ANTIALIAS)
 								img.save(proc_name, optimize=True, quality=50)
+								
+								# Change directory back to uploaded-images
+								os.chdir('..')
 
 								# Properly calculate monetary values
 								ppu = float(format(float(listing_form.price_per_unit.data), '.2f'))
@@ -190,7 +195,7 @@ def listing_new():
 							else:
 									flash('Invalid image file format, please use PNG, JPG, or JPEG.')
 		else:
-			return redirect(url_for('log_in'))
+			return redirect(url_for('login'))
 		return render_template('listing-new.html', form=listing_form, rel_link=rel_link)
 
 
@@ -215,17 +220,16 @@ def user_profile(user_id):
 
 @app.route('/account')
 def account():
-	if 'user_id' not in session:
-		return redirect(url_for('log_in'))
-	return render_template('account.html')
+		return render_template('account-main.html')
 
 
 @app.route('/settings')
 def settings():
 		return render_template('settings.html')
 
+
 @app.route('/login', methods=['GET', 'POST'])
-def log_in():
+def login():
 	loginform = login_form()
 	if loginform.validate_on_submit():
 		# If we get here, we've received a POST request and
@@ -252,7 +256,8 @@ def log_in():
 	# 2. This is a POST request and the form failed to validate.
 	# 3. The form validated but the password was wrong.
 
-	return render_template('log-in.html', form=loginform)
+	return render_template('account-login.html', form=loginform)
+
 
 @app.route('/logout')
 def logout():
@@ -268,10 +273,12 @@ def logout():
     flash('User {} logged out'.format(email))
     return redirect(url_for('index'))
 
+
 @app.route('/account/create', methods=['GET', 'POST'])
 def create_account():
 	# Create new member form. Will automatically populate from request.form.
 	user_form = member_form()
+	user_form.address_state.choices = helper_functions.get_usa_states()
 
 	# The validate_on_submit() method checks for two conditions.
 	# 1. If we're handling a GET request, it returns false,
@@ -291,16 +298,17 @@ def create_account():
 
 			if file_extension in approved_file_extensions:
 				user_name = user_form.email.data
-				seller_dir = './static/images/uploaded-images/{}'.format(user_name)
-				if not os.path.exists(seller_dir):
-					os.mkdir(seller_dir)
-				file_path = os.path.join('images/uploaded-images/{}/'.format(user_name), file_name)
-				user_form.photo.data.save('static/' + file_path)
+				directory_created = os.path.join('{}'.format(app.config['SCRIPT_LOCATION']),
+				 'static', 'images', 'uploaded-images', '{}'.format(user_name))
+				if not os.path.exists(directory_created):
+					os.mkdir(directory_created)
+				file_path = os.path.join(directory_created, file_name)
+				user_form.photo.data.save(file_path)
 
 				# Generate new filename to prevent overwrites
 				current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
 				proc_name = '{}.{}'.format(current_time, file_extension)
-				os.chdir('./static/images/uploaded-images/{}/'.format(user_name))
+				os.chdir(directory_created)
 				os.rename(file_name, proc_name)
 				pic_location = 'images/uploaded-images/{}/{}'.format(user_name, proc_name)
 
@@ -309,13 +317,29 @@ def create_account():
 				maxsize = (1024, 1024)
 				img.thumbnail(maxsize, Image.ANTIALIAS)
 				img.save(proc_name, optimize=True, quality=50)
-				# # Update the database row now that we know the name and location of the file
-				rowcount = db.create_user(user_form.email.data,
-				                            user_form.first_name.data,
-				                            user_form.last_name.data,
-				                            pic_location,
-				                            user_form.password.data,
-				                            user_form.bio.data)
+
+				# Create Address row
+				address_id = db.create_new_address({
+					'street' : str(user_form.address_street.data).strip(),
+					'city'   : str(user_form.address_city.data).strip(),
+					'state'  : str(user_form.address_state.data).strip(),
+					'zipcode': user_form.address_zipcode.data
+				})
+
+				# Create User row
+				if address_id[0] == 1:
+					rowcount = db.create_user({
+						'address_id': int(address_id[1]),
+						'email': str(user_form.email.data).strip(),
+						'first': str(user_form.first_name.data).strip(),
+						'last' : str(user_form.last_name.data).strip(),
+						'photo': pic_location,
+						'pass' : user_form.password.data,
+						'bio'  : user_form.bio.data
+					})
+				else:
+					flash('Invalid address fields.')
+				
 				if rowcount == 1:
 					user = db.get_one_login(user_form.email.data)
 					session = {
@@ -324,15 +348,11 @@ def create_account():
 					}
 
 					flash('User {} created'.format(session['email']))
-					return redirect(url_for('log_in'))
+					return redirect(url_for('login'))
 				else:
 					flash('New user not created.')
 			else:
 				flash('Invalid image file format, please use PNG, JPG, or JPEG.')
-
-
-			# else:
-			# 	flash("New member not created")
 
 	# We will get here under any of the following conditions:
 	# 1. We're handling a GET request, so we render the (empty) form.
@@ -344,8 +364,7 @@ def create_account():
 	#    The template will render an error message from the flash.
 	# 4. Something happened when we tried to update the database (rowcount != 1).
 	#    The template will render an error message from the flash.
-	return render_template('create-account.html', form=user_form, mode='create')
-
+	return render_template('account-create.html', form=user_form, mode='create')
 
 
 if __name__ == '__main__':
