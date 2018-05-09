@@ -2,7 +2,7 @@
 {% block title %}Login{% endblock %}
 {% block bar_title %}Login{% endblock %}
 {% block css %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/login.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/account-login.css') }}">
 {% endblock %}
 {% block app_bar %}
 <div class="app-bar-item">
@@ -16,7 +16,7 @@
 </div>
 {% endblock %}
 {% block content %}
-<div class="add-body">
+<div class="login-body">
     {% include '_form_errors.html' %}
     <form enctype="multipart/form-data" method="POST">
             {{ form.csrf_token }}

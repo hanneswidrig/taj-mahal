@@ -276,6 +276,7 @@ def logout():
 def create_account():
 	# Create new member form. Will automatically populate from request.form.
 	user_form = member_form()
+	user_form.address_state.choices = helper_functions.get_usa_states()
 
 	# The validate_on_submit() method checks for two conditions.
 	# 1. If we're handling a GET request, it returns false,
@@ -313,6 +314,7 @@ def create_account():
 				maxsize = (1024, 1024)
 				img.thumbnail(maxsize, Image.ANTIALIAS)
 				img.save(proc_name, optimize=True, quality=50)
+
 				# # Update the database row now that we know the name and location of the file
 				rowcount = db.create_user(user_form.email.data,
 				                            user_form.first_name.data,
@@ -320,6 +322,7 @@ def create_account():
 				                            pic_location,
 				                            user_form.password.data,
 				                            user_form.bio.data)
+				
 				# Change directory back to uploaded-images
 				os.chdir('..')
 				if rowcount == 1:

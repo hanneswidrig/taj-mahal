@@ -169,11 +169,18 @@ def add_new_order(listing_id, qty, total_cost, buyer_id):
 
 
 def create_user(email, first_name, last_name, photo, password, bio):
-    """Create a new user."""
     query = '''
-INSERT INTO public.user(address_id, email, first_name, last_name, profile_pic, password, bio)
-VALUES (1, %(email)s, %(first)s, %(last)s, %(photo)s, %(pass)s, %(bio)s)
+		INSERT INTO public.user(address_id, email, first_name, last_name, profile_pic, password, bio)
+		VALUES (1, %(email)s, %(first)s, %(last)s, %(photo)s, %(pass)s, %(bio)s)
     '''
     g.cursor.execute(query, {'email': email, 'first': first_name, 'last': last_name, 'photo': photo, 'pass': password, 'bio': bio})
     g.connection.commit()
     return g.cursor.rowcount
+
+
+def get_all_states():
+	query = '''
+	SELECT state_id, state.name FROM public.state;
+	'''
+	g.cursor.execute(query)
+	return g.cursor.fetchall()
