@@ -91,6 +91,9 @@ class DatabaseTestCaseDay0(FlaskTestCase):
 		except:
 			self.assertTrue(True, "Add Listing Day 0 - This should pass. Listing should not be added without category.")
 
+	def test_get_one_listing(self):
+		self.assertTrue(False, "Finish this test.")
+
 	def test_get_one_user(self):
 		try:
 			user = db.get_one_user(1)
@@ -246,7 +249,7 @@ class DatabaseTestCaseDay1(FlaskTestCase):
 		self.assertEqual(len(users), 2, "Search Like Users Day 1 - Unexpected number of users with \"ha\".")
 
 		users = db.search_like_users("jon")
-		self.assertEqual(len(users), 2, "Search Like Users Day 1 - Unexpected number of users with \"jon\".")
+		self.assertEqual(len(users), 1, "Search Like Users Day 1 - Unexpected number of users with \"jon\".")
 
 		users = db.search_like_users("john")
 		self.assertEqual(len(users), 0, "Search Like Users Day 1 - Unexpected number of users with \"john\".")
@@ -302,6 +305,9 @@ class DatabaseTestCaseDay1(FlaskTestCase):
 	# listing = db.get_one_listing(listing['listing_id'])
 	# self.assertIsNotNone(listing)
 
+	def test_get_one_listing(self):
+		self.assertTrue(False, "Finish this test.")
+
 	def test_get_one_user(self):
 		try:
 			user = db.get_one_user(10)
@@ -334,9 +340,9 @@ class DatabaseTestCaseDay1(FlaskTestCase):
 		except:
 			self.assertTrue(True, "Get One User Day 1 - This should pass. Listing does not exist.")
 
-		db.update_available_quantity(7, 10)
-		self.assertTrue(False, "Update Available Quantity Day 1 - This should not be reached. Listing does not exist.")
-		## Need to finish this ##
+		db.update_available_quantity(7, 1)
+		listing = db.get_one_listing(1)
+		self.assertEqual(listing["available_quantity"], 43, "Update Available Quantity Day 1 - Unexpected available quantity after update.")
 
 # 		g.cursor.execute('''
 # 			insert into public.category (name) values
