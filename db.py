@@ -158,7 +158,8 @@ def create_new_address(address):
 		'''
 		g.cursor.execute(query, address)
 		g.connection.commit()
-		return (g.cursor.rowcount, g.cursor.lastrowid)
+		row_id = g.cursor.lastrowid
+		return (g.cursor.rowcount, row_id)
 
 
 def get_all_states():

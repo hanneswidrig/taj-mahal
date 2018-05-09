@@ -271,27 +271,25 @@ def logout():
 
 @app.route('/account/create', methods=['GET', 'POST'])
 def create_account():
-	# Create new member form. Will automatically populate from request.form.
 	user_form = member_form()
 	user_form.address_state.choices = helper_functions.get_usa_states()
 
-	# The validate_on_submit() method checks for two conditions.
-	# 1. If we're handling a GET request, it returns false,
-	#    and we fall through to render_template(), which sends the empty form.
-	# 2. Otherwise, we're handling a POST request, so it runs the validators on the form,
-	#    and returns false if any fail, so we also fall through to render_template()
-	#    which renders the form and shows any error messages stored by the validators.
 	if user_form.validate_on_submit():
 		member = db.find_user(user_form.email.data)
+
 		if member is not None:
 			flash("Member {} already exists".format(user_form.email.data))
 		else:
-			# Upload seller's photo
 			approved_file_extensions = {'jpg', 'jpeg', 'png', 'tiff', 'tif', 'bmp'}
-			file_name = secure_filename(user_form.photo.data.filename)
-			file_extension = file_name.split('.')[-1].lower()
+			file_name = ''
+			file_extension = ''
+			allow_create = True
 
-			if file_extension in approved_file_extensions:
+			if user_form.photo.data:	
+				file_name = secure_filename(user_form.photo.data.filename)
+				file_extension = file_name.split('.')[-1].lower()
+
+			if user_form.photo.data and file_extension in approved_file_extensions:
 				user_name = user_form.email.data
 				directory_created = os.path.join('{}'.format(app.config['SCRIPT_LOCATION']),
 				 'static', 'images', 'uploaded-images', '{}'.format(user_name))
@@ -300,20 +298,30 @@ def create_account():
 				file_path = os.path.join(directory_created, file_name)
 				user_form.photo.data.save(file_path)
 
-				# Generate new filename to prevent overwrites
 				current_time = pendulum.now('America/Indianapolis').format(r'%Y%m%dT%H%M%S')
 				proc_name = '{}.{}'.format(current_time, file_extension)
 				os.chdir(directory_created)
 				os.rename(file_name, proc_name)
 				pic_location = 'images/uploaded-images/{}/{}'.format(user_name, proc_name)
 
-				# Resize photo to width < 1024 and compress file size
 				img = Image.open(proc_name)
 				maxsize = (1024, 1024)
 				img.thumbnail(maxsize, Image.ANTIALIAS)
 				img.save(proc_name, optimize=True, quality=50)
+			elif user_form.photo.data and file_extension not in approved_file_extensions:
+				flash('Invalid picture format, please choose a JPG, JPEG, or PNG.')
+				allow_create = False
+			elif not user_form.photo.data:
+				user_name = user_form.email.data
+				directory_created = os.path.join('{}'.format(app.config['SCRIPT_LOCATION']),
+				 'static', 'images', 'uploaded-images', '{}'.format(user_name))
+				if not os.path.exists(directory_created):
+					os.mkdir(directory_created)
+				pic_location = ''
+			else:
+				pass
 
-				# Create Address row
+			if allow_create:
 				address_id = db.create_new_address({
 					'street' : str(user_form.address_street.data).strip(),
 					'city'   : str(user_form.address_city.data).strip(),
@@ -321,7 +329,6 @@ def create_account():
 					'zipcode': user_form.address_zipcode.data
 				})
 
-				# Create User row
 				if address_id[0] == 1:
 					rowcount = db.create_user({
 						'address_id': int(address_id[1]),
@@ -334,7 +341,7 @@ def create_account():
 					})
 				else:
 					flash('Invalid address fields.')
-				
+
 				if rowcount == 1:
 					user = db.get_one_login(user_form.email.data)
 					session['email'] = request.form['email']
@@ -343,19 +350,7 @@ def create_account():
 					return redirect(url_for('login'))
 				else:
 					flash('New user not created.')
-			else:
-				flash('Invalid image file format, please use PNG, JPG, or JPEG.')
 
-	# We will get here under any of the following conditions:
-	# 1. We're handling a GET request, so we render the (empty) form.
-	# 2. We're handling a POST request, and some validator failed, so we render the
-	#    form with the same values so that the member can try again. The template
-	#    will extract and display the error messages stored on the form object
-	#    by the validators that failed.
-	# 3. The email entered in the form corresponds to an existing member.
-	#    The template will render an error message from the flash.
-	# 4. Something happened when we tried to update the database (rowcount != 1).
-	#    The template will render an error message from the flash.
 	return render_template('account-create.html', form=user_form, mode='create')
 
 
