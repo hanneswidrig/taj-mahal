@@ -162,6 +162,9 @@ def listing_new():
 								maxsize = (1024, 1024)
 								img.thumbnail(maxsize, Image.ANTIALIAS)
 								img.save(proc_name, optimize=True, quality=50)
+								
+								# Change directory back to uploaded-images
+								os.chdir('..')
 
 								# Properly calculate monetary values
 								ppu = float(format(float(listing_form.price_per_unit.data), '.2f'))
@@ -317,6 +320,8 @@ def create_account():
 				                            pic_location,
 				                            user_form.password.data,
 				                            user_form.bio.data)
+				# Change directory back to uploaded-images
+				os.chdir('..')
 				if rowcount == 1:
 					user = db.get_one_login(user_form.email.data)
 					session = {
