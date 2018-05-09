@@ -215,7 +215,9 @@ def user_profile(user_id):
 
 @app.route('/account')
 def account():
-		return render_template('account.html')
+	if 'user_id' not in session:
+		return redirect(url_for('log_in'))
+	return render_template('account.html')
 
 
 @app.route('/settings')
