@@ -82,7 +82,7 @@ def listing_detail(listing_id):
 @app.route('/listing/buy/<int:listing_id>', methods=['GET', 'POST'])
 def listing_purchase(listing_id):
 		if 'user_id' not in session:
-			return redirect(url_for('log_in'))
+			return redirect(url_for('login'))
 		rel_link = helper_functions.relative_link(request.path, request.referrer)
 		listing = db.get_one_listing(listing_id)
 		buy_item = buy_form()
@@ -193,7 +193,7 @@ def listing_new():
 							else:
 									flash('Invalid image file format, please use PNG, JPG, or JPEG.')
 		else:
-			return redirect(url_for('log_in'))
+			return redirect(url_for('login'))
 		return render_template('listing-new.html', form=listing_form, rel_link=rel_link)
 
 
@@ -218,7 +218,7 @@ def user_profile(user_id):
 
 @app.route('/account')
 def account():
-		return render_template('account.html')
+		return render_template('account-main.html')
 
 
 @app.route('/settings')
@@ -227,7 +227,7 @@ def settings():
 
 
 @app.route('/login', methods=['GET', 'POST'])
-def log_in():
+def login():
 	loginform = login_form()
 	if loginform.validate_on_submit():
 		# If we get here, we've received a POST request and
@@ -254,7 +254,7 @@ def log_in():
 	# 2. This is a POST request and the form failed to validate.
 	# 3. The form validated but the password was wrong.
 
-	return render_template('log-in.html', form=loginform)
+	return render_template('account-login.html', form=loginform)
 
 
 @app.route('/logout')
@@ -330,7 +330,7 @@ def create_account():
 					}
 
 					flash('User {} created'.format(session['email']))
-					return redirect(url_for('log_in'))
+					return redirect(url_for('login'))
 				else:
 					flash('New user not created.')
 			else:
@@ -350,7 +350,7 @@ def create_account():
 	#    The template will render an error message from the flash.
 	# 4. Something happened when we tried to update the database (rowcount != 1).
 	#    The template will render an error message from the flash.
-	return render_template('create-account.html', form=user_form, mode='create')
+	return render_template('account-create.html', form=user_form, mode='create')
 
 
 if __name__ == '__main__':
