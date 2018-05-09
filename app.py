@@ -222,6 +222,7 @@ def account():
 def settings():
 		return render_template('settings.html')
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def log_in():
 	loginform = login_form()
@@ -252,6 +253,7 @@ def log_in():
 
 	return render_template('log-in.html', form=loginform)
 
+
 @app.route('/logout')
 def logout():
     # Remove the 'email' entry from the session.
@@ -265,6 +267,7 @@ def logout():
     session.clear()
     flash('User {} logged out'.format(email))
     return redirect(url_for('index'))
+
 
 @app.route('/account/create', methods=['GET', 'POST'])
 def create_account():
@@ -343,7 +346,6 @@ def create_account():
 	# 4. Something happened when we tried to update the database (rowcount != 1).
 	#    The template will render an error message from the flash.
 	return render_template('create-account.html', form=user_form, mode='create')
-
 
 
 if __name__ == '__main__':
