@@ -331,7 +331,7 @@ def create_account():
 
 				if address_id[0] == 1:
 					rowcount = db.create_user({
-						'address_id': int(address_id[1]),
+						'address_id': int(address_id[1][0]),
 						'email': str(user_form.email.data).strip(),
 						'first': str(user_form.first_name.data).strip(),
 						'last' : str(user_form.last_name.data).strip(),

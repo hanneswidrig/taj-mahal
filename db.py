@@ -156,9 +156,11 @@ def create_new_address(address):
 		INSERT INTO public.address(address_id, street, city, state_id, zipcode)
 		VALUES (default ,%(street)s, %(city)s, %(state)s, %(zipcode)s);
 		'''
+		query_to_get_a_id = '''SELECT address_id FROM address ORDER BY address_id DESC limit 1;'''
 		g.cursor.execute(query, address)
 		g.connection.commit()
-		row_id = g.cursor.lastrowid
+		g.cursor.execute(query_to_get_a_id)
+		row_id = g.cursor.fetchone()
 		return (g.cursor.rowcount, row_id)
 
 
