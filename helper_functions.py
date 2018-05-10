@@ -53,3 +53,11 @@ def address_string(user_id):
 def address_url(address):
 	map_url = 'https://www.google.com/maps/search/?api=1&query={}'.format(address)
 	return map_url
+
+def get_usa_states():
+	states = db.get_all_states()
+	states_list = []
+	for state in states:
+		states_list.append((state[0], state[1]))
+	return states_list
+

@@ -77,6 +77,9 @@ def get_one_user(user_id):
 		g.cursor.execute('SELECT * FROM "user" WHERE user_id = %(id)s;', {'id': user_id})
 		return g.cursor.fetchone()
 
+def find_user(email):
+	g.cursor.execute('SELECT * FROM "user" WHERE email = %(email)s;', {'email': email})
+	return g.cursor.fetchone()
 
 def get_one_login(email):
 	g.cursor.execute('SELECT * FROM "user" WHERE email = %(email)s;', {'email': email})
@@ -148,29 +151,32 @@ def add_new_order(listing_id, qty, total_cost, buyer_id):
 		return g.cursor.rowcount
 
 
-# def find_user(userEmail):
-#     """Look up a single user."""
-#     # query = """
-#     # SELECT m.email, m.first_name, m.last_name, p.file_path
-#     # FROM user AS m
-#     #    LEFT OUTER JOIN photo AS p ON m.email = p.user_email
-#     # WHERE email = %(emailParam)s
-#     # """
-#     query = """
-#         SELECT email, first_name, last_name
-#         FROM user
-#         WHERE email = %(emailParam)s
-#         """
-#     g.cursor.execute(query, {'emailParam': userEmail})
-#     return g.cursor.fetchone()
+def create_new_address(address):
+		query = '''
+		INSERT INTO public.address(address_id, street, city, state_id, zipcode)
+		VALUES (default ,%(street)s, %(city)s, %(state)s, %(zipcode)s);
+		'''
+		query_to_get_a_id = '''SELECT address_id FROM address ORDER BY address_id DESC limit 1;'''
+		g.cursor.execute(query, address)
+		g.connection.commit()
+		g.cursor.execute(query_to_get_a_id)
+		row_id = g.cursor.fetchone()
+		return (g.cursor.rowcount, row_id)
 
 
-def create_user(email, first_name, last_name, photo, password, bio):
-    """Create a new user."""
+def get_all_states():
+		query = '''
+		SELECT state_id, state.name FROM public.state;
+		'''
+		g.cursor.execute(query)
+		return g.cursor.fetchall()
+
+
+def create_user(new_user):
     query = '''
-INSERT INTO public.user(address_id, email, first_name, last_name, profile_pic, password, bio)
-VALUES (1, %(email)s, %(first)s, %(last)s, %(photo)s, %(pass)s, %(bio)s)
+		INSERT INTO public.user(address_id, email, first_name, last_name, profile_pic, password, bio)
+		VALUES (%(address_id)s, %(email)s, %(first)s, %(last)s, %(photo)s, %(pass)s, %(bio)s);
     '''
-    g.cursor.execute(query, {'email': email, 'first': first_name, 'last': last_name, 'photo': photo, 'pass': password, 'bio': bio})
+    g.cursor.execute(query, new_user)
     g.connection.commit()
     return g.cursor.rowcount

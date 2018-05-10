@@ -8,6 +8,7 @@ values (3, 1, 'jon@meharg.gov', 'jon', 'jon', 'meharg', 'https://avatars2.github
 insert into public.user (user_id, address_id, email, password, first_name, last_name, profile_pic, bio)
 values (4, 1, 'tim@ours.org', 'tim', 'tim', 'ours', 'https://avatars2.githubusercontent.com/u/22141109?s=400&v=4', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
 alter sequence user_user_id_seq restart with 5;
+
 -- category table
 insert into public.category (category_id, name) values (1, 'vegetable');
 insert into public.category (category_id, name) values (2, 'fruit');
@@ -83,4 +84,14 @@ insert into public.state (abbrev, name) values
 ('WI', 'Wisconsin'),
 ('WY', 'Wyoming');
 
+-- address table
 insert into public.address (street, city, state_id, zipcode) values ('236 West Reade Ave', 'Upland', 15, '46989');
+alter sequence address_address_id_seq restart with 2;
+
+-- orders table
+insert into public.orders (listing_id, quantity, total_cost, buyer_id, time_placed) values (1, 10, 10.50, 2, '2018-05-05 11:31:46.000000');
+insert into public.orders (listing_id, quantity, total_cost, buyer_id, time_placed) values (4, 112, 51.23, 2, '2018-05-06 11:31:46.000000');
+insert into public.orders (listing_id, quantity, total_cost, buyer_id, time_placed) values (3, 24, 18.67, 1, '2018-05-07 11:31:46.000000');
+insert into public.orders (listing_id, quantity, total_cost, buyer_id, time_placed) values (2, 1, 12.34, 3, '2018-05-08 11:31:46.000000');
+insert into public.orders (listing_id, quantity, total_cost, buyer_id, time_placed) values (1, 12, 5.01, 4, '2018-05-09 11:31:46.000000');
+alter sequence orders_order_id_seq restart with 6;

@@ -4,35 +4,41 @@ from wtforms import StringField, SubmitField, IntegerField, SelectField, \
 DecimalField, DateField, BooleanField, FileField, SubmitField, TextAreaField, PasswordField
 from wtforms.validators import Email, Length, DataRequired, Regexp, NumberRange, EqualTo
 
-class buy_form(FlaskForm):
+class buy_form(FlaskForm): 
 		quantity = IntegerField('Quantity to buy', validators=[NumberRange(min=1, message="Must buy more than 0.")])
-		submit = SubmitField('Pay')
+		submit   = SubmitField('Pay')
 
 
-class add_listing_form(FlaskForm):
-		title = StringField('Title', validators=[Length(min=1, message="A title is required.")])
-		photo = FileField('Product Photo', validators=[FileRequired(message="Please choose an image to upload.")])
-		description = TextAreaField('Description', validators=[Length(min=1, message="A description is required.")])
+class add_listing_form(FlaskForm): 
+		title             = StringField('Title', validators=[Length(min=1, message="A title is required.")])
+		photo             = FileField('Product Photo', validators=[FileRequired(message="Please choose an image to upload.")])
+		description       = TextAreaField('Description', validators=[Length(min=1, message="A description is required.")])
 		original_quantity = IntegerField('Quantity For Sale', validators=[NumberRange(min=1, message="A quantity is required.")])
-		unit_type = StringField('Measurement', validators=[Length(min=1, message="A measurement is required.")])
-		price_per_unit = DecimalField('Price Per Unit', validators=[NumberRange(min=0.01, message="A price is required.")])
-		category_id = SelectField('Category', choices=[(1, 'Vegetable'),(2, 'Fruit'),(3, 'Meat'),(4, 'Cheese')], coerce=int)
-		is_tradeable = BooleanField('Should this product be tradeable?')
-		date_harvested = DateField('Date Harvested', format="%Y-%m-%d")
-		submit = SubmitField('Add')
+		unit_type         = StringField('Measurement', validators=[Length(min=1, message="A measurement is required.")])
+		price_per_unit    = DecimalField('Price Per Unit', validators=[NumberRange(min=0.01, message="A price is required.")])
+		category_id       = SelectField('Category', choices=[(1, 'Vegetable'),(2, 'Fruit'),(3, 'Meat'),(4, 'Cheese')], coerce=int)
+		is_tradeable      = BooleanField('Should this product be tradeable?')
+		date_harvested    = DateField('Date Harvested', format="%Y-%m-%d")
+		submit            = SubmitField('Add')
 
-class login_form(FlaskForm):
-    email = StringField('E-mail Address', validators=[DataRequired()])
+
+class login_form(FlaskForm): 
+    email    = StringField('E-mail Address', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Log In')
+    submit   = SubmitField('Log In')
 
-class member_form(FlaskForm):
-		email = StringField('Email', validators=[Email()])
-		first_name = StringField('First Name', validators=[Length(min=1, max=40)])
-		last_name = StringField('Last Name', validators=[Length(min=1, max=40)])
-		address = StringField ('Pickup address', validators=[Length(min=1, max= 250)])
-		photo = FileField('Photo')
-		bio = StringField('Bio', validators=[Length(min=1, max=250)])
+
+class member_form(FlaskForm): 
+		email           = StringField('Email', validators=[Email()])
+		first_name      = StringField('First Name', validators=[Length(min=1, max=40)])
+		last_name       = StringField('Last Name', validators=[Length(min=1, max=40)])
+		address_street  = StringField ('Street Address', validators=[Length(min=1, max= 128)])
+		address_city    = StringField ('City', validators=[Length(min=1, max= 128)])
+		address_state   = SelectField ('State', coerce=int)
+		address_zipcode = IntegerField ('ZIP Code', validators=[NumberRange(min=00000, max= 99999)])
+
+		photo    = FileField('Profile Picture')
+		bio      = TextAreaField('Biography', validators=[Length(min=1, max=250)])
 		password = PasswordField('Password', [DataRequired(), EqualTo('confirm', message='Passwords must match')])
-		confirm = PasswordField('Repeat Password')
-		submit = SubmitField('Create Member')
+		confirm  = PasswordField('Repeat Password')
+		submit   = SubmitField('Create Account')
