@@ -55,6 +55,9 @@
 .search-filter > a {
 	color: #757575;
 }
+.search-none {
+	margin-top: 25px;
+}
 .search-box {
 	padding         : 8px 16px;
 	width           : 100%;
