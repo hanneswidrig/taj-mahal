@@ -327,6 +327,7 @@ def create_account():
 				})
 
 				# Create User row
+				print("Address id:", address_id)
 				if address_id[0] == 1:
 					rowcount = db.create_user({
 						'address_id': int(address_id[1]),
