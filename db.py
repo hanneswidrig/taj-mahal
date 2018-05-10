@@ -180,3 +180,8 @@ def create_user(new_user):
     g.cursor.execute(query, new_user)
     g.connection.commit()
     return g.cursor.rowcount
+
+def get_latest_user_id():
+		query = '''SELECT user_id FROM "user" ORDER BY user_id DESC limit 1;'''
+		g.cursor.execute(query)
+		return g.cursor.fetchone()[0] + 1
