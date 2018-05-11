@@ -6,6 +6,7 @@ import db
 from app import app
 import sys
 import re
+from io import BytesIO
 
 
 def getCSRF(resp):
@@ -476,20 +477,28 @@ class ApplicationTestCaseDay1(FlaskTestCase):
 		# ''')
 
 		resp = self.client.get('/listing/add')
-		csrf = getCSRF(resp)
+		# csrf = getCSRF(resp)
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "New Listing Day 1 - Missing site title.")
 		self.assertTrue(b'Title' in resp.data, "New Listing Day 1 - Missing title field.")
 
-		resp = self.client.post("/listing/buy/1", data=dict(csrf_token=csrf, title="test", photo="",
-		                                                    description="This is a test.", original_quantity=10,
-		                                                    unit_type="each", price_per_unit=0.97,
-		                                                    category_id=1, is_tradeable="y",
-		                                                    date_harvested="2018-05-02", submit="Add"),
-		                        follow_redirects=True)
-		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "New Listing Day 1 - Missing site title.")
-		self.assertTrue(b'Title' in resp.data, "New Listing Day 1 - Missing title field.")
-# self.assertTrue(b'vegetable' in resp.data, "Did not find expected category on add listing page.")
-
+		# f = open("./static/images/uploaded-images/Corn.jpg", "rb")
+		# read_data = f.read()
+		#
+		# resp = self.client.post("/listing/add", data=dict(csrf_token=csrf, title="test", photo=(bytes(read_data), "image.jpg"),
+		#                                                     description="This is a test.", original_quantity=10,
+		#                                                     unit_type="each", price_per_unit=0.97,
+		#                                                     category_id=1, is_tradeable="y",
+		#                                                     date_harvested="2018-05-02", submit="Add"),
+		#                         follow_redirects=True)
+		#
+		# f.close()
+		#
+		# text = resp.get_data(as_text=True).split("\n")
+		# for i in text:
+		# 	print(i, file=sys.stderr)
+		# self.assertTrue(b'Gardener\'s Exchange' in resp.data, "New Listing Day 1 - Missing site title.")
+		# self.assertTrue(b'Product Feed' in resp.data, "New Listing Day 1 - Missing page title.")
+		# self.assertTrue(b'vegetable' in resp.data, "Did not find expected category on add listing page.")
 
 
 if __name__ == '__main__':
