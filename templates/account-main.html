@@ -17,9 +17,17 @@
 {% endblock %}
 {% block content %}
     {% if 'email' in session %}
-    <p>Logged in as {{ session.email }}; <a href="{{ url_for('logout') }}">log out</a>.</p>
-{% else %}
-    <p>Not logged in; <a href="{{ url_for('login') }}">log in now</a>.</p>
-    <p> Want to join the community? <a href="{{ url_for('create_account') }}">Create an Account</a>.</p>
-{% endif %}
+        <p>Logged in as {{ session.email }}; <a href="{{ url_for('logout') }}">log out</a>.</p>
+    {% else %}
+        <p>Not logged in; <a href="{{ url_for('login') }}">log in now</a>.</p>
+        <p> Want to join the community? <a href="{{ url_for('create_account') }}">Create an Account</a>.</p>
+    {% endif %}
+    {% if 'admin' in session['role'] %}
+        <p>You're an admin! You can edit these users:</p>
+        {% for each_user in users %}
+            <a href="settings.html">{{ each_user[0] }}</a>
+            <br>
+        {% endfor %}
+
+    {% endif %}
 {% endblock %}

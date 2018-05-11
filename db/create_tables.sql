@@ -5,18 +5,19 @@ drop table if exists "orders" cascade;
 drop table if exists "state" cascade;
 drop table if exists "user" cascade;
 
-create table "user"
+CREATE TABLE "user"
 (
-  user_id     serial      not null
-    constraint user_pkey
-    primary key,
-  address_id  integer     not null,
-  email    varchar(64) not null,
-  password    varchar(64) not null,
-  first_name  varchar(64) not null,
-  last_name   varchar(64) not null,
-  profile_pic varchar(256),
-  bio         varchar(256)
+  user_id     SERIAL                                          NOT NULL
+    CONSTRAINT user_pkey
+    PRIMARY KEY,
+  address_id  INTEGER                                         NOT NULL,
+  email       VARCHAR(64)                                     NOT NULL,
+  password    VARCHAR(64)                                     NOT NULL,
+  first_name  VARCHAR(64)                                     NOT NULL,
+  last_name   VARCHAR(64)                                     NOT NULL,
+  profile_pic VARCHAR(256),
+  role        VARCHAR(64)                                     NOT NULL,
+  bio         VARCHAR(256)
 );
 
 create unique index user_user_id_uindex on "user" (user_id);

@@ -144,7 +144,7 @@ def listing_new():
 							file_extension = file_name.split('.')[-1].lower()
 
 							if file_extension in approved_file_extensions:
-								user_name = listing_form.email.data
+								user_name = session['user_id']
 								directory_created = os.path.join('{}'.format(app.config['SCRIPT_LOCATION']),
 								 'static', 'images', 'uploaded-images', '{}'.format(user_name))
 								file_path = os.path.join(directory_created, file_name)
@@ -215,7 +215,11 @@ def user_profile(user_id):
 
 @app.route('/account')
 def account():
-		return render_template('account-main.html')
+	if 'role' in session:
+		if session['role'] == 'admin':
+			all_users= db.all_users()
+			return render_template('account-main.html', users = all_users)
+	return render_template('account-main.html')
 
 
 @app.route('/settings')
@@ -241,7 +245,7 @@ def login():
 			# to show that the user is logged in. Redirect to home page.
 			session['email'] = loginform.email.data
 			session['user_id'] = user['user_id']
-			print(session)
+			session['role'] = user['role']
 			#session['remember'] = loginform.remember.data
 			flash('User {} logged in'.format(session['email']))
 			return redirect(url_for('index'))
@@ -347,7 +351,7 @@ def create_account():
 					session['email'] = request.form['email']
 					session['user_id'] = user['user_id']
 					flash('Your new account was created.')
-					return redirect(url_for('login'))
+					return redirect(url_for('index'))
 				else:
 					flash('New user not created.')
 
