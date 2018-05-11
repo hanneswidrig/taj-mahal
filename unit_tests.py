@@ -363,6 +363,15 @@ class ApplicationTestCaseDay0(FlaskTestCase):
 		self.assertTrue(False, "New Listing Day 0 - This should not be reached. Listing cannot be posted with non-existent category.")
 		# self.assertTrue(b'vegetable' in resp.data, "Did not find expected category on add listing page.")
 
+	def test_user_profile(self):
+		try:
+			resp = self.client.get('user/1')
+		except:
+			self.assertTrue(True, "User Profile Day 0 - This should pass. User does not exist.")
+			return
+
+		self.assertTrue(False, "User Profile Day 0 - This should not be reached. User does not exist.")
+
 
 class ApplicationTestCaseDay1(FlaskTestCase):
 	"""Setup Cursor for Testing"""
@@ -463,6 +472,20 @@ class ApplicationTestCaseDay1(FlaskTestCase):
 		# self.assertTrue(b'Gardener\'s Exchange' in resp.data, "New Listing Day 1 - Missing site title.")
 		# self.assertTrue(b'Product Feed' in resp.data, "New Listing Day 1 - Missing page title.")
 		# self.assertTrue(b'vegetable' in resp.data, "Did not find expected category on add listing page.")
+
+	def test_user_profile(self):
+		resp = self.client.get('/user/1')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "User Profile Day 1 - Missing site title.")
+		self.assertTrue(b'Hannes' in resp.data, "User Profile Day 1 - Missing first name.")
+		self.assertTrue(b'Peppers' in resp.data, "User Profile Day 1 - Missing listing title.")
+
+		try:
+			resp = self.client.get("/user/10")
+		except:
+			self.assertTrue(True, "User Profile Day 1 - This should pass. User does not exist.")
+			return
+
+		self.assertTrue(False, "User Profile Day 1 - This should not be reached. User does not exist.")
 
 
 if __name__ == '__main__':
