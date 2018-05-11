@@ -365,12 +365,27 @@ class ApplicationTestCaseDay0(FlaskTestCase):
 
 	def test_user_profile(self):
 		try:
-			resp = self.client.get('user/1')
+			resp = self.client.get('/user/1')
 		except:
 			self.assertTrue(True, "User Profile Day 0 - This should pass. User does not exist.")
 			return
 
 		self.assertTrue(False, "User Profile Day 0 - This should not be reached. User does not exist.")
+
+	def test_account(self):
+		resp = self.client.get('/account')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Account Day 0 - Missing site title.")
+		self.assertTrue(b'Your Account' in resp.data, "Account Day 0 - Missing page title.")
+
+	def test_settings(self):
+		resp = self.client.get('/settings')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Settings Day 0 - Missing site title.")
+		self.assertTrue(b'Settings' in resp.data, "Settings Day 0 - Missing page title.")
+
+	def test_log_in(self):
+		resp = self.client.get('/login')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Login Day 0 - Missing site title.")
+		self.assertTrue(b'Password' in resp.data, "Login Day 0 - Missing title for password field.")
 
 
 class ApplicationTestCaseDay1(FlaskTestCase):
@@ -486,6 +501,31 @@ class ApplicationTestCaseDay1(FlaskTestCase):
 			return
 
 		self.assertTrue(False, "User Profile Day 1 - This should not be reached. User does not exist.")
+
+	def test_log_in(self):
+		resp = self.client.get('/login')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Login Day 1 - Missing site title.")
+		self.assertTrue(b'Password' in resp.data, "Login Day 1 - Missing title for password field.")
+
+		csrf = getCSRF(resp)
+		resp = self.client.post("/login", data=dict(csrf_token=csrf, email="tim@ours", password="tim"), follow_redirects=True)
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Login Day 1 - Missing site title.")
+		self.assertTrue(b'Invalid email' in resp.data, "Login Day 1 - Missing invalid email in flash.")
+
+		resp = self.client.get('/login')
+		csrf = getCSRF(resp)
+		resp = self.client.post("/login", data=dict(csrf_token=csrf, email="tim@ours.org", password="nottim"), follow_redirects=True)
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Login Day 1 - Missing site title.")
+		self.assertTrue(b'Invalid password' in resp.data, "Login Day 1 - Missing invalid password in flash.")
+
+		resp = self.client.get('/login')
+		csrf = getCSRF(resp)
+		resp = self.client.post("/login", data=dict(csrf_token=csrf, email="tim@ours.org", password="tim"), follow_redirects=True)
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Login Day 1 - Missing site title.")
+		self.assertTrue(b'logged in' in resp.data, "Login Day 1 - Missing logged in flash.")
+
+	def test_logout(self):
+		self.assertTrue(False, "Finish this test.")
 
 
 if __name__ == '__main__':
