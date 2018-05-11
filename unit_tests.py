@@ -6,7 +6,7 @@ import db
 from app import app
 import sys
 import re
-from io import BytesIO
+#from io import BytesIO
 
 
 def getCSRF(resp):
@@ -75,7 +75,7 @@ class DatabaseTestCaseDay0(FlaskTestCase):
 
 	def test_add_listing(self):
 		try:
-			row_count = db.add_listing({
+			rowcount = db.add_listing({
 				'seller_id': 0,
 				'title': "addtest",
 				'photo': "",
@@ -88,26 +88,23 @@ class DatabaseTestCaseDay0(FlaskTestCase):
 				'category_id': 1,
 				'date_harvested': "2018-04-19",
 				'is_tradeable': True})
-			self.assertTrue(False, "Add Listing Day 0 - This should not be reached. Listing should not be added without category.")
 		except:
 			self.assertTrue(True, "Add Listing Day 0 - This should pass. Listing should not be added without category.")
+			return
+
+		self.assertTrue(False, "Add Listing Day 0 - This should not be reached. Listing should not be added without category.")
 
 	def test_get_one_listing(self):
-		self.assertTrue(False, "Finish this test.")
+		listing = db.get_one_listing(1)
+		self.assertTrue(listing is None, "Get One Listing Day 0 - Non-existent listing should not have returned.")
 
 	def test_get_one_user(self):
-		try:
-			user = db.get_one_user(1)
-			self.assertTrue(False, "Get One User Day 0 - This should not be reached. User does not exist.")
-		except:
-			self.assertTrue(True, "Get One User Day 0 - This should pass. User does not exist.")
+		user = db.get_one_user(1)
+		self.assertTrue(user is None, "Get One User Day 0 - Non-existent listing should not have returned.")
 
 	def test_update_available_quantity(self):
-		try:
-			db.update_available_quantity(4, 1)
-			self.assertTrue(False, "Update Available Quantity Day 0 - This should not be reached. Listing does not exist.")
-		except:
-			self.assertTrue(True, "Get One User Day 0 - This should pass. Listing does not exist.")
+		rowcount = db.update_available_quantity(4, 1)
+		self.assertEqual(rowcount, 0, "Update Available Quantity Day 0 - Update quantity affected unexpected row.")
 
 
 class DatabaseTestCaseDay1(FlaskTestCase):
@@ -188,7 +185,7 @@ class DatabaseTestCaseDay1(FlaskTestCase):
 		self.assertEqual(len(users), 0, "Search Like Users Day 1 - Unexpected number of users with \"john\".")
 
 	def test_add_listing(self):
-		row_count = db.add_listing({
+		rowcount = db.add_listing({
 			'seller_id': 0,
 			'title': "addtest",
 			'photo': "",
@@ -201,27 +198,22 @@ class DatabaseTestCaseDay1(FlaskTestCase):
 			'category_id': 1,
 			'date_harvested': "2018-04-19",
 			'is_tradeable': True})
-		self.assertEqual(row_count, 1, "Add Listing Day 1 - Adding listing failed.")
+		self.assertEqual(rowcount, 1, "Add Listing Day 1 - Adding listing failed.")
 
 	def test_get_one_listing(self):
-		self.assertTrue(False, "Finish this test.")
+		listing = db.get_one_listing(1)
+		self.assertEqual(listing['title'], "Peppers")
 
 	def test_get_one_user(self):
-		try:
-			user = db.get_one_user(10)
-			self.assertTrue(False, "Get One User Day 1 - This should not be reached. User does not exist.")
-		except:
-			self.assertTrue(True, "Get One User Day 1 - This should pass. User does not exist.")
+		user = db.get_one_user(10)
+		self.assertTrue(user is None, "Get One User Day 1 - Non-existent user should not have returned.")
 
 		user = db.get_one_user(2)
 		self.assertEqual(user["first_name"], "amish", "Get One User Day 1 - Unable to get user with id of 2.")
 
 	def test_update_available_quantity(self):
-		try:
-			db.update_available_quantity(4, 10)
-			self.assertTrue(False, "Update Available Quantity Day 1 - This should not be reached. Listing does not exist.")
-		except:
-			self.assertTrue(True, "Get One User Day 1 - This should pass. Listing does not exist.")
+		rowcount = db.update_available_quantity(4, 10)
+		self.assertEqual(rowcount, 0, "Update Available Quantity Day 1 - Updated non-existent listing available_quantity.")
 
 		db.update_available_quantity(7, 1)
 		listing = db.get_one_listing(1)
@@ -255,9 +247,11 @@ class ApplicationTestCaseDay0(FlaskTestCase):
 	def test_listing_detail(self):
 		try:
 			resp = self.client.get('/listing/1')
-			self.assertTrue(False, "Listing Detail Day 0 - This should not be reached. Listing does not exist.")
 		except:
 			self.assertTrue(True, "Listing Detail Day 0 - This should pass. Listing does not exist.")
+			return
+
+		self.assertTrue(False, "Listing Detail Day 0 - This should not be reached. Listing does not exist.")
 
 	def test_search(self):
 		resp = self.client.get('/search')
@@ -271,9 +265,11 @@ class ApplicationTestCaseDay0(FlaskTestCase):
 	def test_buy_listing(self):
 		try:
 			resp = self.client.get('/listing/buy/1')
-			self.assertTrue(False, "Buy Listing Day 0 - This should not be reached. Listing does not exist.")
 		except:
 			self.assertTrue(True, "Buy Listing Day 0 - This should pass. Listing does not exist.")
+			return
+
+		self.assertTrue(False, "Buy Listing Day 0 - This should not be reached. Listing does not exist.")
 
 	def test_new_listing(self):
 		resp = self.client.get('/listing/add')
@@ -283,9 +279,11 @@ class ApplicationTestCaseDay0(FlaskTestCase):
 
 		try:
 			resp = self.client.post("/listing/buy/1", data=dict(csrf_token=csrf, title="test", photo="", description="This is a test.", original_quantity=10, unit_type="each", price_per_unit=0.97, category_id=1, is_tradeable="y", date_harvested="2018-05-02", submit="Add"), follow_redirects=True)
-			self.assertTrue(False, "New Listing Day 0 - This should not be reached. Listing cannot be posted with non-existent category.")
 		except:
 			self.assertTrue(True, "New Listing Day 0 - This should pass. Listing cannot be posted with non-existent category.")
+			return
+
+		self.assertTrue(False, "New Listing Day 0 - This should not be reached. Listing cannot be posted with non-existent category.")
 		# self.assertTrue(b'vegetable' in resp.data, "Did not find expected category on add listing page.")
 
 
@@ -311,30 +309,6 @@ class ApplicationTestCaseDay1(FlaskTestCase):
 	"""------------------------"""
 
 	def test_index(self):
-		# resp = self.client.get('/')
-		# self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Index Day 0 - Missing site title.")
-		# self.assertTrue(b'Product Feed' in resp.data, "Index Day 0 - Missing page title.")
-		# self.assertTrue(b'No search results found' in resp.data, "Index Day 0 - Missing default response.")
-
-		# g.cursor.execute('''
-		# 	insert into public.category (name) values
-		# 	('test')
-		# ''')
-		#
-		# db.add_listing({
-		# 	'seller_id': 0,
-		# 	'title': "test",
-		# 	'photo': "",
-		# 	'description': "This is a test.",
-		# 	'original_quantity': 10,
-		# 	'available_quantity': 10,
-		# 	'unit_type': "each",
-		# 	'price_per_unit': 1.1,
-		# 	'total_price': 11.0,
-		# 	'category_id': 1,
-		# 	'date_harvested': "2018-04-19",
-		# 	'is_tradeable': True})
-
 		resp = self.client.get('/')
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Index Day 1 - Missing site title.")
 		self.assertTrue(b'Product Feed' in resp.data, "Index Day 1 - Missing page title.")
@@ -345,38 +319,6 @@ class ApplicationTestCaseDay1(FlaskTestCase):
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Listing Detail Day 1 - Missing site title.")
 		self.assertTrue(b'Peppers' in resp.data, "Listing Detail Day 1 - Missing listing title.")
 		self.assertTrue(b'1.00' in resp.data, "Listing Detail Day 1 - Missing price per unit.")
-
-		# g.cursor.execute('''
-		# 	insert into public.category (name) values
-		# 	('test')
-		# ''')
-		#
-		# db.add_listing({
-		# 	'seller_id': 0,
-		# 	'title': "test",
-		# 	'photo': "",
-		# 	'description': "This is a test.",
-		# 	'original_quantity': 10,
-		# 	'available_quantity': 10,
-		# 	'unit_type': "each",
-		# 	'price_per_unit': 1.1,
-		# 	'total_price': 11.0,
-		# 	'category_id': 1,
-		# 	'date_harvested': "2018-04-19",
-		# 	'is_tradeable': True})
-		#
-		# g.cursor.execute('''
-		# 	select * from public.listing limit 1
-		# ''')
-		#
-		# listing = g.cursor.fetchone()
-		# self.assertEqual(listing['title'], "test")
-		# self.assertEqual(listing['listing_id'], 1)
-		#
-		# resp = self.client.get('/listing/' + str(listing['listing_id']))
-		# self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on listing page.")
-		# self.assertTrue(b'test' in resp.data, "Didn't find listing title on listing page.")
-		# self.assertTrue(b'1.10' in resp.data, "Didn't find price per unit on listing page.")
 
 	def test_search(self):
 		resp = self.client.get('/search')
@@ -392,59 +334,7 @@ class ApplicationTestCaseDay1(FlaskTestCase):
 		self.assertTrue(b'Zucchini' in resp.data, "Search Day 1 - Missing listing match for broad search.")
 		self.assertTrue(b'Amish' in resp.data, "Search Day 1 - Missing user match for broad search.")
 
-		# resp = self.client.get('/search?search=tes&filter=3')
-		# self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on search page.")
-		# self.assertTrue(b'No matches found' in resp.data, "Found matches for listing while searching for users.")
-		#
-		# g.cursor.execute('''
-		# 	insert into public.category (name) values
-		# 	('test')
-		# ''')
-		#
-		# db.add_listing({
-		# 	'seller_id': 0,
-		# 	'title': "test",
-		# 	'photo': "",
-		# 	'description': "This is a test.",
-		# 	'original_quantity': 10,
-		# 	'available_quantity': 10,
-		# 	'unit_type': "each",
-		# 	'price_per_unit': 1.1,
-		# 	'total_price': 11.0,
-		# 	'category_id': 1,
-		# 	'date_harvested': "2018-04-19",
-		# 	'is_tradeable': True})
-		#
-		# resp = self.client.get('/search?search=tes')
-		# self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Didn't find site title on search page.")
-		# self.assertTrue(b'test' in resp.data, "Did not find listing when searching for it.")
-
 	def test_buy_listing(self):
-		# try:
-		# 	resp = self.client.get('/listing/buy/1')
-		# 	self.assertTrue(False, "Buy Listing Day 0 - This should not be reached. Listing does not exist.")
-		# except:
-		# 	self.assertTrue(True, "Buy Listing Day 0 - This should pass. Listing does not exist.")
-
-		# g.cursor.execute('''
-		# 	insert into public.category (name) values
-		# 	('test')
-		# ''')
-		#
-		# db.add_listing({
-		# 	'seller_id': 0,
-		# 	'title': "test",
-		# 	'photo': "",
-		# 	'description': "This is a test.",
-		# 	'original_quantity': 13,
-		# 	'available_quantity': 13,
-		# 	'unit_type': "each",
-		# 	'price_per_unit': 1.1,
-		# 	'total_price': 11.0,
-		# 	'category_id': 1,
-		# 	'date_harvested': "2018-04-19",
-		# 	'is_tradeable': True})
-
 		resp = self.client.get('/listing/buy/1')
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Buy Listing Day 1 - Missing site title.")
 		self.assertTrue(b'Quantity Available' in resp.data, "Buy Listing Day 1 - Missing available quantity.")
@@ -465,17 +355,14 @@ class ApplicationTestCaseDay1(FlaskTestCase):
 		self.assertTrue(b'43' in resp.data, "Did not find expected available quantity on buy listing page.")
 
 		try:
-			resp = self.client.get('/listing/buy/1')
-			self.assertTrue(False, "Buy Listing Day 1 - This should not be reached. Listing does not exist.")
+			resp = self.client.get('/listing/buy/10')
 		except:
 			self.assertTrue(True, "Buy Listing Day 1 - This should pass. Listing does not exist.")
+			return
+
+		self.assertTrue(False, "Buy Listing Day 1 - This should not be reached. Listing does not exist.")
 
 	def test_new_listing(self):
-		# g.cursor.execute('''
-		# 	insert into public.category (name) values
-		# 	('vegetable')
-		# ''')
-
 		resp = self.client.get('/listing/add')
 		# csrf = getCSRF(resp)
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "New Listing Day 1 - Missing site title.")
