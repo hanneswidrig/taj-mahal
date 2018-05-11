@@ -102,6 +102,10 @@ class DatabaseTestCaseDay0(FlaskTestCase):
 		user = db.get_one_user(1)
 		self.assertTrue(user is None, "Get One User Day 0 - Non-existent listing should not have returned.")
 
+	def test_get_one_login(self):
+		user = db.get_one_login("jon@meharg.gov")
+		self.assertTrue(user is None, "Get One Login Day 0 - Non-existent user should not have returned.")
+
 	def test_update_available_quantity(self):
 		rowcount = db.update_available_quantity(4, 1)
 		self.assertEqual(rowcount, 0, "Update Available Quantity Day 0 - Update quantity affected unexpected row.")
@@ -210,6 +214,10 @@ class DatabaseTestCaseDay1(FlaskTestCase):
 
 		user = db.get_one_user(2)
 		self.assertEqual(user["first_name"], "amish", "Get One User Day 1 - Unable to get user with id of 2.")
+
+	def test_get_one_login(self):
+		user = db.get_one_login("jon@meharg.gov")
+		self.assertEqual(user["first_name"], "jon", "Get One Login Day 0 - Non-existent user should not have returned.")
 
 	def test_update_available_quantity(self):
 		rowcount = db.update_available_quantity(4, 10)
