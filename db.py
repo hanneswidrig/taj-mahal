@@ -22,6 +22,9 @@ def all_listings():
     g.cursor.execute('''SELECT * FROM listing WHERE available_quantity > 0 ORDER BY date_created DESC;''')
     return g.cursor.fetchall()
 
+def all_users():
+	g.cursor.execute('''SELECT email FROM public.user ''')
+	return g.cursor.fetchall()
 
 def title_like_listings(search_query):
     search_query = '%' + search_query + '%'
@@ -174,8 +177,8 @@ def get_all_states():
 
 def create_user(new_user):
     query = '''
-		INSERT INTO public.user(address_id, email, first_name, last_name, profile_pic, password, bio)
-		VALUES (%(address_id)s, %(email)s, %(first)s, %(last)s, %(photo)s, %(pass)s, %(bio)s);
+		INSERT INTO public.user(address_id, email, first_name, last_name, profile_pic, password, role, bio)
+		VALUES (%(address_id)s, %(email)s, %(first)s, %(last)s, %(photo)s, %(pass)s, 'user', %(bio)s);
     '''
     g.cursor.execute(query, new_user)
     g.connection.commit()
