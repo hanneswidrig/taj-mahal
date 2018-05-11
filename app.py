@@ -144,9 +144,10 @@ def listing_new():
 							file_extension = file_name.split('.')[-1].lower()
 
 							if file_extension in approved_file_extensions:
-								user_name = session['user_id']
 								directory_created = os.path.join('{}'.format(app.config['SCRIPT_LOCATION']),
-								 'static', 'images', 'uploaded-images', '{}'.format(user_name))
+								 'static', 'images', 'uploaded-images', '{}'.format(session['user_id']))
+								if not os.path.exists(directory_created):
+									os.mkdir(directory_created)
 								file_path = os.path.join(directory_created, file_name)
 								listing_form.photo.data.save(file_path)
 
@@ -155,7 +156,7 @@ def listing_new():
 								proc_name = '{}.{}'.format(current_time, file_extension)
 								os.chdir(directory_created)
 								os.rename(file_name, proc_name)
-								pic_location = 'images/uploaded-images/{}/{}'.format(user_name, proc_name)
+								pic_location = 'images/uploaded-images/{}/{}'.format(session['user_id'], proc_name)
 
 								# Resize photo to width < 1024 and compress file size
 								img = Image.open(proc_name)
@@ -294,9 +295,9 @@ def create_account():
 				file_extension = file_name.split('.')[-1].lower()
 
 			if user_form.photo.data and file_extension in approved_file_extensions:
-				user_name = user_form.email.data
+				user_id = db.get_latest_user_id()
 				directory_created = os.path.join('{}'.format(app.config['SCRIPT_LOCATION']),
-				 'static', 'images', 'uploaded-images', '{}'.format(user_name))
+				 'static', 'images', 'uploaded-images', '{}'.format(user_id))
 				if not os.path.exists(directory_created):
 					os.mkdir(directory_created)
 				file_path = os.path.join(directory_created, file_name)
@@ -306,7 +307,7 @@ def create_account():
 				proc_name = '{}.{}'.format(current_time, file_extension)
 				os.chdir(directory_created)
 				os.rename(file_name, proc_name)
-				pic_location = 'images/uploaded-images/{}/{}'.format(user_name, proc_name)
+				pic_location = 'images/uploaded-images/{}/{}'.format(user_id, proc_name)
 
 				img = Image.open(proc_name)
 				maxsize = (1024, 1024)
@@ -316,9 +317,9 @@ def create_account():
 				flash('Invalid picture format, please choose a JPG, JPEG, or PNG.')
 				allow_create = False
 			elif not user_form.photo.data:
-				user_name = user_form.email.data
+				user_id = db.get_latest_user_id()
 				directory_created = os.path.join('{}'.format(app.config['SCRIPT_LOCATION']),
-				 'static', 'images', 'uploaded-images', '{}'.format(user_name))
+				 'static', 'images', 'uploaded-images', '{}'.format(user_id))
 				if not os.path.exists(directory_created):
 					os.mkdir(directory_created)
 				pic_location = ''
