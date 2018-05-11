@@ -106,9 +106,28 @@ class DatabaseTestCaseDay0(FlaskTestCase):
 		user = db.get_one_login("jon@meharg.gov")
 		self.assertTrue(user is None, "Get One Login Day 0 - Non-existent user should not have returned.")
 
+	def test_get_user_listings(self):
+		listings = db.get_user_listings(4)
+		self.assertEqual(len(listings), 0, "Get User Listings Day 0 - Returned listings for non-existent user.")
+
 	def test_update_available_quantity(self):
 		rowcount = db.update_available_quantity(4, 1)
 		self.assertEqual(rowcount, 0, "Update Available Quantity Day 0 - Update quantity affected unexpected row.")
+
+	def test_get_user_address(self):
+		self.assertTrue(False, "Finish this test.")
+
+	def test_get_user_address_via_listing(self):
+		self.assertTrue(False, "Finish this test.")
+
+	def test_get_listing_details_for_confirmation_page(self):
+		self.assertTrue(False, "Finish this test.")
+
+	def test_add_new_order(self):
+		self.assertTrue(False, "Finish this test.")
+
+	def test_create_user(self):
+		self.assertTrue(False, "Finish this test.")
 
 
 class DatabaseTestCaseDay1(FlaskTestCase):
@@ -217,7 +236,14 @@ class DatabaseTestCaseDay1(FlaskTestCase):
 
 	def test_get_one_login(self):
 		user = db.get_one_login("jon@meharg.gov")
-		self.assertEqual(user["first_name"], "jon", "Get One Login Day 0 - Non-existent user should not have returned.")
+		self.assertEqual(user["first_name"], "jon", "Get One Login Day 1 - Non-existent user should not have returned.")
+
+	def test_get_user_listings(self):
+		listings = db.get_user_listings(1)
+		self.assertEqual(len(listings), 1, "Get User Listings Day 1 - Unexpected number of listings returned for user with id 1.")
+
+		listings = db.get_user_listings(4)
+		self.assertEqual(len(listings), 2, "Get User Listings Day 1 - Unexpected number of listings returned for user with id 4.")
 
 	def test_update_available_quantity(self):
 		rowcount = db.update_available_quantity(4, 10)
@@ -226,6 +252,21 @@ class DatabaseTestCaseDay1(FlaskTestCase):
 		db.update_available_quantity(7, 1)
 		listing = db.get_one_listing(1)
 		self.assertEqual(listing["available_quantity"], 43, "Update Available Quantity Day 1 - Unexpected available quantity after update.")
+
+	def test_get_user_address(self):
+		self.assertTrue(False, "Finish this test.")
+
+	def test_get_user_address_via_listing(self):
+		self.assertTrue(False, "Finish this test.")
+
+	def test_get_listing_details_for_confirmation_page(self):
+		self.assertTrue(False, "Finish this test.")
+
+	def test_add_new_order(self):
+		self.assertTrue(False, "Finish this test.")
+
+	def test_create_user(self):
+		self.assertTrue(False, "Finish this test.")
 
 
 class ApplicationTestCaseDay0(FlaskTestCase):
