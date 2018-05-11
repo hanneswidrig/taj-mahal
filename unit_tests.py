@@ -115,19 +115,29 @@ class DatabaseTestCaseDay0(FlaskTestCase):
 		self.assertEqual(rowcount, 0, "Update Available Quantity Day 0 - Update quantity affected unexpected row.")
 
 	def test_get_user_address(self):
-		self.assertTrue(False, "Finish this test.")
+		address = db.get_user_address(2)
+		self.assertTrue(address is None, "Get User Address Day 0 - Address returned for non-existent user.")
 
 	def test_get_user_address_via_listing(self):
-		self.assertTrue(False, "Finish this test.")
+		address = db.get_user_address_via_listing(4)
+		self.assertTrue(address is None, "Get User Address Via Listing Day 0 - Address returned for non-existent listing.")
 
 	def test_get_listing_details_for_confirmation_page(self):
-		self.assertTrue(False, "Finish this test.")
+		details = db.get_listing_details_for_confirmation_page(4)
+		self.assertTrue(details is None, "Get Listing Details For Confirmation Page Day 0 - Details returned for non-existent listing.")
 
 	def test_add_new_order(self):
-		self.assertTrue(False, "Finish this test.")
+		try:
+			rowcount = db.add_new_order(4, 7, 7.00, 2)
+		except:
+			self.assertTrue(True, "Add New Order Day 0 - This should pass. Listing does not exist.")
+			return
+
+		self.assertTrue(False, "Add New Order Day 0 - This should not be reached. Order added for non-existent listing.")
 
 	def test_create_user(self):
-		self.assertTrue(False, "Finish this test.")
+		rowcount = db.create_user("brandongeorgeis@manly.com", "brandon", "george", 'images/uploaded-images/Corn.jpg', "somanly", "Oh man!")
+		self.assertEqual(rowcount, 1, "Create User Day 0 - Failed to create new user.")
 
 
 class DatabaseTestCaseDay1(FlaskTestCase):
@@ -254,19 +264,37 @@ class DatabaseTestCaseDay1(FlaskTestCase):
 		self.assertEqual(listing["available_quantity"], 43, "Update Available Quantity Day 1 - Unexpected available quantity after update.")
 
 	def test_get_user_address(self):
-		self.assertTrue(False, "Finish this test.")
+		address = db.get_user_address(2)
+		self.assertEqual(address["street"], '236 West Reade Ave', "Get User Address Day 1 - Unexpected address returned for user with id 2.")
+
+		address = db.get_user_address(10)
+		self.assertTrue(address is None, "Get User Address Day 1 - Address returned for non-existent user.")
 
 	def test_get_user_address_via_listing(self):
-		self.assertTrue(False, "Finish this test.")
+		address = db.get_user_address_via_listing(4)
+		self.assertEqual(address["street"], "236 West Reade Ave", "Get User Address Via Listing Day 1 - Unexpected address returned for listing with id 4.")
+
+		address = db.get_user_address_via_listing(10)
+		self.assertTrue(address is None, "Get User Address Via Listing Day 1 - Address returned for non-existent listing.")
 
 	def test_get_listing_details_for_confirmation_page(self):
-		self.assertTrue(False, "Finish this test.")
+		details = db.get_listing_details_for_confirmation_page(4)
+		self.assertEqual(details["first_name"], "tim", "Get Listing Details For Confirmation Page Day 1 - Unexpected first name returned for listing details with id 4.")
+
+		details = db.get_listing_details_for_confirmation_page(10)
+		self.assertTrue(details is None, "Get Listing Details For Confirmation Page Day 1 - Details returned for non-existent listing.")
 
 	def test_add_new_order(self):
-		self.assertTrue(False, "Finish this test.")
+		rowcount = db.add_new_order(4, 7, 7.00, 2)
+		self.assertEqual(rowcount, 1, "Add New Order Day 1 - Failed to add order on listing with id 4.")
 
-	def test_create_user(self):
-		self.assertTrue(False, "Finish this test.")
+		try:
+			rowcount = db.add_new_order(10, 7, 7.00, 2)
+		except:
+			self.assertTrue(True, "Add New Order Day 1 - This should pass. Listing does not exist.")
+			return
+
+		self.assertTrue(False, "Add New Order Day 1 - This should not be reached. Order added for non-existent listing.")
 
 
 class ApplicationTestCaseDay0(FlaskTestCase):
