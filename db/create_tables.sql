@@ -1,21 +1,22 @@
-drop table if exists "user" cascade;
-drop table if exists listing cascade;
-drop table if exists category cascade;
-drop table if exists "state" cascade;
 drop table if exists "address" cascade;
+drop table if exists "category" cascade;
+drop table if exists "listing" cascade;
 drop table if exists "orders" cascade;
+drop table if exists "state" cascade;
+drop table if exists "user" cascade;
 
 create table "user"
 (
-  user_id     serial      not null
+  user_id     serial                                          not null
     constraint user_pkey
     primary key,
-  address_id  integer     not null,
-  email    varchar(64) not null,
-  password    varchar(64) not null,
-  first_name  varchar(64) not null,
-  last_name   varchar(64) not null,
+  address_id  integer                                         not null,
+  email       varchar(64)                                     not null,
+  password    varchar(64)                                     not null,
+  first_name  varchar(64)                                     not null,
+  last_name   varchar(64)                                     not null,
   profile_pic varchar(256),
+  role        varchar(64)                                     not null,
   bio         varchar(256)
 );
 

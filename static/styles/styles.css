@@ -186,3 +186,10 @@ input[type='number'] {
 	margin-top: 100px;
 	width     : 50%;
 }
+.page-header-title {
+	font-size  : 2.5rem;
+	font-weight: 600;
+	text-align : center;
+	margin     : 6px 0;
+	font-family: 'Titillium Web', sans-serif;
+}

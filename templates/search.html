@@ -101,11 +101,15 @@
 	</ul>
 </div>
 {% endif %}
-
-{% if not results['listings'] and not results['categories'] and not results['users'] %}
+{% if not request.args %}
 <div class="no-results">
-	<img src="{{ url_for('static', filename='images/no-results.png') }}" alt="no results">
-	<span class="search-none">No matches found</span>
+	<img src="{{ url_for('static', filename='images/search.svg') }}" alt="no results">
+	<span class="search-none">Search for amazing products nearby!</span>
+</div>
+{% elif not results['listings'] and not results['categories'] and not results['users'] %}
+<div class="no-results">
+	<img src="{{ url_for('static', filename='images/not-found.svg') }}" alt="no results">
+	<span class="search-none">We could not find any matching products</span>
 </div>
 {% endif %}
 {% endblock %}
