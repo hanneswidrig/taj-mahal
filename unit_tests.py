@@ -525,7 +525,13 @@ class ApplicationTestCaseDay1(FlaskTestCase):
 		self.assertTrue(b'logged in' in resp.data, "Login Day 1 - Missing logged in flash.")
 
 	def test_logout(self):
-		self.assertTrue(False, "Finish this test.")
+		resp = self.client.get('/login')
+		csrf = getCSRF(resp)
+		self.client.post('/login', data=dict(csrf_token=csrf, email="tim@ours.org", password="tim"), follow_redirects=True)
+
+		resp = self.client.get('/logout', follow_redirects=True)
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Logout Day 1 - Missing site title.")
+		self.assertTrue(b'logged out' in resp.data, "Logout Day 1 - Missing logged out flash.")
 
 
 if __name__ == '__main__':
