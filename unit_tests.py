@@ -152,6 +152,10 @@ class DatabaseTestCaseDay0(FlaskTestCase):
 
 		self.assertTrue(False, "Create New Address Day 0 - This should not be reached. States do not exist.")
 
+	def test_get_all_states(self):
+		states = db.get_all_states()
+		self.assertEqual(len(states), 0, "Get All States Day 0 - Unexpected states in empty database.")
+
 	def test_create_user(self):
 		rowcount = db.create_user({
 			"address_id": 1,
@@ -331,6 +335,10 @@ class DatabaseTestCaseDay1(FlaskTestCase):
 			return
 
 		self.assertTrue(False, "Add New Order Day 1 - This should not be reached. Order added for non-existent listing.")
+
+	def test_get_all_states(self):
+		states = db.get_all_states()
+		self.assertEqual(len(states), 52, "Get All States Day 0 - Unexpected number of states.")
 
 
 class ApplicationTestCaseDay0(FlaskTestCase):
