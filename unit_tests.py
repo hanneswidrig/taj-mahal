@@ -185,7 +185,7 @@ class DatabaseTestCaseDay1(FlaskTestCase):
 		super(DatabaseTestCaseDay1, self).setUp()
 		db.open_db()
 		self.execute_sql('db\create_tables.sql')
-		self.execute_sql('db\seed_tables_day1.sql')
+		self.execute_sql('db\seed_tables.sql')
 
 	def tearDown(self):
 		db.close_db()
@@ -420,7 +420,7 @@ class ApplicationTestCaseDay0(FlaskTestCase):
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Settings Day 0 - Missing site title.")
 		self.assertTrue(b'Settings' in resp.data, "Settings Day 0 - Missing page title.")
 
-	def test_log_in(self):
+	def test_login(self):
 		resp = self.client.get('/login')
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Login Day 0 - Missing site title.")
 		self.assertTrue(b'Password' in resp.data, "Login Day 0 - Missing title for password field.")
@@ -439,7 +439,7 @@ class ApplicationTestCaseDay1(FlaskTestCase):
 		super(ApplicationTestCaseDay1, self).setUp()
 		db.open_db()
 		self.execute_sql('db\create_tables.sql')
-		self.execute_sql('db\seed_tables_day1.sql')
+		self.execute_sql('db\seed_tables.sql')
 
 	def tearDown(self):
 		db.close_db()
@@ -558,7 +558,39 @@ class ApplicationTestCaseDay1(FlaskTestCase):
 
 		self.assertTrue(False, "User Profile Day 1 - This should not be reached. User does not exist.")
 
-	def test_log_in(self):
+	def test_account(self):
+		resp = self.client.get('/account')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Account Day 1 - Missing site title.")
+		self.assertTrue(b'Your Account' in resp.data, "Account Day 1 - Missing page title.")
+
+		resp = self.client.get('/login')
+		csrf = getCSRF(resp)
+		resp = self.client.post("/login", data=dict(csrf_token=csrf, email="tim@ours", password="tim"), follow_redirects=True)
+
+		resp = self.client.get('/account')
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Account Day 1 - Missing site title.")
+		self.assertTrue(b'Your Account' in resp.data, "Account Day 1 - Missing page title.")
+		self.assertTrue(b'admin' not in resp.data, "Account Day 1 - Viewing non-admin as admin.")
+
+		# resp = self.client.get('/logout', follow_redirects=True)
+		# self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Here 1 - Missing site title.")
+		# self.assertTrue(b'logged out' in resp.data, "Here 1 - Missing logged out flash.")
+		#
+		# resp = self.client.get('/login')
+		# csrf = getCSRF(resp)
+		# resp = self.client.post('/login', data=dict(csrf_token=csrf, email="hannes@widrig.com", password="hannes"), follow_redirects=True)
+		# text = resp.get_data(as_text=True).split("\n")
+		# for i in text:
+		# 	print(i, file=sys.stderr)
+		# self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Here 2 - Missing site title.")
+		# self.assertTrue(b'logged in' in resp.data, "Here 2 - Missing logged in flash.")
+		#
+		# resp = self.client.get('/account')
+		# self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Account Day 1 - Missing site title.")
+		# self.assertTrue(b'Your Account' in resp.data, "Account Day 1 - Missing page title.")
+		# self.assertTrue(b'admin' in resp.data, "Account Day 1 - Viewing admin as non-admin.")
+
+	def test_login(self):
 		resp = self.client.get('/login')
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Login Day 1 - Missing site title.")
 		self.assertTrue(b'Password' in resp.data, "Login Day 1 - Missing title for password field.")
