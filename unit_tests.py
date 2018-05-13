@@ -143,6 +143,15 @@ class DatabaseTestCaseDay0(FlaskTestCase):
 
 		self.assertTrue(False, "Add New Order Day 0 - This should not be reached. Order added for non-existent listing.")
 
+	def test_create_new_address(self):
+		try:
+			rowcount = db.create_new_address({"street": "Somewhere", "city": "in", "state": 15, "zipcode": "99999"})
+		except:
+			self.assertTrue(True, "Create New Address Day 0 - This should pass. States do not exist.")
+			return
+
+		self.assertTrue(False, "Create New Address Day 0 - This should not be reached. States do not exist.")
+
 	def test_create_user(self):
 		rowcount = db.create_user({
 			"address_id": 1,
@@ -306,6 +315,10 @@ class DatabaseTestCaseDay1(FlaskTestCase):
 
 		details = db.get_listing_details_for_confirmation_page(10)
 		self.assertTrue(details is None, "Get Listing Details For Confirmation Page Day 1 - Details returned for non-existent listing.")
+
+	def test_create_new_address(self):
+		rowcount = db.create_new_address({"street": "Somewhere", "city": "in", "state": 15, "zipcode": "99999"})
+		self.assertEqual(rowcount, (1, [2]), "Create New Address Day 1 - Failed to create new address.")
 
 	def test_add_new_order(self):
 		rowcount = db.add_new_order(4, 7, 7.00, 2)
