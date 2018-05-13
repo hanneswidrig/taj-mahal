@@ -61,6 +61,10 @@ class DatabaseTestCaseDay0(FlaskTestCase):
 		listings = db.all_listings()
 		self.assertEqual(len(listings), 0, "All Listings Day 0 - Unexpected extra listings.")
 
+	def test_all_users(self):
+		users = db.all_users()
+		self.assertEqual(len(users), 0, "All Users Day 0 - Unexpected extra users.")
+
 	def test_title_like_listings(self):
 		listings = db.title_like_listings("addtest")
 		self.assertEqual(len(listings), 0, "Title Like Listings Day 0 - Unexpected match for listing.")
@@ -136,7 +140,14 @@ class DatabaseTestCaseDay0(FlaskTestCase):
 		self.assertTrue(False, "Add New Order Day 0 - This should not be reached. Order added for non-existent listing.")
 
 	def test_create_user(self):
-		rowcount = db.create_user("brandongeorgeis@manly.com", "brandon", "george", 'images/uploaded-images/Corn.jpg', "somanly", "Oh man!")
+		rowcount = db.create_user({
+			"address_id": 1,
+			"email": "brandongeorgeis@manly.com",
+			"first": "brandon",
+			"last": "george",
+			"photo": 'images/uploaded-images/Corn.jpg',
+			"pass": "somanly",
+			"bio": "Oh man!"})
 		self.assertEqual(rowcount, 1, "Create User Day 0 - Failed to create new user.")
 
 
@@ -164,6 +175,10 @@ class DatabaseTestCaseDay1(FlaskTestCase):
 	def test_all_listings(self):
 		listings = db.all_listings()
 		self.assertEqual(len(listings), 5, "All Listings Day 1 - Unexpected number of listings in day 1.")
+
+	def test_all_users(self):
+		users = db.all_users()
+		self.assertEqual(len(users), 4, "All Users Day 1 - Unexpected number of users in day 1.")
 
 	def test_title_like_listings(self):
 		db.add_listing({
@@ -333,35 +348,21 @@ class ApplicationTestCaseDay0(FlaskTestCase):
 	def test_search(self):
 		resp = self.client.get('/search')
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Search Day 0 - Missing site title for no search.")
-		self.assertTrue(b'No matches found' in resp.data, "Search Day 0 - Found matches for no search.")
+		self.assertTrue(b'Search for amazing products nearby!' in resp.data, "Search Day 0 - Found matches for no search.")
 
 		resp = self.client.get('/search?search=thing')
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Search Day 0 - Missing site title on bad search.")
-		self.assertTrue(b'No matches found' in resp.data, "Search Day 0 - Found matches for bad search.")
+		self.assertTrue(b'We could not find any matching products' in resp.data, "Search Day 0 - Found matches for bad search.")
 
-	def test_buy_listing(self):
-		try:
-			resp = self.client.get('/listing/buy/1')
-		except:
-			self.assertTrue(True, "Buy Listing Day 0 - This should pass. Listing does not exist.")
-			return
-
-		self.assertTrue(False, "Buy Listing Day 0 - This should not be reached. Listing does not exist.")
+	def test_listing_purchase(self):
+		resp = self.client.get('/listing/buy/1', follow_redirects=True)
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Listing Purchase Day 0 - Missing site title.")
+		self.assertTrue(b'Login' in resp.data, "Listing Purchase Day 0 - Missing login page title.")
 
 	def test_new_listing(self):
-		resp = self.client.get('/listing/add')
-		csrf = getCSRF(resp)
-		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "New Listing Day 0 - Missing site title.")
-		self.assertTrue(b'Title' in resp.data, "New Listing Day 0 - Missing title field.")
-
-		try:
-			resp = self.client.post("/listing/buy/1", data=dict(csrf_token=csrf, title="test", photo="", description="This is a test.", original_quantity=10, unit_type="each", price_per_unit=0.97, category_id=1, is_tradeable="y", date_harvested="2018-05-02", submit="Add"), follow_redirects=True)
-		except:
-			self.assertTrue(True, "New Listing Day 0 - This should pass. Listing cannot be posted with non-existent category.")
-			return
-
-		self.assertTrue(False, "New Listing Day 0 - This should not be reached. Listing cannot be posted with non-existent category.")
-		# self.assertTrue(b'vegetable' in resp.data, "Did not find expected category on add listing page.")
+		resp = self.client.get('/listing/add', follow_redirects=True)
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Listing Purchase Day 0 - Missing site title.")
+		self.assertTrue(b'Login' in resp.data, "Listing Purchase Day 0 - Missing login page title.")
 
 	def test_user_profile(self):
 		try:
@@ -424,36 +425,45 @@ class ApplicationTestCaseDay1(FlaskTestCase):
 	def test_search(self):
 		resp = self.client.get('/search')
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Search Day 1 - Missing site title for no search.")
-		self.assertTrue(b'No matches found' in resp.data, "Search Day 1 - Found matches for no search.")
+		self.assertTrue(b'Search for amazing products nearby!' in resp.data, "Search Day 1 - Found matches for no search.")
 
 		resp = self.client.get('/search?search=thing')
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Search Day 1 - Missing site title on bad search.")
-		self.assertTrue(b'No matches found' in resp.data, "Search Day 1 - Found matches for bad search.")
+		self.assertTrue(b'We could not find any matching products' in resp.data, "Search Day 1 - Found matches for bad search.")
 
 		resp = self.client.get('/search?search=i')
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Search Day 1 - Missing site title on broad search.")
 		self.assertTrue(b'Zucchini' in resp.data, "Search Day 1 - Missing listing match for broad search.")
 		self.assertTrue(b'Amish' in resp.data, "Search Day 1 - Missing user match for broad search.")
 
-	def test_buy_listing(self):
+	def test_listing_purchase(self):
+		resp = self.client.get('/listing/buy/1', follow_redirects=True)
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Listing Purchase Day 1 - Missing site title.")
+		self.assertTrue(b'Login' in resp.data, "Listing Purchase Day 1 - Missing login page title.")
+
+		resp = self.client.get('/login')
+		csrf = getCSRF(resp)
+		resp = self.client.post("/login", data=dict(csrf_token=csrf, email="tim@ours.org", password="tim"),
+		                        follow_redirects=True)
+
 		resp = self.client.get('/listing/buy/1')
-		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Buy Listing Day 1 - Missing site title.")
-		self.assertTrue(b'Quantity Available' in resp.data, "Buy Listing Day 1 - Missing available quantity.")
-		self.assertTrue(b'50' in resp.data, "Buy Listing Day 1 - Unexpected available quantity before update.")
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Listing Purchase Day 1 1 - Missing site title.")
+		self.assertTrue(b'Quantity Available' in resp.data, "Listing Purchase Day 1 1 - Missing available quantity.")
+		self.assertTrue(b'50' in resp.data, "Listing Purchase Day 1 1 - Unexpected available quantity before update.")
 
 		csrf = getCSRF(resp)
 		resp = self.client.post("/listing/buy/1", data=dict(csrf_token=csrf, quantity=7, submit="Pay"), follow_redirects=True)
-		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Buy Listing Day 1 - Missing site title.")
-		self.assertTrue(b'Total' in resp.data, "Buy Listing Day 1 - Missing title for total.")
-		self.assertTrue(b'7.00' in resp.data, "Buy Listing Day 1 - Unexpected total.")
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Listing Purchase Day 1 2 - Missing site title.")
+		self.assertTrue(b'Total' in resp.data, "Listing Purchase Day 1 2 - Missing title for total.")
+		self.assertTrue(b'7.00' in resp.data, "Listing Purchase Day 1 2 - Unexpected total.")
 
 		resp = self.client.get('/listing/buy/1')
 		csrf = getCSRF(resp)
 		resp = self.client.post("/listing/buy/1", data=dict(csrf_token=csrf, quantity=60, submit="Make+Purchase"), follow_redirects=True)
-		self.assertTrue(b'Pay' in resp.data, "Should still be on buy listing page.")
-		self.assertTrue(b'Please select no more than the quantity that is available.' in resp.data, "Buy Listing Day 1 - Missing flash message when purchase too large.")
-		self.assertTrue(b'Quantity Available' in resp.data, "Did not find quantity available on buy listing page.")
-		self.assertTrue(b'43' in resp.data, "Did not find expected available quantity on buy listing page.")
+		self.assertTrue(b'Pay' in resp.data, "Listing Purchase Day 1 2 - Should still be on buy listing page.")
+		self.assertTrue(b'Please select no more than the quantity that is available.' in resp.data, "Listing Purchase Day 1 2 - Missing flash message when purchase too large.")
+		self.assertTrue(b'Quantity Available' in resp.data, "Listing Purchase Day 1 2 - Did not find quantity available on buy listing page.")
+		self.assertTrue(b'43' in resp.data, "Listing Purchase Day 1     2 - Did not find expected available quantity on buy listing page.")
 
 		try:
 			resp = self.client.get('/listing/buy/10')
@@ -464,6 +474,15 @@ class ApplicationTestCaseDay1(FlaskTestCase):
 		self.assertTrue(False, "Buy Listing Day 1 - This should not be reached. Listing does not exist.")
 
 	def test_new_listing(self):
+		resp = self.client.get('/listing/add', follow_redirects=True)
+		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "Listing Purchase Day 1 - Missing site title.")
+		self.assertTrue(b'Login' in resp.data, "Listing Purchase Day 1 - Missing login page title.")
+
+		resp = self.client.get('/login')
+		csrf = getCSRF(resp)
+		resp = self.client.post("/login", data=dict(csrf_token=csrf, email="tim@ours.org", password="tim"),
+		                        follow_redirects=True)
+
 		resp = self.client.get('/listing/add')
 		# csrf = getCSRF(resp)
 		self.assertTrue(b'Gardener\'s Exchange' in resp.data, "New Listing Day 1 - Missing site title.")
