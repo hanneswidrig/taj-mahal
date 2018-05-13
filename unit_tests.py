@@ -167,6 +167,10 @@ class DatabaseTestCaseDay0(FlaskTestCase):
 			"bio": "Oh man!"})
 		self.assertEqual(rowcount, 1, "Create User Day 0 - Failed to create new user.")
 
+	def test_get_latest_user_id(self):
+		user_id = db.get_latest_user_id()
+		self.assertEqual(user_id, 1, "Get Latest User ID Day 0 - Unexpected latest user.")
+
 
 class DatabaseTestCaseDay1(FlaskTestCase):
 	"""Setup Cursor for Testing"""
@@ -338,7 +342,11 @@ class DatabaseTestCaseDay1(FlaskTestCase):
 
 	def test_get_all_states(self):
 		states = db.get_all_states()
-		self.assertEqual(len(states), 52, "Get All States Day 0 - Unexpected number of states.")
+		self.assertEqual(len(states), 52, "Get All States Day 1 - Unexpected number of states.")
+
+	def test_get_latest_user_id(self):
+		user_id = db.get_latest_user_id()
+		self.assertEqual(user_id, 5, "Get Latest User ID Day 1 - Unexpected latest user.")
 
 
 class ApplicationTestCaseDay0(FlaskTestCase):
