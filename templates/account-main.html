@@ -31,16 +31,10 @@
 			</div></a>
 		</div>
 		<div class="tabbed-container">
-			{% if tab_choice == 'orders' %}
+			{% if tab_choice == 'orders' or not tab_choice %}
 			{%  include '_orders.html' %}
 			{% elif tab_choice == 'listings' %}			
 			{%  include '_listings.html' %}
 			{% endif %}
-			{% if 'email' in session %}
-        <p>Logged in as {{ session.email }}; <a href="{{ url_for('logout') }}">log out</a>.</p>
-			{% else %}
-        <p>Not logged in; <a href="{{ url_for('login') }}">log in now</a>.</p>
-        <p> Want to join the community? <a href="{{ url_for('create_account') }}">Create an Account</a>.</p>
-    	{% endif %}
 		</div>
 {% endblock %} 

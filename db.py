@@ -188,3 +188,12 @@ def get_latest_user_id():
 		query = '''SELECT count(user_id) from "user";'''
 		g.cursor.execute(query)
 		return g.cursor.fetchone()[0] + 1
+
+def get_user_orders(user_id):
+		query = '''SELECT listing.title, listing.listing_id, orders.total_cost, 
+		orders.time_placed, orders.quantity, listing.photo, listing.unit_type FROM orders 
+		INNER JOIN "user" on orders.buyer_id = "user".user_id 
+		INNER JOIN listing on orders.listing_id = listing.listing_id 
+		WHERE buyer_id = %(user_id)s;'''
+		g.cursor.execute(query, {'user_id': user_id})
+		return g.cursor.fetchall()

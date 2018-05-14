@@ -222,13 +222,17 @@ def account():
 		address = helper_functions.address_string(session['user_id'])
 		map_url = helper_functions.address_url(address[1])
 		listings = db.get_user_listings(session['user_id'])
+		orders = db.get_user_orders(session['user_id'])
 		for listing in listings:
-				listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
+			listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
+		for order in orders:
+			order['total_cost'] = '${:,.2f}'.format(order['total_cost'])
+			order['time_placed'] = 'Purchased on {}'.format(order['time_placed'].strftime('%B%e'))
 		tab_choice = request.args.get('type')
-
 		return render_template('account-main.html', 
 		user=user, name=name, location_address=address[0], 
-		location_link=map_url, tab_choice=tab_choice, listings=listings)
+		location_link=map_url, tab_choice=tab_choice, listings=listings
+		, orders=orders)
 		# if session['role'] == 'admin':
 	return render_template('account-main.html')
 

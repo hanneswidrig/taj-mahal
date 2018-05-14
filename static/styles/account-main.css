@@ -41,3 +41,59 @@ a:hover {
 .tab-text {
 	padding-left: 2px;
 }
+.ul-order {
+	list-style-type: none;
+	margin         : 0;
+	padding        : 0;
+}
+.order {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	height: 96px;
+	padding: 5px 10px;
+}
+.order-picture {
+	margin: 0 8px 0 0;
+	height: 64px;
+	width: 64px;
+	border-radius: 64px;
+}
+.order-left {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+}
+.order-right {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 64px;
+}
+.order-left-info {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	height: 64px;
+}
+.order-right-info {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	height: 64px;
+}
+.order-heading {
+	font-size: 1.125rem;
+	font-weight: 600;
+	color: #000000;
+}
+.order-total-price {
+	text-align: end;
+}
+.order-qty {
+	font-weight: 600;
+	color: #3D9970;
+	text-align: end;
+}

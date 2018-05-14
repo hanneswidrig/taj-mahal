@@ -1,7 +1,25 @@
 <div class="order-container">
-	<ul class="ul-listing">
+	<ul class="ul-order">
 		{% for order in orders %}
-		<li></li>
+		<li>
+			<a href="" class="order-link">
+				<div class="order">
+					<div class="order-left">
+						<img src="{{ url_for('static', filename=order.photo) }}" alt="{{ order.title }}" class="order-picture">
+						<div class="order-left-info">
+							<div class="order-title order-heading">{{ order.title }}</div>
+							<div class="order-purchased-date">{{ order.time_placed }}</div>
+						</div>
+					</div>
+					<div class="order-right">
+						<div class="order-right-info">
+							<div class="order-total-price order-heading">{{ order.total_cost }}</div>
+							<div class="order-qty">{{ order.quantity }} {{ order.unit_type }}</div>
+						</div>
+					</div>
+				</div>
+			</a>
+		</li>
 		{% endfor %}
 	</ul>
 </div>

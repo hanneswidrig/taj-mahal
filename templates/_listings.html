@@ -1,9 +1,10 @@
 <div class="listing-container">
 	<ul class="ul-listing">
 		{% for listing in listings %}
+		{% set photo_url = url_for('static', filename=listing.photo) %}
 		<li>
 			<a href="{{ url_for('listing_detail', listing_id=listing.listing_id) }}" class="listing-a">
-				<div class="listing" style="background-image: url({{ url_for('static', filename=listing.photo) }});">
+				<div class="listing" style="background-image: url({{ photo_url }});">
 					<div class="listing-body">
 						<div class="bottom-left">
 							<span class="listing-title">{{ listing.title }}</span>
