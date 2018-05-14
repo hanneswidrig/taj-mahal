@@ -7,6 +7,7 @@ MarkupSafe==1.0
 pendulum==1.5.0
 Pillow==5.1.0
 psycopg2==2.7.4
+pprintpp==0.3.0
 python-dateutil==2.7.2
 pytz==2018.4
 pytzdata==2018.4
