@@ -37,11 +37,9 @@ def relative_link(request_path, request_referrer):
 
 def address_string(user_id):
 	address = db.get_user_address(user_id)
-	location_address = '{} {}, {} {}'.format(
-			address['street'], 
+	location_address = '{}, {}'.format(
 			address['city'], 
-			address['name'],
-			address['zipcode'])
+			address['abbrev'])
 	for_gapi = '{}+{}%2C+{}+{}'.format(
 			'+'.join(address['street'].split(' ')), 
 			'+'.join(address['city'].split(' ')), 
@@ -60,4 +58,3 @@ def get_usa_states():
 	for state in states:
 		states_list.append((state[0], state[1]))
 	return states_list
-

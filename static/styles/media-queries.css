@@ -15,6 +15,17 @@
 		margin    : -8px 8px;
 		max-width : 448px;
 	}
+	.profile-section {
+		flex-direction: row;
+	}
+	.profile-section-top {
+		flex: 3;
+	}
+	.profile-section-bottom {
+		justify-content: flex-start;
+		margin: 0px;
+		flex: 2;
+	}
 }
 @media only screen and (max-width: 1023px) {
 	.dsktp {

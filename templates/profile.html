@@ -18,15 +18,9 @@
 {% endblock %}
 {% block content %}
 <div class="profile-container">
-	<div class="profile-information">
-		<div class="profile-img"><img src="{{ user.profile_pic }}" alt="profile pic"></div>
-		<div class="profile-name">{{ name }}</div>
-		<div class="profile-bio">{{ user.bio }}</div>
-		<div class="profile-location">
-			<i class="material-icons">location_on</i>
-			<div class="profile-address"><a href="{{ location_link }}" class="map_link">{{ location_address }}</a></div>
-		</div>
-	</div>
+	{# {% with location_address=location_address %} #}
+	{% include '_user-profile.html' %}
+	{# {% endwith %} #}
 	<div class="listing-header">Listings</div>
 	<div class="listing-container">
 		<ul class="ul-listing">

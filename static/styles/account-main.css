@@ -1,3 +1,6 @@
+.container-fluid {
+	padding: 0;
+}
 .app-bar-filler {
 	padding: 24px;
 	margin-left: 8px;

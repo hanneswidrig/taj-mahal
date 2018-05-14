@@ -11,11 +11,17 @@
 	<span class="app-bar-title">Your Account</span>
 </div>
 <div class="app-bar-item">
-	<div class="app-bar-filler"></div>
+	<a href="{{ url_for('settings') }}">
+		<div class="app-bar-settings">
+			<i class="material-icons">settings</i>
+		</div>
+	</a>
 </div>
-
 {% endblock %}
 {% block content %}
+		{% with location_address='Upland, IN', user={'profile_pic': 'https://avatars0.githubusercontent.com/u/3399497?s=400&v=4', 'bio': 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.'}, location_link='https://google.com', name='Hannes Widrig' %}
+			{% include '_user-profile.html' %}
+		{% endwith %}
     {% if 'email' in session %}
         <p>Logged in as {{ session.email }}; <a href="{{ url_for('logout') }}">log out</a>.</p>
     {% else %}

@@ -193,3 +193,55 @@ input[type='number'] {
 	margin     : 6px 0;
 	font-family: 'Titillium Web', sans-serif;
 }
+.profile-section {
+	display: flex;
+	flex-direction: column;
+	font-family: 'Titillium Web', 'serif';
+	font-weight: 600;
+	color: #757575;
+	margin: 0px 10%;
+}
+.profile-section-top {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+}
+.profile-section-bottom {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	margin: 0px 10%;
+}
+.profile-bottom-bio {
+	font-size: .8125rem;
+	margin-bottom: 10px;
+}
+.profile-top-left {
+	margin: 16px;
+}
+.profile-top-right {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	margin-bottom: 8px;
+}
+.profile-top-left>img {
+	width: 96px;
+	height: 96px;
+	border-radius: 96px;
+}
+.profile-right-name {
+	font-size: 1.25rem;
+}
+.profile-right-loc {
+	display: flex;
+	flex-direction: row;
+}
+.profile-a {
+	color: #3D9970;
+}
+.profile-a:hover {
+	color: #276248;
+	text-decoration: none;
+}
