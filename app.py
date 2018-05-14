@@ -121,7 +121,8 @@ def listing_purchase(listing_id):
 						'listing-confirmation.html',
 						listing_id=listing_id,
 						order=order,
-						name=name)
+						name=name,
+						unit=listing['unit_type'])
 
 		elif buy_item.validate_on_submit(
 		) and qty_purchased > listing['available_quantity']:
