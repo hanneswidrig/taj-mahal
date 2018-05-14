@@ -378,7 +378,7 @@ def account():
         for order in orders:
             order['total_cost'] = '${:,.2f}'.format(order['total_cost'])
             order['time_placed'] = 'Purchased on {}'.format(
-                order['time_placed'].strftime('%B%e'))
+                order['time_placed'].strftime('%B %e'))
         tab_choice = request.args.get('type')
         return render_template(
             'account-main.html',
