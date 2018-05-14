@@ -13,6 +13,13 @@ $(document).ready(function() {
 			$('#search').addClass('nav-item-active');
 		} else if (window.location.pathname == '/account') {
 			$('#account').addClass('nav-item-active');
+			if (window.location.search == '?type=orders' || window.location.search == '') {
+				$('#orders').css('color', '#3D9970');
+				$('#listings').css('color', '#757575');
+			} else if (window.location.search == '?type=listings') {
+				$('#orders').css('color', '#757575');
+				$('#listings').css('color', '#3D9970');
+			}
 		}
 	}
 	function activePageDesktop() {

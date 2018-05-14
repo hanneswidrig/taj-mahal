@@ -19,21 +19,28 @@
 </div>
 {% endblock %}
 {% block content %}
-		{% with location_address='Upland, IN', user={'profile_pic': 'https://avatars0.githubusercontent.com/u/3399497?s=400&v=4', 'bio': 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.'}, location_link='https://google.com', name='Hannes Widrig' %}
-			{% include '_user-profile.html' %}
-		{% endwith %}
-    {% if 'email' in session %}
+		{% include '_user-profile.html' %}
+		<div class="tab-switcher">
+			<a href="{{ url_for('account', type='orders') }}" class="tab tab-link" id="orders"><div class="tab tab-orders">
+			<i class="material-icons">receipt</i>
+			<span class="tab-text">Orders</span>
+			</div></a>
+			<a href="{{ url_for('account', type='listings') }}" class="tab tab-link" id="listings"><div class="tab tab-listings">
+			<i class="material-icons">view_agenda</i>
+			<span class="tab-text">Listings</span>
+			</div></a>
+		</div>
+		<div class="tabbed-container">
+			{% if tab_choice == 'orders' %}
+			{%  include '_orders.html' %}
+			{% elif tab_choice == 'listings' %}			
+			{%  include '_listings.html' %}
+			{% endif %}
+			{% if 'email' in session %}
         <p>Logged in as {{ session.email }}; <a href="{{ url_for('logout') }}">log out</a>.</p>
-    {% else %}
+			{% else %}
         <p>Not logged in; <a href="{{ url_for('login') }}">log in now</a>.</p>
         <p> Want to join the community? <a href="{{ url_for('create_account') }}">Create an Account</a>.</p>
-    {% endif %}
-    {% if 'admin' in session['role'] %}
-        <p>You're an admin! You can edit these users:</p>
-        {% for each_user in users %}
-            <a href="settings.html">{{ each_user[0] }}</a>
-            <br>
-        {% endfor %}
-
-    {% endif %}
-{% endblock %}
+    	{% endif %}
+		</div>
+{% endblock %} 

@@ -216,10 +216,20 @@ def user_profile(user_id):
 
 @app.route('/account')
 def account():
-	if 'role' in session:
-		if session['role'] == 'admin':
-			all_users= db.all_users()
-			return render_template('account-main.html', users = all_users)
+	if 'user_id' in session:
+		user = db.get_one_user(session['user_id'])
+		name = '{} {}'.format(user['first_name'].capitalize(), user['last_name'].capitalize())
+		address = helper_functions.address_string(session['user_id'])
+		map_url = helper_functions.address_url(address[1])
+		listings = db.get_user_listings(session['user_id'])
+		for listing in listings:
+				listing['price_per_unit'] = '${:,.2f}'.format(listing['price_per_unit'])
+		tab_choice = request.args.get('type')
+
+		return render_template('account-main.html', 
+		user=user, name=name, location_address=address[0], 
+		location_link=map_url, tab_choice=tab_choice, listings=listings)
+		# if session['role'] == 'admin':
 	return render_template('account-main.html')
 
 

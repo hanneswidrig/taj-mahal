@@ -18,10 +18,11 @@
 {% endblock %}
 {% block content %}
 <div class="profile-container">
-	{# {% with location_address=location_address %} #}
 	{% include '_user-profile.html' %}
-	{# {% endwith %} #}
-	<div class="listing-header">Listings</div>
+	<div class="listing-header">
+		<i class="material-icons">view_agenda</i>
+		<span class="listing-text">Listings</span>
+	</div>
 	<div class="listing-container">
 		<ul class="ul-listing">
 			{% for listing in listings %}

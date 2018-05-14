@@ -2,7 +2,7 @@
 	padding: 0;
 	font-family: 'Roboto';
 }
-.profile-container {
+.listing-container {
 	padding: 0 16px;
 }
 .app-bar {
@@ -49,9 +49,15 @@
 	margin: 10px 25px;
 }
 .listing-header {
-	margin-top: 16px;
-	font-size: 1.5rem;
-	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #3D9970;
+}
+.listing-text {
+	font-size: 1.125rem;
+	line-height: 1.125rem;
+	padding-left: 2px;
 }
 .profile-section {
 	margin: 10% 10% 0px 10%;
