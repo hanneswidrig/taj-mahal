@@ -1,4 +1,5 @@
 # Gardener's Exchange
+![logo](github-pics/logo-min.png)
 ### Your local connection to the freshest produce around.
 This project was completed for Information Systems Design (ISD) in Spring 2018.
 Developed by Hannes Widrig, Amish Mishra, Tim Ours, and Jon Meharg
