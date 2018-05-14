@@ -23,8 +23,8 @@
 	}
 	.profile-section-bottom {
 		justify-content: flex-start;
-		margin: 0px;
-		flex: 2;
+		margin         : 0px;
+		flex           : 2;
 	}
 }
 @media only screen and (max-width: 1023px) {
@@ -73,7 +73,7 @@
 		margin-right   : 16px;
 	}
 	.dsktp-search {
-		width: 100%;
+		width    : 100%;
 		max-width: 360px;
 	}
 	.dsktp-search-box {

@@ -1,3 +1,15 @@
 .go-back {
 	color: #757575;
 }
+.settings-item {
+	font-family: 'Titillium Web', sans-serif;
+	font-weight: 600;
+	font-size  : 1.25rem;
+}
+a {
+	color: #757575;
+}
+a:hover {
+	color          : #3D9970;
+	text-decoration: none;
+}

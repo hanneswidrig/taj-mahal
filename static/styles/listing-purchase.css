@@ -21,10 +21,10 @@
 	margin     : 0 15px;
 }
 .purchase-title {
-	font-size: 2.5rem;
+	font-size  : 2.5rem;
 	font-weight: 600;
-	text-align: center;
-	margin: 6px 0;
+	text-align : center;
+	margin     : 6px 0;
 }
 .purchase-description {
 	text-align: center;
@@ -48,17 +48,17 @@ input[type=submit].btn-block {
 	font-size    : 2.5rem;
 	width        : 33%;
 	padding      : 6px 12px;
-	text-align   : center; 
+	text-align   : center;
 	border       : 2px solid transparent;
 	border-radius: 4px;
 	background   : transparent;
 }
 .totals {
-	display: flex;
-	flex-direction: column;
+	display        : flex;
+	flex-direction : column;
 	justify-content: center;
-	align-items: center;
-	margin-bottom: 10px;
+	align-items    : center;
+	margin-bottom  : 10px;
 }
 .purchase-label {
 	font-size: 1.5rem;
@@ -70,7 +70,7 @@ input[type=submit].btn-block {
 	font-size: 3rem;
 }
 .purchase-unit-type {
-	font-size: 1.5rem;
+	font-size  : 1.5rem;
 	font-weight: 400;
 }
 .quantity-button {
