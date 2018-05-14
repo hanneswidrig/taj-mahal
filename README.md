@@ -3,7 +3,13 @@
 This project was completed for Information Systems Design (ISD) in Spring 2018.
 Developed by Hannes Widrig, Amish Mishra, Tim Ours, and Jon Meharg
 
-## TODO:
+![application example screenshot](github-pics/app-example.png)
+## Searching
+![searching screenshot](github-pics/search.png)
+## Your Account
+![account screenshot](github-pics/account.png)
+
+## TODO
 ### These are items that would be the next logical step in further developing this application.
 Anything with :boom: next to it would be considered a critical improvement/update.
 - :boom: Password hashing
