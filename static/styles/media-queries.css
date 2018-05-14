@@ -44,10 +44,23 @@
 		height         : 64px;
 	}
 	.dsktp-logo-text {
+		display    : flex;
+		align-items: center;
 		font-size  : 1.5rem;
 		font-family: 'Titillium Web', sans-serif;
-		font-weight: 700;
+		font-weight: 600;
 		color      : #3D9970;
+	}
+	.dsktp-logo {
+		display       : flex;
+		flex-direction: row;
+	}
+	.dsktp-logo:hover {
+		text-decoration: none;
+	}
+	.dsktp-logo>img {
+		height: 48px;
+		width : 48px;
 	}
 	.dsktp-left {
 		display       : flex;
