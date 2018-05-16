@@ -20,6 +20,11 @@
 				</div>
 			</a>
 		</li>
+		{% else %}
+		<div class="no-results">
+			<img src="{{ url_for('static', filename='images/not-found.svg') }}" alt="no results">
+			<span class="search-none">No orders found</span>
+		</div>
 		{% endfor %}
 	</ul>
 </div>
