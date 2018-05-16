@@ -17,6 +17,9 @@
 {% endblock %}
 {% block content %}
 <div class="login-body">
+		<div class="logo">
+			<img src="{{ url_for('static',filename='images/logo-login.png') }}" alt="">
+		</div>
     {% include '_form_errors.html' %}
     <form enctype="multipart/form-data" method="POST">
             {{ form.csrf_token }}
