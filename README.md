@@ -10,6 +10,11 @@ Developed by Hannes Widrig, Amish Mishra, Tim Ours, and Jon Meharg
 ## Your Account
 ![account screenshot](github-pics/account.png)
 
+## Running Gardener's Exchange
+- Python 3.6.x or higher
+- Based on Flask 0.12.2
+- Required pip modules in `requirements.txt`
+
 ## TODO
 ### These are items that would be the next logical step in further developing this application.
 Anything with :boom: next to it would be considered a critical improvement/update.
@@ -31,7 +36,6 @@ Anything with :boom: next to it would be considered a critical improvement/updat
 - Deeper catalog support
 - New tagging system
 
-## Running Gardener's Exchange
-- Python 3.6.x or higher
-- Based on Flask 0.12.2
-- Required pip modules in `requirements.txt`
+## Bugs
+- No password length limit
+- Able to buy own listings
