@@ -1,12 +1,12 @@
 -- user table
 insert into public.user (user_id, address_id, email, password, first_name, last_name, profile_pic, role, bio)
-values (1, 1, 'hannes@widrig.com', 'hannes', 'hannes', 'widrig', 'https://avatars0.githubusercontent.com/u/3399497?s=400&v=4', 'admin', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
+values (1, 1, 'hannes@widrig.com', 'hannes', 'hannes', 'widrig', 'images/uploaded-images/1/1.jpg', 'admin', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
 insert into public.user (user_id, address_id, email, password, first_name, last_name, profile_pic, role, bio)
-values (2, 1, 'amish@mishra.edu', 'amish', 'amish', 'mishra', 'https://avatars0.githubusercontent.com/u/36204169?s=400&v=4', 'user', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
+values (2, 1, 'amish@mishra.edu', 'amish', 'amish', 'mishra', 'images/uploaded-images/2/2.jpg', 'user', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
 insert into public.user (user_id, address_id, email, password, first_name, last_name, profile_pic, role, bio)
-values (3, 1, 'jon@meharg.gov', 'jon', 'jon', 'meharg', 'https://avatars2.githubusercontent.com/u/7091411?s=400&v=4', 'user', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
+values (3, 1, 'jon@meharg.gov', 'jon', 'jon', 'meharg', 'images/uploaded-images/3/3.jpg', 'user', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
 insert into public.user (user_id, address_id, email, password, first_name, last_name, profile_pic, role, bio)
-values (4, 1, 'tim@ours.org', 'tim', 'tim', 'ours', 'https://avatars2.githubusercontent.com/u/22141109?s=400&v=4', 'user', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
+values (4, 1, 'tim@ours.org', 'tim', 'tim', 'ours', 'images/uploaded-images/4/4.jpg', 'user', 'Lorem ipsum dolor sit amet, vix cu partem mollis, at mea reque accumsan. Mea novum nominavi accusamus no, utroque delicatissimi no sed. Quo te.');
 alter sequence user_user_id_seq restart with 5;
 
 -- category table

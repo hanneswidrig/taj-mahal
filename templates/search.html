@@ -64,7 +64,7 @@
 		<div class="user-card">
 			<div class="user-card-wrapper">
 				<div class="user-card-left">
-					<img class="user-card-profile-pic" src="{{ user.profile_pic }}">
+					<img class="user-card-profile-pic" src="{{ url_for('static', filename=user.profile_pic) }}">
 				</div>
 				<div class="user-card-right">
 					<div class="user-card-name">

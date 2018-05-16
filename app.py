@@ -24,6 +24,9 @@ app.config['SCRIPT_LOCATION'] = os.path.dirname(os.path.realpath(sys.argv[0]))
 @app.before_request
 def before_request():
 		db.open_db()
+		if 'user_id' in session:
+				if not session['zipcode']:
+					session['zipcode'] = db.get_user_address(session['user_id'])[4]
 		if not session.get('zipcode'):
 				session['zipcode'] = '46989'
 
@@ -101,9 +104,8 @@ def listing_purchase(listing_id):
 				db.update_available_quantity(qty_purchased, listing_id)
 				total_cost = round(
 						float(listing['price_per_unit']) * int(qty_purchased))
-				# DEFAULT VALUE BC NO ACCOUNTS YET
 				order_created = db.add_new_order(listing_id, qty_purchased, total_cost,
-																				 1)
+																				session['user_id'])
 
 				if order_created == 1:
 						listing_detail = db.get_listing_details_for_confirmation_page(
@@ -396,7 +398,10 @@ def account():
 
 @app.route('/settings')
 def settings():
-		return render_template('settings.html')
+		if 'user_id' in session:
+			return render_template('settings.html')
+		else:
+			return redirect(url_for('login'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -553,4 +558,4 @@ def create_account():
 
 
 if __name__ == '__main__':
-		app.run(host='localhost', port=5000, debug=True)
+		app.run(host='0.0.0.0', port=5000, debug=True)

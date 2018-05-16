@@ -207,6 +207,7 @@ def get_user_orders(user_id):
 		orders.time_placed, orders.quantity, listing.photo, listing.unit_type FROM orders 
 		INNER JOIN "user" on orders.buyer_id = "user".user_id 
 		INNER JOIN listing on orders.listing_id = listing.listing_id 
-		WHERE buyer_id = %(user_id)s;'''
+		WHERE buyer_id = %(user_id)s
+		ORDER BY orders.time_placed DESC;'''
     g.cursor.execute(query, {'user_id': user_id})
     return g.cursor.fetchall()

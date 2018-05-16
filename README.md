@@ -26,6 +26,10 @@ Anything with :boom: next to it would be considered a critical improvement/updat
 - Notification system for application
 - Chat system
 - Payment system
+- Admin capabilities
+- Improved uploaded image management
+- Deeper catalog support
+- New tagging system
 
 ## Running Gardener's Exchange
 - Python 3.6.x or higher
