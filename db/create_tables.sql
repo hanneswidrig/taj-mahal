@@ -5,6 +5,32 @@ drop table if exists "orders" cascade;
 drop table if exists "state" cascade;
 drop table if exists "user" cascade;
 
+create table "state"
+(
+  state_id serial      not null
+    constraint state_pkey
+    primary key,
+  abbrev   varchar(2)  not null,
+  name     varchar(32) not null
+);
+
+create unique index state_state_id_uindex on "state" (state_id);
+
+create table "address"
+(
+  address_id serial       not null
+    constraint address_pkey
+    primary key,
+  street     varchar(128) not null,
+  city       varchar(128) not null,
+  state_id   integer      not null
+    constraint address_state_state_id_fk
+    references "state",
+  zipcode    varchar(10)  not null
+);
+
+create unique index address_address_id_uindex on "address" (address_id);
+
 create table "user"
 (
   user_id     serial                                          not null
@@ -36,17 +62,6 @@ create table category
 create unique index category_category_id_uindex on category (category_id);
 create unique index category_name_uindex on category (name);
 
-create table "state"
-(
-  state_id serial      not null
-    constraint state_pkey
-    primary key,
-  abbrev   varchar(2)  not null,
-  name     varchar(32) not null
-);
-
-create unique index state_state_id_uindex on "state" (state_id);
-
 create table listing
 (
   listing_id         serial                   not null
@@ -75,21 +90,6 @@ create table listing
 
 create unique index listing_listing_id_uindex on listing (listing_id);
 create unique index lower_title_idx on listing (lower(title :: text));
-
-create table "address"
-(
-  address_id serial       not null
-    constraint address_pkey
-    primary key,
-  street     varchar(128) not null,
-  city       varchar(128) not null,
-  state_id   integer      not null
-    constraint address_state_state_id_fk
-    references "state",
-  zipcode    varchar(10)  not null
-);
-
-create unique index address_address_id_uindex on "address" (address_id);
 
 create table orders
 (
