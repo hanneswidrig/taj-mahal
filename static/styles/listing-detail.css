@@ -1,0 +1,85 @@
+.container-fluid {
+	padding: 0;
+}
+.app-bar {
+	position  : absolute;
+	top       : 0;
+	left      : 0;
+	width     : 100%;
+	background: linear-gradient(180deg, rgba(0,0,0,0.51) 0%, rgba(0,0,0,0) 100%);
+}
+.detail {
+	font-family: 'Titillium Web', sans-serif;
+}
+.detail-img {
+	display          : flex;
+	justify-content  : center;
+	align-items      : center;
+	height           : 256px;
+	background-size  : cover;
+	background-repeat: no-repeat;
+}
+.detail-body {
+	margin: 0 15px;
+}
+.detail-title {
+	font-size  : 2.5rem;
+	font-weight: 600;
+	text-align : center;
+	margin     : 6px 0;
+}
+.detail-description {
+	font-size : 1rem;
+	text-align: center;
+	margin    : 6px 0 20px 0;
+}
+.detail-section {
+	display        : flex;
+	flex-direction : row;
+	justify-content: center;
+	align-items    : center;
+	font-size      : 1rem;
+	margin         : 6px 0;
+}
+.detail-label {
+	flex: 1;
+}
+.detail-total {
+	font-weight: 600;
+	flex       : 1;
+}
+.detail-price {
+	margin: 18px 0;
+}
+.seller-pic {
+	height       : 64px;
+	width        : 64px;
+	border-radius: 64px;
+}
+.seller-name {
+	margin        : 0px 0px 0px 16px;
+	text-transform: capitalize;
+	font-weight   : 600;
+}
+.seller-profile {
+	display       : flex;
+	flex-direction: row;
+	align-items   : center;
+	color         : #000000;
+}
+.seller-profile:hover {
+	text-decoration: none;
+	color          : #3D9970;
+}
+.detail-price>.detail-total {
+	font-size  : 1.6rem;
+	font-weight: 700;
+}
+.detail-time-dist {
+	flex-direction : column;
+	justify-content: space-evenly;
+	margin         : 15px 0;
+}
+.detail-td {
+	font-weight: 600;
+}

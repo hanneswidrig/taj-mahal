@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/settings.css') }}">
+{% endblock %}
+{% block app_bar %}
+<a href="/account" class="app-bar-item">
+	<div class="go-back">
+		<i class="material-icons">arrow_back</i>
+	</div>
+</a>
+<div class="app-bar-item">
+	<span class="app-bar-title">Settings</span>
+</div>
+<div class="app-bar-item">
+	<div class="app-bar-filler"></div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="settings-container">
+	<!-- <div class="settings-item"><a href="{{ url_for('user_edit', user_id=session['user_id']) }}">Edit Profile</a></div> -->
+	<div class="settings-item"><a href="{{ url_for('logout') }}">Log Out</a></div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+<div class="profile-section">
+	<div class="profile-section-top">
+		<div class="profile-top-left">
+			<img src="{{ url_for('static', filename=user.profile_pic) }}" alt="profile pic">
+		</div>
+		<div class="profile-top-right">
+			<div class="profile-right-name">{{ name }}</div>
+			<a class="profile-a" href="{{ location_link }}" class="map_link">
+				<div class="profile-right-loc">
+					<i class="material-icons">location_on</i>
+					<div class="profile-address">{{ location_address }}</div>
+				</div>
+			</a>
+		</div>
+	</div>
+	<div class="profile-section-bottom">
+		<div class="profile-bottom-bio">{{ user.bio }}</div>
+	</div>
+</div>

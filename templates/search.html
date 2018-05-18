@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Search{% endblock %}
+{% block bar_title %}Search{% endblock %}
+{% block search_query %}{{ q }}{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/search.css') }}">
+{% endblock %}
+{% block app_bar %}
+<div class="app-bar-item search-element">
+	<div class="search-container">
+		<i class="material-icons">search</i>
+		<form role="search" class="search-form">
+			<input type="text" name="search" class="search-box" placeholder="Search" value="{{ self.search_query() }}">
+		</form>
+		<div class="search-filter">
+			<!-- <a class="search-filter-toggle" href="#">Filter</a> -->
+		</div>
+	</div>
+</div>
+<div class="app-bar-item filter-element">
+	<div class="filter-container">
+		<span class="filter-item" id="f1">
+			<div>Products</div>
+		</span>
+		<span class="filter-item" id="f2">
+			<div>Categories</div>
+		</span>
+		<span class="filter-item" id="f3">
+			<div>Users</div>
+		</span>
+	</div>
+</div>
+{% endblock %}
+{% block content %}
+
+{% if results['listings'] %}
+<div class="listing-container">
+	<ul class="ul-listing">
+		{% for listing in results['listings'] %}
+		<li>
+			<a href="{{ url_for('listing_detail', listing_id=listing.listing_id) }}" class="listing-a">
+				<div class="listing" style="background-image: url({{ url_for('static', filename=listing.photo) }});">
+					<div class="listing-body">
+						<div class="bottom-left">
+							<span class="listing-title">{{ listing.title }}</span>
+							<span class="listing-price">{{ '${:,.2f}'.format(listing.price_per_unit) }}</span>
+						</div>
+						<div class="bottom-right">
+							<span class="listing-more">More</span>
+						</div>
+					</div>
+				</div>
+			</a>
+		</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endif %}
+
+{% if results['users'] %}
+<div class="user-container">
+	{% for user in results['users'] %}
+	<a href="{{ url_for('user_profile', user_id=user.user_id) }}" class="user-a">
+		<div class="user-card">
+			<div class="user-card-wrapper">
+				<div class="user-card-left">
+					<img class="user-card-profile-pic" src="{{ url_for('static', filename=user.profile_pic) }}">
+				</div>
+				<div class="user-card-right">
+					<div class="user-card-name">
+					{{ user.first_name.capitalize() }} {{ user.last_name.capitalize() }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</a>
+	{% endfor %}
+</div>
+{% endif %}
+
+{% if (results['categories']) and (c_flag) %}
+<div class="listing-container">
+	<ul class="ul-listing">
+		{% for listing in results['categories'] %}
+		<li>
+			<a href="{{ url_for('listing_detail', listing_id=listing.listing_id) }}" class="listing-a">
+				<div class="listing" style="background-image: url({{ url_for('static', filename=listing.photo) }});">
+					<div class="listing-body">
+						<div class="bottom-left">
+							<span class="listing-title">{{ listing.title }}</span>
+							<span class="listing-price">{{ '${:,.2f}'.format(listing.price_per_unit) }}</span>
+						</div>
+						<div class="bottom-right">
+							<span class="listing-more">More</span>
+						</div>
+					</div>
+				</div>
+			</a>
+		</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endif %}
+{% if not request.args %}
+<div class="no-results">
+	<img src="{{ url_for('static', filename='images/search.svg') }}" alt="no results">
+	<span class="search-none">Search for amazing products nearby!</span>
+</div>
+{% elif not results['listings'] and not results['categories'] and not results['users'] %}
+<div class="no-results">
+	<img src="{{ url_for('static', filename='images/not-found.svg') }}" alt="no results">
+	<span class="search-none">We could not find any matching products</span>
+</div>
+{% endif %}
+{% endblock %}
