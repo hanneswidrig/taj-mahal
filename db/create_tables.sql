@@ -10,7 +10,9 @@ create table "user"
   user_id     serial                                          not null
     constraint user_pkey
     primary key,
-  address_id  integer                                         not null,
+  address_id  integer                                         not null
+		constraint user_address_address_id_fk
+		references address,
   email       varchar(64)                                     not null,
   password    varchar(64)                                     not null,
   first_name  varchar(64)                                     not null,
@@ -50,7 +52,9 @@ create table listing
   listing_id         serial                   not null
     constraint listing_pkey
     primary key,
-  seller_id          integer                  not null,
+  seller_id          integer                  not null
+		constraint listing_user_user_id_fk
+		references "user",
   title              varchar(128)             not null,
   photo              varchar(256)             not null,
   description        varchar(256)             not null,
@@ -97,7 +101,9 @@ create table orders
     references listing,
   quantity    integer                  not null,
   total_cost  numeric(5, 2)            not null,
-  buyer_id    integer                  not null,
+  buyer_id    integer                  not null
+		constraint orders_user_user_id_fk
+		references "user",
   time_placed timestamp with time zone not null
 );
 
